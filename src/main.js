@@ -3,6 +3,7 @@ import App from './App'
 import { router } from './router/index'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
+import './style/index.styl'
 
 Vue.config.productionTip = false
 Vue.use(iView)
