@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app-main">
     <router-view/>
   </div>
 </template>
@@ -10,5 +10,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
+.app-main
+  width 100%
+  height 100%
 </style>

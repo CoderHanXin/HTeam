@@ -1,9 +1,9 @@
 <template>
   <Layout class="layout">
     <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="isCollapsed">
-      <Menu theme="dark" width="auto" :class="menuitemClasses" @on-select="changeMenu">
+      <Menu theme="dark" width="auto" :class="menuItemClasses" :active-name="$route.name" @on-select="handleChangeMenu">
         <Tooltip placement="right" content="消息" :disabled="tooltip">
-          <menu-item name="1123123">
+          <menu-item name="message">
             <Icon type="ios-chatboxes"></Icon>
             <span>消息</span>
           </menu-item>
@@ -21,7 +21,7 @@
           </menu-item>
         </Tooltip>
         <Tooltip placement="right" content="日历" :disabled="tooltip">
-          <menu-item name="4">
+          <menu-item name="calendar">
             <Icon type="ios-clock"></Icon>
             <span>日历</span>
           </menu-item>
@@ -29,7 +29,7 @@
       </Menu>
     </Sider>
     <Layout>
-        <router-view></router-view>
+      <router-view></router-view>
     </Layout>
   </Layout>
 </template>
@@ -47,7 +47,7 @@ export default {
     }
   },
   computed: {
-    menuitemClasses: function () {
+    menuItemClasses: function () {
       return [
         'menu-item',
         this.isCollapsed ? 'collapsed-menu' : ''
@@ -58,7 +58,7 @@ export default {
     }
   },
   methods: {
-    changeMenu(name) {
+    handleChangeMenu(name) {
       let willpush = true
       if (this.beforePush !== undefined) {
         if (!this.beforePush(name)) {
@@ -75,7 +75,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .layout {
   height: 100vh;
 }
