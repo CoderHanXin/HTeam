@@ -67,6 +67,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import '~@/style/variable'
 .login
   width 100%
   height 100%
@@ -80,15 +81,10 @@ export default {
     top 50%
     transform translateY(-60%)
     width 300px
-    &-header
-      font-size 16px
-      font-weight 300
-      text-align center
-      padding 30px 0
     .form-con
-      padding 10px 0 0
+      padding 8px 0 0
     .login-tip
-      font-size 10px
+      font-size $font-size-small-s
       text-align center
       color #c3c3c3
 </style>
