@@ -38,7 +38,12 @@
       <Content class="content">
         <div class="task-add-quick">
           <input placeholder="添加新任务，按回车键（Enter）保存" />
+          <div class="meta">
+            <a href="javascript:;"><Icon type="ios-clock"></Icon></a>
+            <a href="javascript:;"><Icon type="ios-clock"></Icon></a>
+          </div>
         </div>
+        <div class="task-list">task list</div>
       </Content>
     </Layout>
   </Layout>
@@ -88,12 +93,14 @@ export default {
       span
         margin-right 4px
   .content
+    display flex
+    flex-direction: column
     margin $spacing-medium
     .task-add-quick
       display flex
       position relative
       margin-bottom 10px
-      padding 5px 15px
+      padding 5px 16px
       border-radius 2px
       background #fdfdfd
       input
@@ -107,5 +114,15 @@ export default {
         border none
         outline none
         overflow hidden
+      .meta
+        display flex
+        line-height 40px
+        font-size 28px
+        a 
+         margin-right 8px
+    .task-list
+      flex auto
+      padding 10px 0
+      background #fdfdfd
 </style>
 
