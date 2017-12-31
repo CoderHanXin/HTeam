@@ -3,7 +3,7 @@
     <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="isCollapsed">
       <Menu theme="dark" width="auto" :class="menuitemClasses" @on-select="changeMenu">
         <Tooltip placement="right" content="消息" :disabled="tooltip">
-          <menu-item name="1">
+          <menu-item name="1123123">
             <Icon type="ios-chatboxes"></Icon>
             <span>消息</span>
           </menu-item>
