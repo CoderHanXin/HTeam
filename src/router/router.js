@@ -66,6 +66,14 @@ export const appRouter = [
         component: resolve => {
           require(['@/views/project/Project.vue'], resolve)
         }
+      },
+      {
+        path: 'member',
+        name: 'member',
+        title: '成员',
+        component: resolve => {
+          require(['@/views/member/Member.vue'], resolve)
+        }
       }
     ]
   }

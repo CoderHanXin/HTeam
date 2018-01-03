@@ -20,10 +20,10 @@
             <span>项目</span>
           </menu-item>
         </Tooltip>
-        <Tooltip placement="right" content="日历" :disabled="tooltip">
-          <menu-item name="calendar">
+        <Tooltip placement="right" content="成员" :disabled="tooltip">
+          <menu-item name="member">
             <Icon type="ios-clock"></Icon>
-            <span>日历</span>
+            <span>成员</span>
           </menu-item>
         </Tooltip>
       </Menu>

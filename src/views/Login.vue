@@ -7,16 +7,16 @@
           欢迎登录
         </p>
         <div class="form-con">
-          <Form :model="form" :rules="rules" ref="loginForm">
+          <Form :model="user" :rules="rules" ref="loginForm">
             <FormItem prop="username">
-              <Input v-model="form.username" placeholder="请输入用户名">
+              <Input v-model="user.username" placeholder="请输入用户名">
               <span slot="prepend">
                 <Icon :size="16" type="person"></Icon>
               </span>
               </Input>
             </FormItem>
             <FormItem prop="password">
-              <Input type="password" v-model="form.password" placeholder="请输入密码">
+              <Input type="password" v-model="user.password" placeholder="请输入密码">
               <span slot="prepend">
                 <Icon :size="14" type="locked"></Icon>
               </span>
@@ -37,7 +37,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      form: {
+      user: {
         username: '',
         password: ''
       },
@@ -55,9 +55,20 @@ export default {
     handleSubmit() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.$router.push({
-            name: 'task'
-          })
+          this.$http.post('/api/user/login', this.user)
+            .then(res => {
+              if (res.data.code === 0) {
+                this.$Message.info('登录成功')
+                this.$router.push({
+                  name: 'task'
+                })
+              } else {
+                this.$Message.error({
+                  content: res.data.message,
+                  duration: 3
+                })
+              }
+            })
         }
       })
     }
