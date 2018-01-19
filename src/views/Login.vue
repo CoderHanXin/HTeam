@@ -59,7 +59,7 @@ export default {
             .then(res => {
               if (res.data.code === 0) {
                 this.$Message.info('登录成功')
-                this.$router.push({
+                this.$router.replace({
                   name: 'task'
                 })
               } else {
