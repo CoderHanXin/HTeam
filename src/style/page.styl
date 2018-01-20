@@ -1,0 +1,42 @@
+
+@import './variable'
+.sub-sider
+  background $color-background-light
+  .header
+    height 50px
+    border-bottom 1px solid $color-light-grey
+    .title
+      float left
+      line-height 50px
+      margin 0 20px
+      font-size $font-size-medium-x
+    .more
+      float right
+      line-height 50px
+      margin 0 20px
+      font-size 22px
+  .menu
+    background $color-background-light
+    &:after
+      width 0
+.main-body
+  color $color-text
+  border-left 1px solid $color-light-grey
+  .header
+    height 50px
+    margin 0
+    padding 0 15px
+    position relative
+    background $color-background-light
+    .title
+      float left
+      line-height 50px
+      font-size $font-size-medium-x
+      span
+        margin-right 4px
+  .content
+    display flex
+    flex-direction: column
+    margin $spacing-medium
+    .filter-container
+      padding-bottom 16px
