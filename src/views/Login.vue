@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import url from '../api/url'
 export default {
   name: 'Login',
   data() {
@@ -55,7 +56,7 @@ export default {
     handleSubmit() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.$http.post('/api/user/login', this.user)
+          this.$http.post(url.user_login, this.user)
             .then(res => {
               if (res.data.code === 0) {
                 this.$Message.info('登录成功')
