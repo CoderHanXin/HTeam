@@ -58,71 +58,33 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~@/style/variable'
-.sub-sider
-  background $color-background-light
-  .header
-    height 50px
-    border-bottom 1px solid #ddd
-    .title
-      float left
-      line-height 50px
-      margin 0 20px
-      font-size $font-size-medium-x
-    .more
-      float right
-      line-height 50px
-      margin 0 20px
-      font-size 22px
-  .menu
-    background $color-background-light
-    &:after
-      width 0
-.main-body
-  color $color-text
-  border-left 1px solid #ddd
-  .header
-    height 50px
-    margin 0
-    padding 0 15px
-    position relative
-    background rgba(253, 253, 253, 0.95)
-    .title
-      float left
-      line-height 50px
-      font-size $font-size-medium-x
-      span
-        margin-right 4px
-  .content
+.task-add-quick
+  display flex
+  position relative
+  margin-bottom 10px
+  padding 5px 16px
+  border-radius 2px
+  background #fdfdfd
+  input
+    display block
+    max-height 120px
+    height 40px
+    width 100%
+    line-height 40px
+    font-size 14px
+    color $color-text-light
+    border none
+    outline none
+    overflow hidden
+  .meta
     display flex
-    flex-direction: column
-    margin $spacing-medium
-    .task-add-quick
-      display flex
-      position relative
-      margin-bottom 10px
-      padding 5px 16px
-      border-radius 2px
-      background #fdfdfd
-      input
-        display block
-        max-height 120px
-        height 40px
-        width 100%
-        line-height 40px
-        font-size 14px
-        color $color-text-light
-        border none
-        outline none
-        overflow hidden
-      .meta
-        display flex
-        line-height 40px
-        font-size 28px
-        a 
-         margin-right 8px
-    .task-list
-      flex auto
-      padding 10px 0
-      background #fdfdfd
+    line-height 40px
+    font-size 28px
+    a 
+      margin-right 8px
+.task-list
+  flex auto
+  padding 10px 0
+  background #fdfdfd
 </style>
 
