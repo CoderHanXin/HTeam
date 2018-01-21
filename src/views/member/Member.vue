@@ -32,23 +32,26 @@
             </Form>
           </div>
           <Table border :columns="columns" :data="list" ref="table"></Table>
-          <Modal v-model="modal" :title="modalTitle" width="480" :mask-closable="false">
-            <Form ref="formCustom" :model="user" :label-width="60">
+          <Modal v-model="modal" @on-visible-change="onModalVisibleChange" :title="modalTitle" width="480" :mask-closable="false">
+            <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
               <FormItem label="姓名" prop="name">
-                <Input type="text" v-model="user.name" placeholder="请输入对方真实姓名"/>
+                <Input type="text" v-model="user.name" :maxlength="20" placeholder="请输入对方真实姓名"/>
               </FormItem>
-              <FormItem label="用户名" prop="username">
-                <Input type="text" v-model="user.username"  placeholder="请输入对方用户名，如Tony"/>
+              <FormItem label="用户名" prop="username" v-if="!isEdit">
+                <Input type="text" v-model="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony"/>
               </FormItem>
-              <FormItem label="默认密码" prop="password">
-                <Input type="password" v-model="user.password" placeholder="请输入默认密码"/>
+              <FormItem label="默认密码" prop="password" v-if="!isEdit">
+                <Input type="password" v-model="user.password" :maxlength="32" placeholder="请输入默认密码"/>
+              </FormItem>
+              <FormItem label="手机号" prop="phone">
+                <Input type="text" v-model="user.phone" :maxlength="13" placeholder="请输入手机号"/>
               </FormItem>
               <FormItem label="员工编号" prop="empNumber">
-                <Input type="password" v-model="user.empNumber" placeholder="请输入员工编号"/>
+                <Input type="text" v-model="user.empNumber" :maxlength="20" placeholder="请输入员工编号"/>
               </FormItem>
             </Form>
             <div slot="footer">
-                <Button type="primary" @click="handleSubmit()">添加</Button>
+                <Button type="primary" @click="handleSubmit()">确定</Button>
                 <Button type="ghost" @click="handleCancel()">取消</Button>
                 <Button type="error" @click="handleDisable()" v-if="isEdit" class="left">禁用</Button>
             </div>
@@ -61,6 +64,7 @@
 
 <script>
 import url from '../../api/url'
+// import User from '../../common/model/user'
 export default {
   name: 'Member',
   data() {
@@ -68,11 +72,14 @@ export default {
       modal: false,
       isEdit: false,
       user: {
+        id: '',
         name: '',
         username: '',
         password: '',
+        phone: '',
         empNumber: ''
       },
+      list: [],
       search: {
         name: ''
       },
@@ -109,7 +116,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.handleEdit(params.index)
+                    this.handleEdit(params.row)
                   }
                 }
               },
@@ -118,28 +125,18 @@ export default {
           }
         }
       ],
-      list: [
-        {
-          name: '张三',
-          empNumber: '0001',
-          phone: '13900010001'
-        },
-        {
-          name: '李四',
-          empNumber: '0002',
-          phone: '13900010002'
-        },
-        {
-          name: '王五',
-          empNumber: '0003',
-          phone: '13900010003'
-        },
-        {
-          name: '赵六',
-          empNumber: '0004',
-          phone: '13900010004'
-        }
-      ]
+      rules: {
+        name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
+        username: [
+          { required: true, message: '用户名不能为空', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ],
+        phone: [
+          { type: 'number', message: '手机号只能是数字', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -147,25 +144,64 @@ export default {
       return this.isEdit ? '修改成员' : '添加成员'
     }
   },
+  created() {
+    this._getUserList()
+  },
   methods: {
-    handleSearch() {},
-    handleSubmit() {
-      this.$http.post(url.user_create, this.user).then(res => {
-        this.modal = false
+    clearUser() {
+      this.user.id = ''
+      this.user.name = ''
+      this.user.username = ''
+      this.user.password = ''
+      this.user.phone = ''
+      this.user.empNumber = ''
+    },
+    _getUserList() {
+      this.$http.get(url.user_search, this.search).then(res => {
+        this.list = res.data.data
         console.log(res.data)
       })
     },
-    handleCancel() {
-      this.modal = false
+    onModalVisibleChange(visible) {
+      console.log('visable:' + visible)
+      if (!visible) {
+        this.clearUser()
+      }
+    },
+    handleSearch() {
+      this._getUserList()
+    },
+    handleSubmit() {
+      if (!this.isEdit) {
+        this.$http.post(url.user_create, this.user).then(res => {
+          this.modal = false
+          this.$refs.userForm.resetFields()
+          this.$Message.success('操作成功')
+        })
+      } else {
+        this.$http.put(url.user_update, this.user).then(res => {
+          this.modal = false
+          this.$refs.userForm.resetFields()
+          this.$Message.success('操作成功')
+        })
+      }
     },
     handleDisable() {},
+    handleCancel() {
+      this.$refs.userForm.resetFields()
+      this.modal = false
+    },
     handleAdd() {
       this.isEdit = false
       this.modal = true
     },
-    handleEdit(index) {
+    handleEdit(row) {
       this.isEdit = true
       this.modal = true
+      this.user.id = row.id
+      this.user.name = row.name
+      this.user.phone = row.phone
+      this.user.empNumber = row.empNumber
     }
   }
 }
