@@ -31,7 +31,7 @@
               <Button @click="handleAdd" type="success" icon="android-add" class="margin-right-4">添加</Button>
             </Form>
           </div>
-          <Table border :columns="columns" :data="list" ref="table"></Table>
+          <Table border :columns="columns" :data="list" :loading="isLoading" ref="table"></Table>
           <Modal v-model="modal" @on-visible-change="onModalVisibleChange" :title="modalTitle" width="480" :mask-closable="false">
             <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
               <FormItem label="姓名" prop="name">
@@ -79,9 +79,11 @@ export default {
         phone: '',
         empNumber: ''
       },
+      isLoading: false,
       list: [],
       search: {
-        name: ''
+        name: '',
+        status: 1
       },
       columns: [
         {
@@ -134,7 +136,20 @@ export default {
           { required: true, message: '密码不能为空', trigger: 'blur' }
         ],
         phone: [
-          { type: 'number', message: '手机号只能是数字', trigger: 'blur' }
+          {
+            type: 'string',
+            pattern: /^\d+$/gi,
+            message: '手机号只能是数字',
+            trigger: 'blur'
+          }
+        ],
+        empNumber: [
+          {
+            type: 'string',
+            pattern: /^[A-Za-z0-9]+$/gi,
+            message: '员工编号只能是英文和数字',
+            trigger: 'blur'
+          }
         ]
       }
     }
@@ -157,13 +172,13 @@ export default {
       this.user.empNumber = ''
     },
     _getUserList() {
+      this.isLoading = true
       this.$http.get(url.user_search, this.search).then(res => {
         this.list = res.data.data
-        console.log(res.data)
+        this.isLoading = false
       })
     },
     onModalVisibleChange(visible) {
-      console.log('visable:' + visible)
       if (!visible) {
         this.clearUser()
       }
@@ -172,21 +187,42 @@ export default {
       this._getUserList()
     },
     handleSubmit() {
-      if (!this.isEdit) {
-        this.$http.post(url.user_create, this.user).then(res => {
-          this.modal = false
-          this.$refs.userForm.resetFields()
-          this.$Message.success('操作成功')
-        })
-      } else {
-        this.$http.put(url.user_update, this.user).then(res => {
-          this.modal = false
-          this.$refs.userForm.resetFields()
-          this.$Message.success('操作成功')
-        })
-      }
+      this.$refs.userForm.validate(valid => {
+        if (valid) {
+          if (!this.isEdit) {
+            this.$http.post(url.user_create, this.user).then(res => {
+              this.modal = false
+              this.$refs.userForm.resetFields()
+              this.$Message.success('操作成功')
+              this._getUserList()
+            })
+          } else {
+            let user = {}
+            user.id = this.user.id
+            user.name = this.user.name
+            user.phone = this.user.phone
+            user.empNumber = this.user.empNumber
+            this.$http.put(url.user_update, user).then(res => {
+              this.modal = false
+              this.$refs.userForm.resetFields()
+              this.$Message.success('操作成功')
+              this._getUserList()
+            })
+          }
+        }
+      })
     },
-    handleDisable() {},
+    handleDisable() {
+      let user = {}
+      user.id = this.user.id
+      user.status = 0
+      this.$http.put(url.user_update, user).then(res => {
+        this.modal = false
+        this.$refs.userForm.resetFields()
+        this.$Message.success('操作成功')
+        this._getUserList()
+      })
+    },
     handleCancel() {
       this.$refs.userForm.resetFields()
       this.modal = false
