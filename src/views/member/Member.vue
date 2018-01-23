@@ -4,17 +4,7 @@
       <div class="header">
         <h5 class="title">成员管理</h5>
       </div>
-      <Menu class="menu" theme="light" width="auto" :open-names="['1']">
-        <Submenu name="1">
-          <template slot="title">
-            阿里巴巴
-          </template>
-          <menu-item name="1-1">
-            <CzsIcon type="hacker" size="16"></CzsIcon>土豆团队</menu-item>
-          <menu-item name="1-2">
-            <CzsIcon type="code-plugin-l" size="16"></CzsIcon>未分配</menu-item>
-        </Submenu>
-      </Menu>
+    <Tree :data="orgTree" @on-select-change="handleNodeSelectChange" class="tree"></Tree>
     </Sider>
     <Layout class="main-body">
       <div class="header">
@@ -69,6 +59,8 @@ export default {
   name: 'Member',
   data() {
     return {
+      selectedOrgId: 1,
+      orgTree: [],
       modal: false,
       isEdit: false,
       user: {
@@ -83,7 +75,8 @@ export default {
       list: [],
       search: {
         name: '',
-        status: 1
+        status: 1,
+        orgId: 1
       },
       columns: [
         {
@@ -160,9 +153,14 @@ export default {
     }
   },
   created() {
-    this._getUserList()
+    this.init()
   },
   methods: {
+    handleNodeSelectChange(val) {
+      this.selectedOrgId = val[0].id
+      this.search.orgId = this.selectedOrgId
+      this._getUserList()
+    },
     clearUser() {
       this.user.id = ''
       this.user.name = ''
@@ -170,6 +168,24 @@ export default {
       this.user.password = ''
       this.user.phone = ''
       this.user.empNumber = ''
+    },
+    async init() {
+      this.selectedOrgId = await this._getOrgTree()
+      this.search.orgId = this.selectedOrgId
+      this._getUserList()
+    },
+    _getOrgTree() {
+      this.$http
+        .get('/api/org/tree', { id: this.selectedOrgId })
+        .then(res => {
+          this.orgTree = []
+          const tree = res.data.data
+          tree.expand = true
+          tree.selected = true
+          this.orgTree.push(tree)
+          this.orgTree.push({ id: 0, title: '未分配' })
+          return tree.id
+        })
     },
     _getUserList() {
       this.isLoading = true
@@ -243,5 +259,10 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
+.tree ul
+  padding-left 16px
+  font-size 14px
+.ivu-tree ul li .ivu-tree-title
+  width 88% 
 </style>
