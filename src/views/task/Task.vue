@@ -37,13 +37,72 @@
       </div>
       <Content class="content">
         <div class="task-add-quick">
-          <input placeholder="添加新任务，按回车键（Enter）保存" />
+          <input v-model="task.title" @keyup.enter="createTask" placeholder="添加新任务，按回车键（Enter）保存" />
           <div class="meta">
-            <a href="javascript:;"><Icon type="ios-clock"></Icon></a>
-            <a href="javascript:;"><Icon type="ios-clock"></Icon></a>
+            <DatePicker 
+              @on-change="datePickerChange" 
+              @on-clear="datePickerClear"
+              @on-ok="datePickerOk"
+              :open="isDatePickerOpen" 
+              :value="task.dueDate" 
+              :transfer="true" 
+              type="datetime" 
+              format="yyyy-MM-dd HH:mm" 
+              placement="bottom-end">
+              <a @click="datePickerClick"><Icon type="ios-clock"></Icon></a>
+            </DatePicker>
+            <a href="javascript:;"><Icon type="ios-analytics"></Icon></a>
           </div>
         </div>
-        <div class="task-list">task list</div>
+        <div class="task-list">
+          <ul>
+            <li class="task-item">
+              <Card :bordered="false" :padding="0" class="task-card">
+                <div class="task-item-wrapper">
+                  <div class="task-item-body">
+                    <Checkbox :size="'large'" class="task-check"></Checkbox>
+                    <div class="task-title">
+                      <span>任务001任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长</span>
+                    </div>
+                    <div class="task-meta">
+                      <span class="task-label">
+                        <Icon type="ios-filing-outline" size="14"></Icon>
+                        项目名称001</span>
+                      <a class="task-tag">紧急</a>
+                      <span class="task-label">
+                        <Icon type="ios-chatboxes-outline"></Icon>
+                        4</span>
+                      <span class="task-label">
+                        <Icon type="ios-clock-outline"></Icon>
+                        1月31日截至</span>
+                      <span class="task-assignee">老韩</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </li>
+            <li class="task-item">
+              <Card :bordered="false" :padding="0" class="task-card">
+                <div class="task-item-wrapper">
+                  <div class="task-item-body">
+                    <Checkbox :size="'large'" class="task-check"></Checkbox>
+                    <div class="task-title">任务002</div>
+                  </div>
+                </div>
+              </Card>
+            </li>
+            <li class="task-item">
+              <Card :bordered="false" :padding="0" class="task-card">
+                <div class="task-item-wrapper">
+                  <div class="task-item-body">
+                    <Checkbox :size="'large'" class="task-check"></Checkbox>
+                    <div class="task-title">任务003</div>
+                  </div>
+                </div>
+              </Card>
+            </li>
+          </ul>
+        </div>
       </Content>
     </Layout>
   </Layout>
@@ -51,13 +110,77 @@
 
 <script>
 export default {
-  name: 'Task'
-
+  name: 'Task',
+  data() {
+    return {
+      newTask: '',
+      isDatePickerOpen: false,
+      task: {
+        title: '',
+        dueDate: ''
+      }
+    }
+  },
+  created() {},
+  methods: {
+    createTask() {
+      console.log(this.newTask)
+    },
+    datePickerClick() {
+      this.isDatePickerOpen = !this.isDatePickerOpen
+    },
+    datePickerChange(date) {
+      console.log(date)
+      this.task.dueDate = date
+    },
+    datePickerClear() {
+      this.isDatePickerOpen = false
+    },
+    datePickerOk() {
+      this.isDatePickerOpen = false
+    }
+  }
 }
 </script>
 
 <style lang="stylus" scoped>
 @import '~@/style/variable'
+@import '~@/style/mixin'
+.task-item
+  position relative
+  padding-bottom 2px
+  cursor: pointer
+.task-item-wrapper
+  position relative
+  padding 0 20px
+.task-item-body 
+  position relative
+  display flex
+  align-items center
+  padding 16px 0
+  &:after
+    setBottomLine(#eeeeee)
+.task-title 
+  flex 1
+  padding-right 16px
+  overflow hidden
+  white-space nowrap
+  text-overflow ellipsis
+  overflow hidden
+.task-meta 
+  flex-shrink 0
+  font-size 12px
+  color $color-grey
+  .task-tag   
+    margin-right 6px
+    padding 2px 6px
+    border-radius 3px
+    color #ffffff
+    background-color $color-error
+  .task-label 
+    margin-right 6px
+  .task-assignee 
+    margin-right 6px
 .task-add-quick
   display flex
   position relative
@@ -78,6 +201,7 @@ export default {
     overflow hidden
   .meta
     display flex
+    align-items center
     line-height 40px
     font-size 28px
     a 
@@ -87,4 +211,3 @@ export default {
   padding 10px 0
   background #fdfdfd
 </style>
-
