@@ -4,7 +4,7 @@
       <div class="header">
         <h5 class="title">成员管理</h5>
       </div>
-    <Tree :data="orgTree" @on-select-change="handleNodeSelectChange" class="tree"></Tree>
+    <Tree :data="orgTree" @on-select-change="handleNodeSelect" class="org-tree"></Tree>
     </Sider>
     <Layout class="main-body">
       <div class="header">
@@ -59,6 +59,7 @@ export default {
   name: 'Member',
   data() {
     return {
+      rootOrgId: 1,
       selectedOrgId: 1,
       orgTree: [],
       modal: false,
@@ -156,8 +157,13 @@ export default {
     this.init()
   },
   methods: {
-    handleNodeSelectChange(val) {
-      this.selectedOrgId = val[0].id
+    handleNodeSelect(val) {
+      if (val[0]) {
+        this.selectedOrgId = val[0].id
+      } else {
+        this.selectedOrgId = this.rootOrgId
+        this.orgTree[0].selected = true
+      }
       this.search.orgId = this.selectedOrgId
       this._getUserList()
     },
@@ -170,22 +176,17 @@ export default {
       this.user.empNumber = ''
     },
     async init() {
-      this.selectedOrgId = await this._getOrgTree()
-      this.search.orgId = this.selectedOrgId
-      this._getUserList()
-    },
-    _getOrgTree() {
-      this.$http
-        .get('/api/org/tree', { id: this.selectedOrgId })
-        .then(res => {
-          this.orgTree = []
-          const tree = res.data.data
-          tree.expand = true
-          tree.selected = true
-          this.orgTree.push(tree)
-          this.orgTree.push({ id: 0, title: '未分配' })
-          return tree.id
-        })
+      this.$http.get('/api/org/tree', { id: this.selectedOrgId }).then(res => {
+        this.orgTree = []
+        const tree = res.data.data
+        tree.expand = true
+        tree.selected = true
+        this.orgTree.push(tree)
+        this.rootOrgId = this.orgTree[0] && this.orgTree[0].id
+        this.selectedOrgId = this.rootOrgId
+        this.search.orgId = this.selectedOrgId
+        this._getUserList()
+      })
     },
     _getUserList() {
       this.isLoading = true
@@ -260,9 +261,10 @@ export default {
 </script>
 
 <style lang="stylus">
-.tree ul
+.org-tree
   padding-left 16px
-  font-size 14px
+  ul
+    font-size 14px
 .ivu-tree ul li .ivu-tree-title
   width 88% 
 </style>
