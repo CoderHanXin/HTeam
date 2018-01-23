@@ -34,7 +34,7 @@
                 <Input type="password" v-model="user.password" :maxlength="32" placeholder="请输入默认密码"/>
               </FormItem>
               <FormItem label="手机号" prop="phone">
-                <Input type="text" v-model="user.phone" :maxlength="13" placeholder="请输入手机号"/>
+                <Input type="text" v-model="user.phone" :maxlength="11" placeholder="请输入手机号"/>
               </FormItem>
               <FormItem label="员工编号" prop="empNumber">
                 <Input type="text" v-model="user.empNumber" :maxlength="20" placeholder="请输入员工编号"/>
