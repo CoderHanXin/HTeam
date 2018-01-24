@@ -8,9 +8,7 @@ export const loginRouter = {
   meta: {
     title: 'Login - 登录'
   },
-  component: resolve => {
-    require(['@/views/Login.vue'], resolve)
-  }
+  component: () => import('@/views/Login.vue')
 }
 
 export const page404 = {
@@ -19,32 +17,27 @@ export const page404 = {
   meta: {
     title: '404-页面不存在'
   },
-  component: resolve => {
-    require(['@/views/error/404.vue'], resolve)
-  }
+  component: () => import('@/views/error/404.vue')
 }
 
 export const page403 = {
   path: '/403',
+  name: 'error-403',
   meta: {
     title: '403-权限不足'
   },
-  name: 'error-403',
-  component: resolve => {
-    require(['@/views/error/403.vue'], resolve)
-  }
+  component: () => import('@/views/error/403.vue')
 }
 
 export const page500 = {
   path: '/500',
+  name: 'error-500',
   meta: {
     title: '500-服务端错误'
   },
-  name: 'error-500',
-  component: resolve => {
-    require(['@/views/error/500.vue'], resolve)
-  }
+  component: () => import('@/views/error/500.vue')
 }
+
 export const appRouter = [
   {
     path: '/main',
@@ -55,25 +48,31 @@ export const appRouter = [
         path: 'task',
         name: 'task',
         title: '任务',
-        component: resolve => {
-          require(['@/views/task/Task.vue'], resolve)
-        }
+        component: () => import('@/views/task/Task.vue'),
+        children: [
+          {
+            path: 'my',
+            name: 'task-my',
+            component: () => import('@/views/task/TaskMy.vue')
+          },
+          {
+            path: 'joined',
+            name: 'task-joined',
+            component: () => import('@/views/task/TaskJoined.vue')
+          }
+        ]
       },
       {
         path: 'project',
         name: 'project',
         title: '项目',
-        component: resolve => {
-          require(['@/views/project/Project.vue'], resolve)
-        }
+        component: () => import('@/views/project/Project.vue')
       },
       {
         path: 'member',
         name: 'member',
         title: '成员',
-        component: resolve => {
-          require(['@/views/member/Member.vue'], resolve)
-        }
+        component: () => import('@/views/member/Member.vue')
       }
     ]
   }
