@@ -37,21 +37,25 @@
       </div>
       <Content class="content">
         <div class="task-add-quick">
-          <input v-model="task.title" @keyup.enter="createTask" placeholder="添加新任务，按回车键（Enter）保存" />
+          <input class="title" v-model="task.title" @keyup.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
           <div class="meta">
             <DatePicker 
               @on-change="datePickerChange" 
               @on-clear="datePickerClear"
               @on-ok="datePickerOk"
               :open="isDatePickerOpen" 
-              :value="task.dueDate" 
+              :value="task.deadline" 
+              :options="dateOptions"
               :transfer="true" 
               type="datetime" 
               format="yyyy-MM-dd HH:mm" 
               placement="bottom-end">
-              <a @click="datePickerClick"><Icon type="ios-clock"></Icon></a>
+              <a @click="datePickerClick" v-show="!isDateSelected"><Icon size="28" type="ios-clock"></Icon></a>
+              <a class="deadline link-text" @click="datePickerClick" v-show="isDateSelected">{{deadlineLabel | deadline}}</a>
             </DatePicker>
-            <a href="javascript:;"><Icon type="ios-analytics"></Icon></a>
+            <div class="assignee">
+              <a @click="selectAssignee" ><Icon size="28" type="ios-analytics"></Icon></a>
+            </div>
           </div>
         </div>
         <div class="task-list">
@@ -74,29 +78,27 @@
                         4</span>
                       <span class="task-label">
                         <Icon type="ios-clock-outline"></Icon>
-                        1月31日截至</span>
+                        1月31日 截至</span>
                       <span class="task-assignee">老韩</span>
                     </div>
                   </div>
                 </div>
               </Card>
             </li>
-            <li class="task-item">
-              <Card :bordered="false" :padding="0" class="task-card">
+            <li v-for="(item, index) in list" :key="index" class="task-item">
+              <Card :bordered="false" :padding="0">
                 <div class="task-item-wrapper">
                   <div class="task-item-body">
                     <Checkbox :size="'large'" class="task-check"></Checkbox>
-                    <div class="task-title">任务002</div>
-                  </div>
-                </div>
-              </Card>
-            </li>
-            <li class="task-item">
-              <Card :bordered="false" :padding="0" class="task-card">
-                <div class="task-item-wrapper">
-                  <div class="task-item-body">
-                    <Checkbox :size="'large'" class="task-check"></Checkbox>
-                    <div class="task-title">任务003</div>
+                    <div class="task-title">
+                      <span>{{item.title}}</span>
+                    </div>
+                    <div class="task-meta">
+                      <span v-if="item.deadline" class="task-label">
+                        <Icon type="ios-clock-outline"></Icon>
+                        {{item.deadline | deadline}} 截止</span>
+                      <span class="task-assignee">老韩</span>
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -109,35 +111,76 @@
 </template>
 
 <script>
+import url from '../../api/url'
 export default {
   name: 'Task',
   data() {
     return {
-      newTask: '',
+      dateOptions: {
+        disabledDate(date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        }
+      },
       isDatePickerOpen: false,
       task: {
         title: '',
-        dueDate: ''
-      }
+        deadline: ''
+      },
+      deadlineLabel: '',
+      list: []
     }
   },
-  created() {},
+  computed: {
+    isDateSelected() {
+      return this.deadlineLabel && true
+    }
+  },
+  created() {
+    this.getTaskInbox()
+  },
   methods: {
+    selectAssignee() {
+      console.log('指定负责人')
+    },
+    getTaskInbox() {
+      this.$http.get(url.task_inbox, { assignee: 1, type: 10 }).then(res => {
+        console.log(res.data.data)
+        this.list = res.data.data
+      })
+    },
     createTask() {
-      console.log(this.newTask)
+      let title = this.task.title.trim()
+      if (title === '') {
+        console.log('空白字符')
+        return
+      }
+      let task = {}
+      task.title = title
+      if (this.task.deadline) {
+        task.deadline = this.task.deadline
+      }
+      this.$http.post(url.task_create, task).then(res => {
+        this.$Message.success('操作成功')
+      })
     },
     datePickerClick() {
       this.isDatePickerOpen = !this.isDatePickerOpen
     },
     datePickerChange(date) {
-      console.log(date)
-      this.task.dueDate = date
+      console.log('change deadline:' + date)
+      this.task.deadline = date
+      if (this.task.deadline === '') {
+        this.deadlineLabel = this.task.deadline
+      }
     },
     datePickerClear() {
       this.isDatePickerOpen = false
+      console.log('clear deadline:' + this.task.deadline)
     },
     datePickerOk() {
+      this.deadlineLabel = this.task.deadline
       this.isDatePickerOpen = false
+      console.log('ok deadline:' + this.task.deadline)
     }
   }
 }
@@ -163,7 +206,7 @@ export default {
 .task-title 
   flex 1
   padding-right 16px
-  overflow hidden
+  color $color-text
   white-space nowrap
   text-overflow ellipsis
   overflow hidden
@@ -188,11 +231,12 @@ export default {
   padding 5px 16px
   border-radius 2px
   background #fdfdfd
-  input
+  .title
+    flex 1
     display block
-    max-height 120px
-    height 40px
     width 100%
+    height 40px
+    padding-right 16px
     line-height 40px
     font-size 14px
     color $color-text-light
@@ -200,11 +244,14 @@ export default {
     outline none
     overflow hidden
   .meta
+    flex-shrink 0
     display flex
     align-items center
-    line-height 40px
-    font-size 28px
+    .deadline
+      text-align right 
+      font-size 14px
     a 
+      display inline-block
       margin-right 8px
 .task-list
   flex auto
