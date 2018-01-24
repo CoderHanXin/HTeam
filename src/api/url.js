@@ -6,5 +6,6 @@ export default {
   user_search: '/api/user/search',
   org_tree: '/api/org/tree',
   task_create: '/api/task/create',
-  task_update: '/api/task/update'
+  task_update: '/api/task/update',
+  task_inbox: '/api/task/inbox'
 }
