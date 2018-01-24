@@ -61,7 +61,7 @@ export default {
               if (res.data.code === 0) {
                 this.$Message.info('登录成功')
                 this.$router.replace({
-                  name: 'task'
+                  name: 'task-my'
                 })
               } else {
                 this.$Message.error({

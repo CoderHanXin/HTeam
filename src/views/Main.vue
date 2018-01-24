@@ -1,7 +1,7 @@
 <template>
   <Layout class="layout">
     <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="isCollapsed">
-      <Menu theme="dark" width="auto" :class="menuItemClasses" :active-name="$route.name" @on-select="handleChangeMenu">
+      <Menu theme="dark" width="auto" :class="menuItemClasses" :active-name="mainRoute" @on-select="handleChangeMenu">
         <Tooltip placement="right" content="消息" :disabled="tooltip">
           <menu-item name="message">
             <Icon type="ios-chatboxes"></Icon>
@@ -55,6 +55,10 @@ export default {
     },
     tooltip: function () {
       return !this.isCollapsed
+    },
+    mainRoute() {
+      let main = this.$route.name.split('-')
+      return main && main[0]
     }
   },
   methods: {
