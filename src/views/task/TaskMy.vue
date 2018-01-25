@@ -83,6 +83,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+// import { mapActions, mapMutations, mapGetters } from 'vuex'
 import url from '../../api/url'
 export default {
   name: 'Task',
@@ -105,7 +107,8 @@ export default {
   computed: {
     isDateSelected() {
       return this.deadlineLabel && true
-    }
+    },
+    ...mapGetters(['currentUser'])
   },
   created() {
     this.getTaskInbox()
@@ -115,7 +118,7 @@ export default {
       console.log('指定负责人')
     },
     getTaskInbox() {
-      this.$http.get(url.task_inbox, { assignee: 1, type: 10 }).then(res => {
+      this.$http.get(url.task_inbox, { assignee: this.currentUser.id, type: 10 }).then(res => {
         console.log(res.data.data)
         this.list = res.data.data
       })
@@ -127,6 +130,7 @@ export default {
         return
       }
       let task = {}
+      task.assigneeId = this.currentUser.id
       task.title = title
       if (this.task.deadline) {
         task.deadline = this.task.deadline
@@ -161,6 +165,10 @@ export default {
 <style lang="stylus" scoped>
 @import '~@/style/variable'
 @import '~@/style/mixin'
+.task-list
+  flex auto
+  padding 10px 0
+  background #fdfdfd
 .task-item
   position relative
   padding-bottom 2px
@@ -225,8 +233,4 @@ export default {
     a 
       display inline-block
       margin-right 8px
-.task-list
-  flex auto
-  padding 10px 0
-  background #fdfdfd
 </style>

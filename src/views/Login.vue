@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import Cookies from 'js-cookie'
 import url from '../api/url'
 export default {
@@ -47,37 +48,35 @@ export default {
         username: [
           { required: true, message: '账号不能为空', trigger: 'blur' }
         ],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ]
+        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       }
     }
   },
   methods: {
     handleSubmit() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.$http.post(url.user_login, this.user)
-            .then(res => {
-              if (res.data.code === 0) {
-                Cookies.set('username', this.user.username)
-                Cookies.set('password', this.user.password)
-                this.$Message.info('登录成功')
-                this.$router.replace({
-                  name: 'task-my'
-                })
-              } else {
-                this.$Message.error({
-                  content: res.data.message,
-                  duration: 3
-                })
-              }
-            })
+          this.$http.post(url.user_login, this.user).then(res => {
+            if (res.data.code === 0) {
+              Cookies.set('username', this.user.username, { expires: 30 })
+              Cookies.set('password', this.user.password, { expires: 30 })
+              this.setCurrentUser(res.data.data)
+              this.$Message.info('登录成功')
+              this.$router.replace({
+                name: 'task-my'
+              })
+            } else {
+              this.$Message.error({
+                content: res.data.message,
+                duration: 3
+              })
+            }
+          })
         }
       })
-    }
+    },
+    ...mapActions(['setCurrentUser'])
   }
-
 }
 </script>
 
@@ -103,4 +102,3 @@ export default {
       text-align center
       color #c3c3c3
 </style>
-
