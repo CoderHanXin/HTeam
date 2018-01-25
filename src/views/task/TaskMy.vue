@@ -83,8 +83,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
 // import { mapActions, mapMutations, mapGetters } from 'vuex'
+import Cookies from 'js-cookie'
 import url from '../../api/url'
 export default {
   name: 'Task',
@@ -101,16 +102,17 @@ export default {
         deadline: ''
       },
       deadlineLabel: '',
-      list: []
+      list: [],
+      currentUser: {}
     }
   },
   computed: {
     isDateSelected() {
       return this.deadlineLabel && true
-    },
-    ...mapGetters(['currentUser'])
+    }
   },
   created() {
+    this.currentUser = Cookies.getJSON('currentUser')
     this.getTaskInbox()
   },
   methods: {
@@ -143,7 +145,6 @@ export default {
       this.isDatePickerOpen = !this.isDatePickerOpen
     },
     datePickerChange(date) {
-      console.log('change deadline:' + date)
       this.task.deadline = date
       if (this.task.deadline === '') {
         this.deadlineLabel = this.task.deadline
@@ -151,12 +152,10 @@ export default {
     },
     datePickerClear() {
       this.isDatePickerOpen = false
-      console.log('clear deadline:' + this.task.deadline)
     },
     datePickerOk() {
       this.deadlineLabel = this.task.deadline
       this.isDatePickerOpen = false
-      console.log('ok deadline:' + this.task.deadline)
     }
   }
 }
