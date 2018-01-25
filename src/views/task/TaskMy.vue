@@ -62,9 +62,9 @@
             <Card :bordered="false" :padding="0">
               <div class="task-item-wrapper">
                 <div class="task-item-body">
-                  <Checkbox :size="'large'" class="task-check"></Checkbox>
+                  <Checkbox @on-change="handleTaskCheck(item)" v-model="item.complete" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
                   <div class="task-title">
-                    <span>{{item.title}}</span>
+                    <span :class="{taskComplete: item.complete}">{{item.title}}</span>
                   </div>
                   <div class="task-meta">
                     <span v-if="item.deadline" class="task-label">
@@ -83,7 +83,6 @@
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
 // import { mapActions, mapMutations, mapGetters } from 'vuex'
 import Cookies from 'js-cookie'
 import url from '../../api/url'
@@ -103,6 +102,7 @@ export default {
       },
       deadlineLabel: '',
       list: [],
+      type: 10,
       currentUser: {}
     }
   },
@@ -116,19 +116,30 @@ export default {
     this.getTaskInbox()
   },
   methods: {
+    handleTaskCheck(item) {
+      console.log('item id:' + item.id + ', complete:' + item.complete)
+      console.log(this.list)
+      let task = {}
+      task.id = item.id
+      task.complete = item.complete
+      this.$http.put(url.task_update, task).then(res => {
+        console.log(res.data.data)
+      })
+    },
     selectAssignee() {
       console.log('指定负责人')
     },
     getTaskInbox() {
-      this.$http.get(url.task_inbox, { assignee: this.currentUser.id, type: 10 }).then(res => {
-        console.log(res.data.data)
-        this.list = res.data.data
-      })
+      this.$http
+        .get(url.task_inbox, { assignee: this.currentUser.id, type: this.type })
+        .then(res => {
+          console.log(res.data.data)
+          this.list = res.data.data
+        })
     },
     createTask() {
       let title = this.task.title.trim()
       if (title === '') {
-        console.log('空白字符')
         return
       }
       let task = {}
@@ -138,6 +149,7 @@ export default {
         task.deadline = this.task.deadline
       }
       this.$http.post(url.task_create, task).then(res => {
+        this.getTaskInbox()
         this.$Message.success('操作成功')
       })
     },
@@ -189,6 +201,9 @@ export default {
   white-space nowrap
   text-overflow ellipsis
   overflow hidden
+  .taskComplete
+    color: #8f8f8f
+    text-decoration: line-through
 .task-meta 
   flex-shrink 0
   font-size 12px
