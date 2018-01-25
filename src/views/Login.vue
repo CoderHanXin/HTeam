@@ -60,6 +60,7 @@ export default {
             if (res.data.code === 0) {
               Cookies.set('username', this.user.username, { expires: 30 })
               Cookies.set('password', this.user.password, { expires: 30 })
+              Cookies.set('currentUser', res.data.data)
               this.setCurrentUser(res.data.data)
               this.$Message.info('登录成功')
               this.$router.replace({

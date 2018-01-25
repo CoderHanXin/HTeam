@@ -47,6 +47,7 @@ export const appRouter = [
       {
         path: 'task',
         name: 'task',
+        redirect: 'task/my',
         title: '任务',
         component: () => import('@/views/task/Task.vue'),
         children: [

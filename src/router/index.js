@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { routers } from './router'
+// import store from '../store'
+import Cookies from 'js-cookie'
 import iView from 'iview'
 import Util from '../libs/util'
 
@@ -17,7 +19,18 @@ export const router = new VueRouter(RouterConfig)
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   Util.title(to.meta.title)
-  next()
+  if (!Cookies.get('currentUser') && to.name !== 'login') {
+    console.log(Cookies.get('currentUser'))
+    next({
+      name: 'login'
+    })
+  } else if (Cookies.get('currentUser') && to.name === 'login') {
+    next({
+      name: 'task'
+    })
+  } else {
+    next()
+  }
 })
 
 router.afterEach(to => {
