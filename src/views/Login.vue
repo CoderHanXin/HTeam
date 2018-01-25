@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import url from '../api/url'
 export default {
   name: 'Login',
@@ -59,6 +60,8 @@ export default {
           this.$http.post(url.user_login, this.user)
             .then(res => {
               if (res.data.code === 0) {
+                Cookies.set('username', this.user.username)
+                Cookies.set('password', this.user.password)
                 this.$Message.info('登录成功')
                 this.$router.replace({
                   name: 'task-my'
