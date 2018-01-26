@@ -7,6 +7,11 @@
         </span>
         我的任务
       </div>
+      <div class="panel">
+        <Select class="task-filter" v-model="taskFilterValue" @on-change="handleFilterChange">
+          <Option v-for="item in taskFilters" :value="item.value" :key="item.value">{{ item.name }}</Option>
+        </Select>
+      </div>
     </div>
     <Content class="content">
       <div class="task-add-quick">
@@ -58,7 +63,7 @@
               </div>
             </Card>
           </li>
-          <li v-for="(item, index) in list" :key="index" class="task-item">
+          <li v-for="(item, index) in taskList" :key="index" class="task-item">
             <Card :bordered="false" :padding="0">
               <div class="task-item-wrapper">
                 <div class="task-item-body">
@@ -86,10 +91,38 @@
 // import { mapActions, mapMutations, mapGetters } from 'vuex'
 import Cookies from 'js-cookie'
 import url from '../../api/url'
+import util from '../../libs/util'
 export default {
   name: 'Task',
   data() {
     return {
+      taskFilterValue: 11,
+      taskFilters: [
+        {
+          value: 11,
+          name: '按优先级'
+        },
+        {
+          value: 12,
+          name: '按项目'
+        },
+        {
+          value: 13,
+          name: '按截止日期'
+        },
+        {
+          value: 14,
+          name: '按更新时间'
+        },
+        {
+          value: 15,
+          name: '按完成时间'
+        },
+        {
+          value: 100,
+          name: '全部任务'
+        }
+      ],
       dateOptions: {
         disabledDate(date) {
           return date && date.valueOf() < Date.now() - 86400000
@@ -101,14 +134,69 @@ export default {
         deadline: ''
       },
       deadlineLabel: '',
-      list: [],
-      type: 10,
+      taskList: [],
+      filterType: 10,
       currentUser: {}
     }
   },
   computed: {
     isDateSelected() {
       return this.deadlineLabel && true
+    },
+    taskGroups() {
+      let groups = []
+      if (this.taskFilterValue === 13) {
+        let today = []
+        let expired = []
+        let tomorrow = []
+        let thisWeek = []
+        let thisMonth = []
+        let other = []
+        for (const item of this.taskList) {
+          if (!item.deadline) {
+            other.push(item)
+          } else {
+            if (util.timeEqualToday(item.deadline)) {
+              today.push(item)
+            } else if (util.timeEqualTomorrow(item.deadline)) {
+              tomorrow.push(item)
+            } else if (util.timeLessThanToday(item.deadline)) {
+              expired.push(item)
+            } else if (util.timeLessThanNextWeek(item.deadline)) {
+              thisWeek.push(item)
+            } else if (util.timeLessThanNextMonth(item.deadline)) {
+              thisMonth.push(item)
+            } else {
+              other.push(item)
+            }
+          }
+        }
+        if (today.length > 0) {
+          today.sort(util.taskSortDeadlineDesc)
+          groups.push({ name: '今天', children: today })
+        }
+        if (expired.length > 0) {
+          expired.sort(util.taskSortDeadlineDesc)
+          groups.push({ name: '已延期', children: expired })
+        }
+        if (tomorrow.length > 0) {
+          tomorrow.sort(util.taskSortDeadlineAsc)
+          groups.push({ name: '明天', children: tomorrow })
+        }
+        if (thisWeek.length > 0) {
+          thisWeek.sort(util.taskSortDeadlineAsc)
+          groups.push({ name: '本周', children: thisWeek })
+        }
+        if (thisMonth.length > 0) {
+          thisMonth.sort(util.taskSortDeadlineAsc)
+          groups.push({ name: '本月', children: thisMonth })
+        }
+        if (other.length > 0) {
+          other.sort(util.taskSortDeadlineDesc)
+          groups.push({ name: '其他', children: other })
+        }
+      }
+      return groups
     }
   },
   created() {
@@ -116,6 +204,20 @@ export default {
     this.getTaskInbox()
   },
   methods: {
+    handleFilterChange(val) {
+      console.log(val)
+      let previous = this.filterType
+      if (val === 100) {
+        this.filterType = 10
+      } else if (val === 15) {
+        this.filterType = 1
+      } else {
+        this.filterType = 0
+      }
+      if (previous !== this.filterType) {
+        this.getTaskInbox()
+      }
+    },
     handleTaskCheck(item) {
       let task = {}
       task.id = item.id
@@ -129,10 +231,13 @@ export default {
     },
     getTaskInbox() {
       this.$http
-        .get(url.task_inbox, { assignee: this.currentUser.id, type: this.type })
+        .get(url.task_inbox, {
+          assignee: this.currentUser.id,
+          type: this.filterType
+        })
         .then(res => {
           console.log(res.data.data)
-          this.list = res.data.data
+          this.taskList = res.data.data
         })
     },
     createTask() {
