@@ -23,17 +23,23 @@
   color $color-text
   border-left 1px solid $color-light-grey
   .header
+    position relative
+    display flex
+    align-items center
     height 50px
     margin 0
     padding 0 15px
-    position relative
     background $color-background-light
     .title
-      float left
+      flex 1
       line-height 50px
       font-size $font-size-medium-x
       span
         margin-right 4px
+    .panel
+      padding 4px
+      .task-filter
+        width 100px
   .content
     display flex
     flex-direction: column
