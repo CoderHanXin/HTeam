@@ -64,7 +64,7 @@
                 <div class="task-item-body">
                   <Checkbox @on-change="handleTaskCheck(item)" v-model="item.complete" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
                   <div class="task-title">
-                    <span :class="{taskComplete: item.complete}">{{item.title}}</span>
+                    <span :class="{'task-complete': item.complete}">{{item.title}}</span>
                   </div>
                   <div class="task-meta">
                     <span v-if="item.deadline" class="task-label">
@@ -117,13 +117,11 @@ export default {
   },
   methods: {
     handleTaskCheck(item) {
-      console.log('item id:' + item.id + ', complete:' + item.complete)
-      console.log(this.list)
       let task = {}
       task.id = item.id
       task.complete = item.complete
       this.$http.put(url.task_update, task).then(res => {
-        console.log(res.data.data)
+        console.log(res.data)
       })
     },
     selectAssignee() {
@@ -201,9 +199,9 @@ export default {
   white-space nowrap
   text-overflow ellipsis
   overflow hidden
-  .taskComplete
-    color: #8f8f8f
-    text-decoration: line-through
+  .task-complete
+    color $color-grey
+    text-decoration line-through
 .task-meta 
   flex-shrink 0
   font-size 12px
