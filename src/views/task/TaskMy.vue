@@ -14,7 +14,7 @@
       </div>
     </div>
     <Content class="content">
-      <div class="task-add-quick">
+      <div class="task-quick-add">
         <input class="title" v-model="task.title" @keyup.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
         <div class="meta">
           <DatePicker 
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="task-list">
-        <ul>
+        <ul v-if="!isTaskGroup">
           <li class="task-item">
             <Card :bordered="false" :padding="0" class="task-card">
               <div class="task-item-wrapper">
@@ -82,6 +82,31 @@
             </Card>
           </li>
         </ul>
+        <Collapse v-model="taskGroupsKeys" v-if="isTaskGroup" class="task-groups">
+          <Panel v-for="(group, index) in taskGroups" :key="index" :name="group.key" class="task-group-item">
+            {{group.name}}
+            <ul slot="content">
+              <li v-for="(item, index) in group.children" :key="index" class="task-item">
+                <Card :bordered="false" :padding="0">
+                  <div class="task-item-wrapper">
+                    <div class="task-item-body">
+                      <Checkbox @on-change="handleTaskCheck(item)" v-model="item.complete" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
+                      <div class="task-title">
+                        <span :class="{'task-complete': item.complete}">{{item.title}}</span>
+                      </div>
+                      <div class="task-meta">
+                        <span v-if="item.deadline" class="task-label">
+                          <Icon type="ios-clock-outline"></Icon>
+                          {{item.deadline | deadline}} 截止</span>
+                        <span class="task-assignee">老韩</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </li>
+            </ul>
+          </Panel>
+        </Collapse>
       </div>
     </Content>
   </Layout>
@@ -92,56 +117,63 @@
 import Cookies from 'js-cookie'
 import url from '../../api/url'
 import util from '../../libs/util'
+import { taskMyFilters } from '../../common/constant/task_filter'
+const ALL_KEYS = [
+  'today',
+  'expired',
+  'tomorrow',
+  'thisWeek',
+  'thisMonth',
+  'other'
+]
 export default {
   name: 'Task',
   data() {
     return {
-      taskFilterValue: 11,
-      taskFilters: [
-        {
-          value: 11,
-          name: '按优先级'
-        },
-        {
-          value: 12,
-          name: '按项目'
-        },
-        {
-          value: 13,
-          name: '按截止日期'
-        },
-        {
-          value: 14,
-          name: '按更新时间'
-        },
-        {
-          value: 15,
-          name: '按完成时间'
-        },
-        {
-          value: 100,
-          name: '全部任务'
-        }
-      ],
+      currentUser: {},
+      taskFilterValue: 100,
+      taskFilters: taskMyFilters,
+      task: {
+        title: '',
+        deadline: ''
+      },
+      taskData: [],
+      filterType: 10,
+      taskGroupsKeys: [],
+      deadlineLabel: '',
       dateOptions: {
         disabledDate(date) {
           return date && date.valueOf() < Date.now() - 86400000
         }
       },
-      isDatePickerOpen: false,
-      task: {
-        title: '',
-        deadline: ''
-      },
-      deadlineLabel: '',
-      taskList: [],
-      filterType: 10,
-      currentUser: {}
+      isDatePickerOpen: false
     }
   },
   computed: {
     isDateSelected() {
       return this.deadlineLabel && true
+    },
+    isTaskGroup() {
+      if (
+        this.taskFilterValue === 11 ||
+        this.taskFilterValue === 12 ||
+        this.taskFilterValue === 13
+      ) {
+        return true
+      } else {
+        return false
+      }
+    },
+    taskList() {
+      if (this.taskFilterValue === 100) {
+        return this.taskData.sort(util.taskSortIdDesc)
+      } else if (this.taskFilterValue === 14) {
+        return this.taskData.sort(util.taskSortUpdateTimeDesc)
+      } else if (this.taskFilterValue === 15) {
+        return this.taskData.sort(util.taskSortCompleteTimeDesc)
+      } else {
+        return []
+      }
     },
     taskGroups() {
       let groups = []
@@ -152,7 +184,7 @@ export default {
         let thisWeek = []
         let thisMonth = []
         let other = []
-        for (const item of this.taskList) {
+        for (const item of this.taskData) {
           if (!item.deadline) {
             other.push(item)
           } else {
@@ -173,28 +205,33 @@ export default {
         }
         if (today.length > 0) {
           today.sort(util.taskSortDeadlineDesc)
-          groups.push({ name: '今天', children: today })
+          groups.push({ key: 'today', name: '今天', children: today })
         }
         if (expired.length > 0) {
           expired.sort(util.taskSortDeadlineDesc)
-          groups.push({ name: '已延期', children: expired })
+          groups.push({ key: 'expired', name: '已延期', children: expired })
         }
         if (tomorrow.length > 0) {
           tomorrow.sort(util.taskSortDeadlineAsc)
-          groups.push({ name: '明天', children: tomorrow })
+          groups.push({ key: 'tomorrow', name: '明天', children: tomorrow })
         }
         if (thisWeek.length > 0) {
           thisWeek.sort(util.taskSortDeadlineAsc)
-          groups.push({ name: '本周', children: thisWeek })
+          groups.push({ key: 'thisWeek', name: '本周', children: thisWeek })
         }
         if (thisMonth.length > 0) {
           thisMonth.sort(util.taskSortDeadlineAsc)
-          groups.push({ name: '本月', children: thisMonth })
+          groups.push({ key: 'thisMonth', name: '本月', children: thisMonth })
         }
         if (other.length > 0) {
           other.sort(util.taskSortDeadlineDesc)
-          groups.push({ name: '其他', children: other })
+          groups.push({ key: 'other', name: '其他', children: other })
         }
+      } else if (this.taskFilterValue === 11) {
+        // 按优先级
+      } else if (this.taskFilterValue === 12) {
+        // 按项目
+      } else {
       }
       return groups
     }
@@ -205,7 +242,6 @@ export default {
   },
   methods: {
     handleFilterChange(val) {
-      console.log(val)
       let previous = this.filterType
       if (val === 100) {
         this.filterType = 10
@@ -230,6 +266,7 @@ export default {
       console.log('指定负责人')
     },
     getTaskInbox() {
+      this.taskGroupsKeys = []
       this.$http
         .get(url.task_inbox, {
           assignee: this.currentUser.id,
@@ -237,7 +274,10 @@ export default {
         })
         .then(res => {
           console.log(res.data.data)
-          this.taskList = res.data.data
+          this.taskData = res.data.data
+          this.$nextTick(() => {
+            this.taskGroupsKeys = ALL_KEYS
+          })
         })
     },
     createTask() {
@@ -276,78 +316,13 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-@import '~@/style/variable'
-@import '~@/style/mixin'
-.task-list
-  flex auto
-  padding 10px 0
-  background #fdfdfd
-.task-item
-  position relative
-  padding-bottom 2px
-  cursor: pointer
-.task-item-wrapper
-  position relative
-  padding 0 20px
-.task-item-body 
-  position relative
-  display flex
-  align-items center
-  padding 16px 0
-  &:after
-    setBottomLine(#eeeeee)
-.task-title 
-  flex 1
-  padding-right 16px
-  color $color-text
-  white-space nowrap
-  text-overflow ellipsis
-  overflow hidden
-  .task-complete
-    color $color-grey
-    text-decoration line-through
-.task-meta 
-  flex-shrink 0
-  font-size 12px
-  color $color-grey
-  .task-tag   
-    margin-right 6px
-    padding 2px 6px
-    border-radius 3px
-    color #ffffff
-    background-color $color-error
-  .task-label 
-    margin-right 6px
-  .task-assignee 
-    margin-right 6px
-.task-add-quick
-  display flex
-  position relative
-  margin-bottom 10px
-  padding 5px 16px
-  border-radius 2px
-  background #fdfdfd
-  .title
-    flex 1
-    display block
-    width 100%
-    height 40px
-    padding-right 16px
-    line-height 40px
-    font-size 14px
-    color $color-text-light
-    border none
-    outline none
-    overflow hidden
-  .meta
-    flex-shrink 0
-    display flex
-    align-items center
-    .deadline
-      text-align right 
-      font-size 14px
-    a 
-      display inline-block
-      margin-right 8px
+<style lang="stylus">
+.task-groups
+  padding 0
+.task-group-item .ivu-collapse-header
+  padding-left 16px !important
+.task-group-item .ivu-collapse-content 
+  padding 0
+.task-group-item .ivu-collapse-content-box
+  padding 0
 </style>
