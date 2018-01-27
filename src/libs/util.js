@@ -72,6 +72,39 @@ util.timeLessThanNextMonth = function(t) {
   return diff < 0
 }
 
+util.taskSortIdDesc = function(a, b) {
+  return -(a.id - b.id)
+}
+
+util.taskSortCompleteTimeDesc = function(a, b) {
+  const m1 = moment(a.completeTime)
+  const m2 = moment(b.completeTime)
+  const diff = m1.diff(m2)
+  return diff
+}
+
+util.taskSortUpdateTimeDesc = function(a, b) {
+  if (!a.updateTime && !b.updateTime) {
+    return -(a.id - b.id)
+  }
+  if (a.updateTime && !b.updateTime) {
+    return -1
+  }
+  if (!a.updateTime && b.updateTime) {
+    return 1
+  }
+  const m1 = moment(a.updateTime)
+  const m2 = moment(b.updateTime)
+  const diff = m1.diff(m2)
+  if (diff > 0) {
+    return -1
+  } else if (diff < 0) {
+    return 1
+  } else {
+    return -(a.id - b.id)
+  }
+}
+
 util.taskSortDeadlineDesc = function(a, b) {
   if (!a.deadline && !b.deadline) {
     return -(a.id - b.id)
