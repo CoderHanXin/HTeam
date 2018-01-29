@@ -48,7 +48,9 @@ export const appRouter = [
         path: 'task',
         name: 'task',
         redirect: 'task/my',
-        title: '任务',
+        meta: {
+          title: '任务'
+        },
         component: () => import('@/views/task/Task.vue'),
         children: [
           {
@@ -66,14 +68,26 @@ export const appRouter = [
       {
         path: 'project',
         name: 'project',
-        title: '项目',
+        meta: {
+          title: '项目'
+        },
         component: () => import('@/views/project/Project.vue')
       },
+      // {
+      //   path: 'member',
+      //   name: 'member',
+      //   meta: {
+      //     title: '成员'
+      //   },
+      //   component: () => import('@/views/member/Member.vue')
+      // },
       {
-        path: 'member',
-        name: 'member',
-        title: '成员',
-        component: () => import('@/views/member/Member.vue')
+        path: 'team',
+        name: 'team',
+        meta: {
+          title: '团队'
+        },
+        component: () => import('@/views/team/Team.vue')
       }
     ]
   }
