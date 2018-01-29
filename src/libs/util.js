@@ -4,7 +4,11 @@ const moment = require('moment')
 
 let util = {}
 util.title = function(title) {
-  title = title || 'HTeam'
+  if (title) {
+    title = title + ' - HTeam'
+  } else {
+    title = 'HTeam'
+  }
   window.document.title = title
 }
 
