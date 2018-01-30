@@ -1,9 +1,9 @@
 export default {
+  user: '/api/user',
   user_login: '/api/user/login',
-  user_create: '/api/user/create',
-  user_delete: '/api/user/delete',
+  user_create: '/api/user',
   user_update: '/api/user/update',
-  user_search: '/api/user/search',
+  user_delete: '/api/user/delete',
   org_tree: '/api/org/tree',
   task_create: '/api/task/create',
   task_update: '/api/task/update',
