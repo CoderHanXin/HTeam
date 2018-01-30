@@ -56,6 +56,7 @@
                 <Button type="error" @click="handleDisable()" v-if="isEdit" class="left">禁用</Button>
             </div>
           </Modal>
+          <GroupAdd :visable="isGroupAddVisable" :teamId="teamId" :users="list"></GroupAdd>
         </div>
       </Content>
     </Layout>
@@ -64,14 +65,16 @@
 
 <script>
 import url from '../../api/url'
+import GroupAdd from '@/views/team/GroupAdd'
 export default {
   name: 'Team',
+  components: {
+    GroupAdd
+  },
   data() {
     return {
-      rootOrgId: 1,
       teamId: 1,
-      selectedOrgId: 1,
-      orgTree: [],
+      isGroupAddVisable: false,
       modal: false,
       isEdit: false,
       user: {
@@ -157,6 +160,7 @@ export default {
   },
   methods: {
     handleGroup() {
+      this.isGroupAddVisable = true
       console.log('group')
     },
     handleChangeMenu(name) {
