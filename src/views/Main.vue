@@ -21,11 +21,17 @@
           </menu-item>
         </Tooltip>
         <Tooltip placement="right" content="成员" :disabled="tooltip">
+          <menu-item name="team">
+            <Icon type="ios-clock"></Icon>
+            <span>团队</span>
+          </menu-item>
+        </Tooltip>
+        <!-- <Tooltip placement="right" content="成员" :disabled="tooltip">
           <menu-item name="member">
             <Icon type="ios-clock"></Icon>
             <span>成员</span>
           </menu-item>
-        </Tooltip>
+        </Tooltip> -->
       </Menu>
     </Sider>
     <Layout>
