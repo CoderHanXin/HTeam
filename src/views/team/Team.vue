@@ -31,7 +31,7 @@
               <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
               <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button>
               <Button @click="handleAdd" type="success" icon="android-add" class="margin-right-4">添加成员</Button>
-              <Button @click="handleGroup" type="success" icon="android-add" class="margin-right-4">新建分组</Button>
+              <Button @click="handleGroupAddShow" type="success" icon="android-add" class="margin-right-4">新建分组</Button>
             </Form>
           </div>
           <Table border :columns="columns" :data="list" :loading="isLoading" ref="table"></Table>
@@ -56,7 +56,7 @@
                 <Button type="error" @click="handleDisable()" v-if="isEdit" class="left">禁用</Button>
             </div>
           </Modal>
-          <GroupAdd :visable="isGroupAddVisable" :teamId="teamId" :users="list"></GroupAdd>
+          <GroupAdd v-model="isGroupAddVisable" @onOk="handleGroupAddOk" @onCancel="handleGroupAddCancel" :teamId="teamId" :users="list"></GroupAdd>
         </div>
       </Content>
     </Layout>
@@ -159,9 +159,14 @@ export default {
     this.init()
   },
   methods: {
-    handleGroup() {
+    handleGroupAddOk() {
+      this.isGroupAddVisable = false
+    },
+    handleGroupAddCancel() {
+      this.isGroupAddVisable = false
+    },
+    handleGroupAddShow() {
       this.isGroupAddVisable = true
-      console.log('group')
     },
     handleChangeMenu(name) {
       console.log(name)
