@@ -56,7 +56,7 @@
             <div slot="footer">
                 <Button type="primary" @click="handleSubmit()">确定</Button>
                 <Button type="ghost" @click="handleCancel()">取消</Button>
-                <Button type="error" @click="handleDisable()" v-if="isEdit" class="left">禁用</Button>
+                <Button type="error" @click="handleDisable()" v-if="isEdit" class="left">移除</Button>
             </div>
           </Modal>
           <GroupAdd v-model="isGroupAddVisable" @onOk="handleGroupAddOk" @onCancel="handleGroupAddCancel" :teamId="teamId" :users="list"></GroupAdd>
@@ -259,14 +259,22 @@ export default {
       })
     },
     handleDisable() {
-      let user = {}
-      user.id = this.user.id
-      user.status = 0
-      this.$http.put(url.user_update, user).then(res => {
-        this.modal = false
-        this.$refs.userForm.resetFields()
-        this.$Message.success('操作成功')
-        this._getUserList()
+      this.$Modal.confirm({
+        title: `确定要移除 ${this.user.name} 吗`,
+        content: '被移除的成员，将不能再访问本团队中的项目信息，但跟他相关的数据不会被删除。',
+        onOk: () => {
+          let user = {}
+          user.id = this.user.id
+          user.status = 0
+          this.$http
+            .put(url.user_update.replace(':id', user.id), user)
+            .then(res => {
+              this.modal = false
+              this.$refs.userForm.resetFields()
+              this.$Message.success('操作成功')
+              this._getUserList()
+            })
+        }
       })
     },
     handleCancel() {
