@@ -34,7 +34,7 @@
               <Button @click="handleGroupAddShow" type="success" icon="android-add" class="margin-right-4">新建分组</Button>
             </Form>
           </div>
-          <Table border :columns="columns" :data="list" :loading="isLoading" ref="table"></Table>
+          <Table border :columns="columns" :data="list" :loading="isLoading" ref="table" class="team-table"></Table>
           <Modal v-model="modal" @on-visible-change="onModalVisibleChange" :title="modalTitle" width="480" :mask-closable="false">
             <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
               <FormItem label="姓名" prop="name">
@@ -93,7 +93,29 @@ export default {
       columns: [
         {
           title: '姓名',
-          key: 'name'
+          key: 'name',
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'strong',
+                {
+                  attrs: {
+                    class: 'team-cell-user-name'
+                  }
+                },
+                params.row.name
+              ),
+              h(
+                'span',
+                {
+                  attrs: {
+                    class: 'team-cell-user-role'
+                  }
+                },
+                params.row.team_user.role_name
+              )
+            ])
+          }
         },
         {
           title: '手机号',
@@ -207,6 +229,7 @@ export default {
             params.user = this.user
             params.teamId = this.teamId
             this.$http.post(url.user_create, params).then(res => {
+              console.log(res.data.data)
               this.modal = false
               this.$refs.userForm.resetFields()
               this.$Message.success('操作成功')
@@ -258,6 +281,5 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="stylus" scoped>
 </style>
