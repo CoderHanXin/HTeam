@@ -49,6 +49,9 @@
               <FormItem label="手机号" prop="phone">
                 <Input type="text" v-model="user.phone" :maxlength="11" placeholder="请输入手机号"/>
               </FormItem>
+              <FormItem label="备注" prop="desc">
+                <Input type="textarea" v-model="user.desc" :rows="3" class="user-desc"/>
+              </FormItem>
             </Form>
             <div slot="footer">
                 <Button type="primary" @click="handleSubmit()">确定</Button>
@@ -82,7 +85,8 @@ export default {
         name: '',
         username: '',
         password: '',
-        phone: ''
+        phone: '',
+        desc: ''
       },
       isLoading: false,
       list: [],
@@ -126,7 +130,7 @@ export default {
           key: 'email'
         },
         {
-          title: '简介',
+          title: '备注',
           key: 'desc'
         },
         {
@@ -199,6 +203,7 @@ export default {
       this.user.username = ''
       this.user.password = ''
       this.user.phone = ''
+      this.user.desc = ''
     },
     async init() {
       this._getUserList()
@@ -229,7 +234,6 @@ export default {
             params.user = this.user
             params.teamId = this.teamId
             this.$http.post(url.user_create, params).then(res => {
-              console.log(res.data.data)
               this.modal = false
               this.$refs.userForm.resetFields()
               this.$Message.success('操作成功')
@@ -240,12 +244,16 @@ export default {
             user.id = this.user.id
             user.name = this.user.name
             user.phone = this.user.phone
-            this.$http.put(url.user_update, user).then(res => {
-              this.modal = false
-              this.$refs.userForm.resetFields()
-              this.$Message.success('操作成功')
-              this._getUserList()
-            })
+            user.desc = this.user.desc
+            this.$http
+              .put(url.user_update.replace(':id', user.id), user)
+              .then(res => {
+                this.modal = false
+                this.$refs.userForm.resetFields()
+                this.$Message.success('操作成功')
+                this._getUserList()
+                console.log(res.data)
+              })
           }
         }
       })
@@ -275,7 +283,7 @@ export default {
       this.user.id = row.id
       this.user.name = row.name
       this.user.phone = row.phone
-      this.user.empNumber = row.empNumber
+      this.user.desc = row.desc
     }
   }
 }
