@@ -10,11 +10,13 @@
       <Menu class="menu" theme="light" width="auto" :active-name="$route.name" @on-select="handleChangeMenu">
         <menu-item name="team">
             <Icon type="ios-barcode-outline" size="16"></Icon>
-            环天
+            {{currentTeam.name}}
         </menu-item>
         <MenuGroup title="分组">
-          <menu-item name="group-1"><Icon type="ios-people" size="16"></Icon>一组</menu-item>
-          <menu-item name="group-2"><Icon type="ios-people" size="16"></Icon>二组</menu-item>
+          <menu-item v-for="(item, index) in groupList" :key="item.id" :name="`group-${index}-${item.id}`">
+            <Icon type="ios-people" size="16"></Icon>
+            {{item.name}}
+          </menu-item>
         </MenuGroup>
       </Menu>
     </Sider>
@@ -34,7 +36,7 @@
               <Button @click="handleGroupAddShow" type="success" icon="android-add" class="margin-right-4">新建分组</Button>
             </Form>
           </div>
-          <Table border :columns="columns" :data="list" :loading="isLoading" ref="table" class="team-table"></Table>
+          <Table border :columns="columns" :data="currentUserList" :loading="isLoading" ref="table" class="team-table"></Table>
           <TeamUser 
             v-model="isTeamUserVisable"
             @onTeamUserOk="handleTeamUserOk"
@@ -47,7 +49,7 @@
             @onGroupAddOk="handleGroupAddOk" 
             @onGroupAddCancel="handleGroupAddCancel" 
             :teamId="currentTeam.id" 
-            :users="list"></GroupAdd>
+            :users="userList"></GroupAdd>
         </div>
       </Content>
     </Layout>
@@ -83,6 +85,11 @@ export default {
         desc: ''
       },
       isLoading: false,
+      currentGroupIndex: 0,
+      currentGroupId: 0,
+      currentMenuType: 'team',
+      userList: [],
+      groupList: [],
       list: [],
       search: {
         name: '',
@@ -171,6 +178,22 @@ export default {
     }
   },
   computed: {
+    currentUserList() {
+      if (this.currentMenuType === 'team') {
+        return this.userList
+      } else {
+        let list = []
+        let groupUsers = this.groupList[this.currentGroupIndex].users
+        for (const user of this.userList) {
+          for (const groupUser of groupUsers) {
+            if (user.id === groupUser.id) {
+              list.push(user)
+            }
+          }
+        }
+        return list
+      }
+    }
   },
   created() {
     this.currentTeam = Cookies.getJSON('currentTeam')
@@ -210,18 +233,27 @@ export default {
       this.isGroupAddVisable = true
     },
     handleChangeMenu(name) {
+      if (name === 'team') {
+        this.currentMenuType = 'team'
+      } else {
+        let temp = name.split('-')
+        this.currentGroupIndex = temp[1]
+        this.currentGroupId = temp[2]
+        this.currentMenuType = 'group'
+      }
       console.log(name)
     },
     init() {
       this.getUserList()
     },
-    getUserList() {
+    getUserList(type, id) {
       this.isLoading = true
       this.search.teamId = this.currentTeam.id
       this.$http.get(url.user, this.search).then(res => {
-        this.list = res.data.data
+        this.userList = res.data.data.users
+        this.groupList = res.data.data.groups
         this.isLoading = false
-        console.log(this.list)
+        console.log(this.userList)
       })
     }
   }
