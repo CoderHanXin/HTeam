@@ -30,41 +30,24 @@
             <Form inline>
               <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
               <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button>
-              <Button @click="handleAdd" type="success" icon="android-add" class="margin-right-4">添加成员</Button>
+              <Button @click="handleTeamUserAdd" type="success" icon="android-add" class="margin-right-4">添加成员</Button>
               <Button @click="handleGroupAddShow" type="success" icon="android-add" class="margin-right-4">新建分组</Button>
             </Form>
           </div>
           <Table border :columns="columns" :data="list" :loading="isLoading" ref="table" class="team-table"></Table>
-          <Modal v-model="modal" @on-visible-change="onModalVisibleChange" :title="modalTitle" width="480" :mask-closable="false">
-            <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
-              <FormItem label="姓名" prop="name">
-                <Input type="text" v-model="user.name" :maxlength="20" placeholder="请输入对方真实姓名"/>
-              </FormItem>
-              <FormItem label="用户名" prop="username" v-if="!isEdit">
-                <Input type="text" v-model="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony"/>
-              </FormItem>
-              <FormItem label="默认密码" prop="password" v-if="!isEdit">
-                <Input type="password" v-model="user.password" :maxlength="32" placeholder="请输入默认密码"/>
-              </FormItem>
-              <FormItem label="手机号" prop="phone">
-                <Input type="text" v-model="user.phone" :maxlength="11" placeholder="请输入手机号"/>
-              </FormItem>
-              <FormItem label="备注" prop="desc">
-                <Input type="textarea" v-model="user.desc" :rows="3" class="user-desc"/>
-              </FormItem>
-              <!-- <FormItem label="权限">    
-                <RadioGroup v-model="user.roleId">
-                  <Radio v-for="item in roleList" :key="item.id" :label="item.id">{{item.name}}</Radio>
-                </RadioGroup>
-              </FormItem> -->
-            </Form>
-            <div slot="footer">
-                <Button type="primary" @click="handleSubmit()">确定</Button>
-                <Button type="ghost" @click="handleCancel()">取消</Button>
-                <Button type="error" @click="handleDisable()" v-if="isEdit" class="left">移除</Button>
-            </div>
-          </Modal>
-          <GroupAdd v-model="isGroupAddVisable" @onOk="handleGroupAddOk" @onCancel="handleGroupAddCancel" :teamId="teamId" :users="list"></GroupAdd>
+          <TeamUser 
+            v-model="isTeamUserVisable"
+            @onTeamUserOk="handleTeamUserOk"
+            @onTeamUserCancel="handleTeamUserCancel" 
+            :isEdit="isEditTeamUser"
+            :teamId="currentTeam.id" 
+            :teamUser="teamUser"></TeamUser>
+          <GroupAdd 
+            v-model="isGroupAddVisable" 
+            @onGroupAddOk="handleGroupAddOk" 
+            @onGroupAddCancel="handleGroupAddCancel" 
+            :teamId="currentTeam.id" 
+            :users="list"></GroupAdd>
         </div>
       </Content>
     </Layout>
@@ -72,21 +55,25 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import url from '../../api/url'
 import role from '../../common/constant/role'
 import GroupAdd from '@/views/team/GroupAdd'
+import TeamUser from '@/views/team/TeamUser'
 export default {
   name: 'Team',
   components: {
-    GroupAdd
+    GroupAdd,
+    TeamUser
   },
   data() {
     return {
       roleList: role,
-      teamId: 1,
+      currentTeam: {},
       isGroupAddVisable: false,
-      modal: false,
-      isEdit: false,
+      isTeamUserVisable: false,
+      isEditTeamUser: false,
+      teamUser: {},
       user: {
         id: 0,
         name: '',
@@ -155,7 +142,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.handleEdit(params.row)
+                    this.handleTeamUserEdit(params.row)
                   }
                 }
               },
@@ -184,14 +171,35 @@ export default {
     }
   },
   computed: {
-    modalTitle() {
-      return this.isEdit ? '修改成员' : '添加成员'
-    }
   },
   created() {
+    this.currentTeam = Cookies.getJSON('currentTeam')
     this.init()
   },
   methods: {
+    handleSearch() {
+      this.getUserList()
+    },
+    handleTeamUserOk() {
+      this.isTeamUserVisable = false
+      this.getUserList()
+    },
+    handleTeamUserCancel() {
+      this.isTeamUserVisable = false
+    },
+    handleTeamUserAdd() {
+      this.teamUser = this.user
+      this.isEditTeamUser = false
+      this.isTeamUserVisable = true
+    },
+    handleTeamUserEdit(row) {
+      this.teamUser.id = row.id
+      this.teamUser.name = row.name
+      this.teamUser.phone = row.phone
+      this.teamUser.desc = row.desc
+      this.isEditTeamUser = true
+      this.isTeamUserVisable = true
+    },
     handleGroupAddOk() {
       this.isGroupAddVisable = false
     },
@@ -204,105 +212,17 @@ export default {
     handleChangeMenu(name) {
       console.log(name)
     },
-    clearUser() {
-      this.user.id = ''
-      this.user.name = ''
-      this.user.username = ''
-      this.user.password = ''
-      this.user.phone = ''
-      this.user.desc = ''
-    },
-    async init() {
+    init() {
       this.getUserList()
     },
     getUserList() {
       this.isLoading = true
-      this.search.teamId = 1
+      this.search.teamId = this.currentTeam.id
       this.$http.get(url.user, this.search).then(res => {
         this.list = res.data.data
         this.isLoading = false
         console.log(this.list)
       })
-    },
-    onModalVisibleChange(visible) {
-      if (!visible) {
-        this.clearUser()
-      }
-    },
-    handleSearch() {
-      this.getUserList()
-    },
-    handleSubmit() {
-      this.$refs.userForm.validate(valid => {
-        if (valid) {
-          if (!this.isEdit) {
-            let params = {}
-            delete this.user.id
-            params.user = this.user
-            params.teamId = this.teamId
-            this.$http.post(url.user_create, params).then(res => {
-              this.modal = false
-              this.$refs.userForm.resetFields()
-              this.$Message.success('操作成功')
-              this.getUserList()
-            })
-          } else {
-            let user = {}
-            user.id = this.user.id
-            user.name = this.user.name
-            user.phone = this.user.phone
-            user.desc = this.user.desc
-            this.$http
-              .put(url.user_update.replace(':id', user.id), user)
-              .then(res => {
-                this.modal = false
-                this.$refs.userForm.resetFields()
-                this.$Message.success('操作成功')
-                this.getUserList()
-                console.log(res.data)
-              })
-          }
-        }
-      })
-    },
-    handleDisable() {
-      this.$Modal.confirm({
-        title: `确定要移除 ${this.user.name} 吗`,
-        content:
-          '被移除的成员，将不能再访问本团队中的项目信息，但跟他相关的数据不会被删除。',
-        onOk: () => {
-          let user = {}
-          user.id = this.user.id
-          this.$http
-            .delete(
-              url.team_remove_user
-                .replace(':teamId', this.teamId)
-                .replace(':userId', user.id)
-            )
-            .then(res => {
-              this.modal = false
-              this.$refs.userForm.resetFields()
-              this.$Message.success('操作成功')
-              this.getUserList()
-            })
-        }
-      })
-    },
-    handleCancel() {
-      this.$refs.userForm.resetFields()
-      this.modal = false
-    },
-    handleAdd() {
-      this.isEdit = false
-      this.modal = true
-    },
-    handleEdit(row) {
-      this.isEdit = true
-      this.modal = true
-      this.user.id = row.id
-      this.user.name = row.name
-      this.user.phone = row.phone
-      this.user.desc = row.desc
     }
   }
 }
