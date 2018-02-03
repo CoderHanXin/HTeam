@@ -63,9 +63,17 @@ export default {
               Cookies.set('currentUser', res.data.data)
               this.setCurrentUser(res.data.data)
               this.$Message.info('登录成功')
-              this.$router.replace({
-                name: 'task-my'
-              })
+              const teamCount = res.data.data.teams.length
+              if (teamCount === 1) {
+                Cookies.set('currentTeam', res.data.data.teams[0])
+                this.$router.replace({
+                  name: 'task-my'
+                })
+              } else if (teamCount > 1) {
+                // 大于一个团队，需要选择团队
+              } else {
+                // 没有团队
+              }
             } else {
               this.$Message.error({
                 content: res.data.message,
