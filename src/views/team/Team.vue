@@ -52,6 +52,11 @@
               <FormItem label="备注" prop="desc">
                 <Input type="textarea" v-model="user.desc" :rows="3" class="user-desc"/>
               </FormItem>
+              <!-- <FormItem label="权限">    
+                <RadioGroup v-model="user.roleId">
+                  <Radio v-for="item in roleList" :key="item.id" :label="item.id">{{item.name}}</Radio>
+                </RadioGroup>
+              </FormItem> -->
             </Form>
             <div slot="footer">
                 <Button type="primary" @click="handleSubmit()">确定</Button>
@@ -68,6 +73,7 @@
 
 <script>
 import url from '../../api/url'
+import role from '../../common/constant/role'
 import GroupAdd from '@/views/team/GroupAdd'
 export default {
   name: 'Team',
@@ -76,6 +82,7 @@ export default {
   },
   data() {
     return {
+      roleList: role,
       teamId: 1,
       isGroupAddVisable: false,
       modal: false,
@@ -206,9 +213,9 @@ export default {
       this.user.desc = ''
     },
     async init() {
-      this._getUserList()
+      this.getUserList()
     },
-    _getUserList() {
+    getUserList() {
       this.isLoading = true
       this.search.teamId = 1
       this.$http.get(url.user, this.search).then(res => {
@@ -223,7 +230,7 @@ export default {
       }
     },
     handleSearch() {
-      this._getUserList()
+      this.getUserList()
     },
     handleSubmit() {
       this.$refs.userForm.validate(valid => {
@@ -237,7 +244,7 @@ export default {
               this.modal = false
               this.$refs.userForm.resetFields()
               this.$Message.success('操作成功')
-              this._getUserList()
+              this.getUserList()
             })
           } else {
             let user = {}
@@ -251,7 +258,7 @@ export default {
                 this.modal = false
                 this.$refs.userForm.resetFields()
                 this.$Message.success('操作成功')
-                this._getUserList()
+                this.getUserList()
                 console.log(res.data)
               })
           }
@@ -261,18 +268,22 @@ export default {
     handleDisable() {
       this.$Modal.confirm({
         title: `确定要移除 ${this.user.name} 吗`,
-        content: '被移除的成员，将不能再访问本团队中的项目信息，但跟他相关的数据不会被删除。',
+        content:
+          '被移除的成员，将不能再访问本团队中的项目信息，但跟他相关的数据不会被删除。',
         onOk: () => {
           let user = {}
           user.id = this.user.id
-          user.status = 0
           this.$http
-            .put(url.user_update.replace(':id', user.id), user)
+            .delete(
+              url.team_remove_user
+                .replace(':teamId', this.teamId)
+                .replace(':userId', user.id)
+            )
             .then(res => {
               this.modal = false
               this.$refs.userForm.resetFields()
               this.$Message.success('操作成功')
-              this._getUserList()
+              this.getUserList()
             })
         }
       })
