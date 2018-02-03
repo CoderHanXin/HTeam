@@ -105,7 +105,7 @@ export default {
           params.users = this.checkedUsers
           this.$http.post(url.group_create, params).then(res => {
             this.visable = false
-            this.$emit('onOk')
+            this.$emit('onGroupAddOk')
             // this.$refs.groupAddForm.resetFields()
           })
         }
@@ -113,7 +113,7 @@ export default {
       console.log('ok')
     },
     handleCancel() {
-      this.$emit('onCancel')
+      this.$emit('onGroupAddCancel')
       console.log('cancel')
     }
   }
