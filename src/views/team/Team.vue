@@ -30,10 +30,12 @@
         <div>
           <div class="filter-container">
             <Form inline>
-              <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
-              <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button>
-              <Button @click="handleTeamUserAdd" type="success" icon="android-add" class="margin-right-4">添加成员</Button>
-              <Button @click="handleGroupAddShow" type="success" icon="android-add" class="margin-right-4">新建分组</Button>
+              <!-- <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
+              <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button> -->
+              <Button v-if="currentMenuIsTeam" @click="handleTeamUserAdd" type="success" class="margin-right-4">添加成员</Button>
+              <Button v-if="currentMenuIsTeam" @click="handleGroupAddShow" type="primary" class="margin-right-4">新建分组</Button>
+              <Button v-if="!currentMenuIsTeam" @click="handleGroupAddShow" type="primary" class="margin-right-4">设置分组</Button>
+              <Button v-if="!currentMenuIsTeam" @click="handleDeleteGroup" type="error" class="margin-right-4">删除分组</Button>
             </Form>
           </div>
           <Table border :columns="columns" :data="currentUserList" :loading="isLoading" ref="table" class="team-table"></Table>
@@ -87,10 +89,9 @@ export default {
       isLoading: false,
       currentGroupIndex: 0,
       currentGroupId: 0,
-      currentMenuType: 'team',
+      currentMenuIsTeam: true,
       userList: [],
       groupList: [],
-      list: [],
       search: {
         name: '',
         status: 1
@@ -179,7 +180,7 @@ export default {
   },
   computed: {
     currentUserList() {
-      if (this.currentMenuType === 'team') {
+      if (this.currentMenuIsTeam) {
         return this.userList
       } else {
         let list = []
@@ -232,14 +233,17 @@ export default {
     handleGroupAddShow() {
       this.isGroupAddVisable = true
     },
+    handleDeleteGroup() {
+
+    },
     handleChangeMenu(name) {
       if (name === 'team') {
-        this.currentMenuType = 'team'
+        this.currentMenuIsTeam = true
       } else {
         let temp = name.split('-')
         this.currentGroupIndex = temp[1]
         this.currentGroupId = temp[2]
-        this.currentMenuType = 'group'
+        this.currentMenuIsTeam = false
       }
       console.log(name)
     },
