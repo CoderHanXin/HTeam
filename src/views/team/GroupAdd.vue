@@ -110,11 +110,9 @@ export default {
           })
         }
       })
-      console.log('ok')
     },
     handleCancel() {
       this.$emit('onGroupAddCancel')
-      console.log('cancel')
     }
   }
 }

@@ -294,7 +294,6 @@ export default {
         this.currentMenuIsTeam = false
       }
       this.activeMenuName = name
-      console.log(name)
     },
     init() {
       this.getUserList()
@@ -306,7 +305,6 @@ export default {
         this.userList = res.data.data.users
         this.groupList = res.data.data.groups
         this.isLoading = false
-        console.log(this.userList)
       })
     },
     getGroupList() {
