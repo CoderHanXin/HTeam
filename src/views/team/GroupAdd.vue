@@ -66,7 +66,6 @@ export default {
       this.visable = val
     }
   },
-  created() {},
   methods: {
     handleCheckGroupChange(data) {
       if (data.length === this.allUsers.length) {
@@ -105,13 +104,18 @@ export default {
           params.users = this.checkedUsers
           this.$http.post(url.group_create, params).then(res => {
             this.visable = false
+            this.$refs.groupAddForm.resetFields()
+            this.checkedUsers = []
+            this.indeterminate = false
             this.$emit('onGroupAddOk')
-            // this.$refs.groupAddForm.resetFields()
           })
         }
       })
     },
     handleCancel() {
+      this.$refs.groupAddForm.resetFields()
+      this.checkedUsers = []
+      this.indeterminate = false
       this.$emit('onGroupAddCancel')
     }
   }
