@@ -7,7 +7,7 @@
           <Button type="ghost" shape="circle" size="small" icon="android-add"></Button>
         </div>
       </div>
-      <Menu class="menu" theme="light" width="auto" :active-name="$route.name" @on-select="handleChangeMenu">
+      <Menu ref="teamMenu" class="menu" theme="light" width="auto" :active-name="activeMenuName" @on-select="handleChangeMenu">
         <menu-item name="team">
             <Icon type="ios-barcode-outline" size="16"></Icon>
             {{currentTeam.name}}
@@ -73,6 +73,7 @@ export default {
   data() {
     return {
       roleList: role,
+      activeMenuName: 'team',
       currentTeam: {},
       isGroupAddVisable: false,
       isTeamUserVisable: false,
@@ -87,7 +88,7 @@ export default {
         desc: ''
       },
       isLoading: false,
-      currentGroupIndex: 0,
+      currentGroupIndex: -1,
       currentGroupId: 0,
       currentMenuIsTeam: true,
       userList: [],
@@ -225,6 +226,7 @@ export default {
       this.isTeamUserVisable = true
     },
     handleGroupAddOk() {
+      this.getGroupList()
       this.isGroupAddVisable = false
     },
     handleGroupAddCancel() {
@@ -234,23 +236,43 @@ export default {
       this.isGroupAddVisable = true
     },
     handleDeleteGroup() {
-
+      this.$Modal.confirm({
+        title: `确定删除分组吗`,
+        content: '分组中的成员不会被从团队中删除。',
+        loading: true,
+        onOk: () => {
+          this.$http
+            .delete(url.group_delete.replace(':id', this.currentGroupId))
+            .then(res => {
+              this.activeMenuName = 'team'
+              this.$nextTick(() => {
+                this.$refs.teamMenu.updateActiveName()
+                this.handleChangeMenu('team')
+              })
+              this.getGroupList()
+              this.$Modal.remove()
+            })
+        }
+      })
     },
     handleChangeMenu(name) {
       if (name === 'team') {
         this.currentMenuIsTeam = true
+        this.currentGroupIndex = -1
+        this.currentGroupId = 0
       } else {
         let temp = name.split('-')
         this.currentGroupIndex = temp[1]
         this.currentGroupId = temp[2]
         this.currentMenuIsTeam = false
       }
+      this.activeMenuName = name
       console.log(name)
     },
     init() {
       this.getUserList()
     },
-    getUserList(type, id) {
+    getUserList() {
       this.isLoading = true
       this.search.teamId = this.currentTeam.id
       this.$http.get(url.user, this.search).then(res => {
@@ -258,6 +280,11 @@ export default {
         this.groupList = res.data.data.groups
         this.isLoading = false
         console.log(this.userList)
+      })
+    },
+    getGroupList() {
+      this.$http.get(url.group, { teamId: this.currentTeam.id }).then(res => {
+        this.groupList = res.data.data
       })
     }
   }
