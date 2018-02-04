@@ -33,7 +33,6 @@ export default {
       default: false
     },
     group: {
-      type: Object,
       required: true
     },
     groupUsers: {
@@ -77,21 +76,12 @@ export default {
     },
     groupUsers(val) {
       this.checkedUsers = val
+      this.setCheckAllStatus(val)
     }
   },
-  created() {},
   methods: {
     handleCheckGroupChange(data) {
-      if (data.length === this.allUsers.length) {
-        this.indeterminate = false
-        this.checkAll = true
-      } else if (data.length > 0) {
-        this.indeterminate = true
-        this.checkAll = false
-      } else {
-        this.indeterminate = false
-        this.checkAll = false
-      }
+      this.setCheckAllStatus(data)
     },
     handleCheckAll() {
       if (this.indeterminate) {
@@ -116,15 +106,29 @@ export default {
           group.name = this.group.name
           params.group = group
           params.users = this.checkedUsers
-          this.$http.put(url.group_update.replace(':id', group.id), params).then(res => {
-            this.visable = false
-            this.$emit('onGroupEditOk')
-          })
+          this.$http
+            .put(url.group_update.replace(':id', group.id), params)
+            .then(res => {
+              this.visable = false
+              this.$emit('onGroupEditOk')
+            })
         }
       })
     },
     handleCancel() {
       this.$emit('onGroupEditCancel')
+    },
+    setCheckAllStatus(val) {
+      if (val.length === this.allUsers.length) {
+        this.indeterminate = false
+        this.checkAll = true
+      } else if (val.length > 0) {
+        this.indeterminate = true
+        this.checkAll = false
+      } else {
+        this.indeterminate = false
+        this.checkAll = false
+      }
     }
   }
 }
