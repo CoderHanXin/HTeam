@@ -53,6 +53,7 @@
             :teamId="currentTeam.id" 
             :users="userList"></GroupAdd>
           <GroupEdit 
+            v-if="groupList"
             v-model="isGroupEditVisable" 
             @onGroupEditOk="handleGroupEditOk" 
             @onGroupEditCancel="handleGroupEditCancel" 
@@ -87,8 +88,6 @@ export default {
       currentTeam: {},
       isGroupAddVisable: false,
       isGroupEditVisable: false,
-      currentGroupIndex: -1,
-      currentGroupId: 0,
       currentGroupUsers: [],
       currentMenuIsTeam: true,
       isTeamUserVisable: false,
@@ -207,7 +206,29 @@ export default {
       }
     },
     currentGroup() {
-      return this.groupList[this.currentGroupIndex]
+      if (this.groupList.length > 0) {
+        return this.groupList[this.currentGroupIndex]
+      } else {
+        return {
+          name: ''
+        }
+      }
+    },
+    currentGroupIndex() {
+      if (this.activeMenuName === 'team') {
+        return 0
+      } else {
+        let temp = this.activeMenuName.split('-')
+        return temp[1]
+      }
+    },
+    currentGroupId() {
+      if (this.activeMenuName === 'team') {
+        return 0
+      } else {
+        let temp = this.activeMenuName.split('-')
+        return temp[2]
+      }
     }
   },
   created() {
@@ -283,17 +304,12 @@ export default {
       })
     },
     handleChangeMenu(name) {
+      this.activeMenuName = name
       if (name === 'team') {
         this.currentMenuIsTeam = true
-        this.currentGroupIndex = -1
-        this.currentGroupId = 0
       } else {
-        let temp = name.split('-')
-        this.currentGroupIndex = temp[1]
-        this.currentGroupId = temp[2]
         this.currentMenuIsTeam = false
       }
-      this.activeMenuName = name
     },
     init() {
       this.getUserList()
