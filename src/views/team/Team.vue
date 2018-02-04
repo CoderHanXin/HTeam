@@ -34,7 +34,7 @@
               <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button> -->
               <Button v-if="currentMenuIsTeam" @click="handleTeamUserAdd" type="success" class="margin-right-4">添加成员</Button>
               <Button v-if="currentMenuIsTeam" @click="handleGroupAddShow" type="primary" class="margin-right-4">新建分组</Button>
-              <Button v-if="!currentMenuIsTeam" @click="handleGroupAddShow" type="primary" class="margin-right-4">设置分组</Button>
+              <Button v-if="!currentMenuIsTeam" @click="handleGroupEditShow" type="primary" class="margin-right-4">设置分组</Button>
               <Button v-if="!currentMenuIsTeam" @click="handleDeleteGroup" type="error" class="margin-right-4">删除分组</Button>
             </Form>
           </div>
@@ -52,6 +52,13 @@
             @onGroupAddCancel="handleGroupAddCancel" 
             :teamId="currentTeam.id" 
             :users="userList"></GroupAdd>
+          <GroupEdit 
+            v-model="isGroupEditVisable" 
+            @onGroupEditOk="handleGroupEditOk" 
+            @onGroupEditCancel="handleGroupEditCancel" 
+            :group="currentGroup" 
+            :groupUsers="currentGroupUsers" 
+            :users="userList"></GroupEdit>
         </div>
       </Content>
     </Layout>
@@ -63,22 +70,36 @@ import Cookies from 'js-cookie'
 import url from '../../api/url'
 import role from '../../common/constant/role'
 import GroupAdd from '@/views/team/GroupAdd'
+import GroupEdit from '@/views/team/GroupEdit'
 import TeamUser from '@/views/team/TeamUser'
 export default {
   name: 'Team',
   components: {
     GroupAdd,
+    GroupEdit,
     TeamUser
   },
   data() {
     return {
+      isLoading: false,
       roleList: role,
       activeMenuName: 'team',
       currentTeam: {},
       isGroupAddVisable: false,
+      isGroupEditVisable: false,
+      currentGroupIndex: -1,
+      currentGroupId: 0,
+      currentGroupUsers: [],
+      currentMenuIsTeam: true,
       isTeamUserVisable: false,
       isEditTeamUser: false,
       teamUser: {},
+      userList: [],
+      groupList: [],
+      search: {
+        name: '',
+        status: 1
+      },
       user: {
         id: 0,
         name: '',
@@ -86,16 +107,6 @@ export default {
         password: '',
         phone: '',
         desc: ''
-      },
-      isLoading: false,
-      currentGroupIndex: -1,
-      currentGroupId: 0,
-      currentMenuIsTeam: true,
-      userList: [],
-      groupList: [],
-      search: {
-        name: '',
-        status: 1
       },
       columns: [
         {
@@ -185,9 +196,8 @@ export default {
         return this.userList
       } else {
         let list = []
-        let groupUsers = this.groupList[this.currentGroupIndex].users
         for (const user of this.userList) {
-          for (const groupUser of groupUsers) {
+          for (const groupUser of this.currentGroup.users) {
             if (user.id === groupUser.id) {
               list.push(user)
             }
@@ -195,6 +205,9 @@ export default {
         }
         return list
       }
+    },
+    currentGroup() {
+      return this.groupList[this.currentGroupIndex]
     }
   },
   created() {
@@ -234,6 +247,20 @@ export default {
     },
     handleGroupAddShow() {
       this.isGroupAddVisable = true
+    },
+    handleGroupEditOk() {
+      this.getGroupList()
+      this.isGroupEditVisable = false
+    },
+    handleGroupEditCancel() {
+      this.isGroupEditVisable = false
+    },
+    handleGroupEditShow() {
+      this.currentGroupUsers = []
+      for (const user of this.currentGroup.users) {
+        this.currentGroupUsers.push(user.id)
+      }
+      this.isGroupEditVisable = true
     },
     handleDeleteGroup() {
       this.$Modal.confirm({
