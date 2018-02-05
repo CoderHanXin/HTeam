@@ -1,47 +1,34 @@
 <template>
-  <Layout class="layout">
-    <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="isCollapsed">
-      <Menu theme="dark" width="auto" :class="menuItemClasses" :active-name="mainRoute" @on-select="handleChangeMenu">
-        <Tooltip placement="right" content="消息" :disabled="tooltip">
-          <menu-item name="message">
-            <Icon type="ios-chatboxes"></Icon>
-            <span>消息</span>
-          </menu-item>
-        </Tooltip>
-        <Tooltip placement="right" content="任务" :disabled="tooltip">
-          <menu-item name="task">
-            <Icon type="ios-checkmark"></Icon>
-            <span>任务</span>
-          </menu-item>
-        </Tooltip>
-        <Tooltip placement="right" content="项目" :disabled="tooltip">
-          <menu-item name="project">
-            <Icon type="ios-navigate"></Icon>
-            <span>项目</span>
-          </menu-item>
-        </Tooltip>
-        <Tooltip placement="right" content="成员" :disabled="tooltip">
-          <menu-item name="team">
-            <Icon type="ios-clock"></Icon>
-            <span>团队</span>
-          </menu-item>
-        </Tooltip>
-        <!-- <Tooltip placement="right" content="成员" :disabled="tooltip">
-          <menu-item name="member">
-            <Icon type="ios-clock"></Icon>
-            <span>成员</span>
-          </menu-item>
-        </Tooltip> -->
-      </Menu>
-    </Sider>
+  <div class="layout">
+    <MainSider :activeName="mainRoute" @on-select="handleChangeMenu">
+      <MainSiderItem name="task">
+        <Icon class="icon" size="18" type="ios-checkmark"></Icon>
+        <p>任务</p>
+      </MainSiderItem>
+      <MainSiderItem name="project">
+        <Icon size="18" type="ios-navigate"></Icon>
+        <p>项目</p>
+      </MainSiderItem>
+      <MainSiderItem name="team">
+        <Icon size="18" type="ios-clock"></Icon>
+        <p>团队</p>
+      </MainSiderItem>
+    </MainSider>
     <Layout>
       <router-view></router-view>
     </Layout>
-  </Layout>
+  </div>
 </template>
 
 <script>
+import MainSider from '@/views/components/sider/MainSider'
+import MainSiderItem from '@/views/components/sider/MainSiderItem'
 export default {
+  name: 'Main',
+  components: {
+    MainSider,
+    MainSiderItem
+  },
   data() {
     return {
       isCollapsed: false
@@ -53,14 +40,8 @@ export default {
     }
   },
   computed: {
-    menuItemClasses: function () {
-      return [
-        'menu-item',
-        this.isCollapsed ? 'collapsed-menu' : ''
-      ]
-    },
-    tooltip: function () {
-      return !this.isCollapsed
+    menuItemClasses: function() {
+      return ['menu-item', this.isCollapsed ? 'collapsed-menu' : '']
     },
     mainRoute() {
       let main = this.$route.name.split('-')
@@ -85,33 +66,9 @@ export default {
 }
 </script>
 
-<style>
-.layout {
-  height: 100vh;
-}
-.menu-item span {
-  display: inline-block;
-  overflow: hidden;
-  width: 126px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  vertical-align: bottom;
-  transition: width 0.2s ease 0.2s;
-}
-.menu-item i {
-  transform: translateX(0px);
-  transition: font-size 0.2s ease, transform 0.2s ease;
-  vertical-align: middle;
-  font-size: 16px;
-}
-.collapsed-menu span {
-  width: 0px;
-  transition: width 0.2s ease;
-}
-.collapsed-menu i {
-  transform: translateX(5px);
-  transition: font-size 0.2s ease 0.2s, transform 0.2s ease 0.2s;
-  vertical-align: middle;
-  font-size: 22px;
-}
+<style lang="stylus">
+.layout
+  display flex 
+  background #f5f7f9
+  height 100vh
 </style>
