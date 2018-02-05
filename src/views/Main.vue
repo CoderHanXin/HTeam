@@ -17,10 +17,14 @@
     <Layout>
       <router-view></router-view>
     </Layout>
+    <div class="avatar">
+      <Avatar size="large">{{avatarName}}</Avatar>
+    </div>
   </div>
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import MainSider from '@/views/components/sider/MainSider'
 import MainSiderItem from '@/views/components/sider/MainSiderItem'
 export default {
@@ -31,6 +35,7 @@ export default {
   },
   data() {
     return {
+      currentUser: {},
       isCollapsed: false
     }
   },
@@ -40,13 +45,16 @@ export default {
     }
   },
   computed: {
-    menuItemClasses: function() {
-      return ['menu-item', this.isCollapsed ? 'collapsed-menu' : '']
-    },
     mainRoute() {
       let main = this.$route.name.split('-')
       return main && main[0]
+    },
+    avatarName() {
+      return this.currentUser.name.substr(-2)
     }
+  },
+  created() {
+    this.currentUser = Cookies.getJSON('currentUser')
   },
   methods: {
     handleChangeMenu(name) {
@@ -68,7 +76,16 @@ export default {
 
 <style lang="stylus">
 .layout
+  position relative
   display flex 
   background #f5f7f9
   height 100vh
+.avatar
+  position absolute
+  bottom 16px
+  left 15px
+  cursor pointer
+  &:hover
+    color #000
+    opacity 0.6    
 </style>
