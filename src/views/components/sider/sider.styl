@@ -1,0 +1,26 @@
+@import '../../../style/variable'
+.main-sider
+  width 70px
+  min-width 70px
+  max-width 70px
+  flex 0 0 70px
+  background #495060
+.main-sider-item
+  position relative
+  display flex
+  flex-direction column
+  align-items center
+  width 100%
+  padding 16px
+  cursor pointer
+  color rgba(255, 255, 255, 0.7)
+  font-size 14px
+  z-index 1
+  &:hover
+    color #ffffff
+.main-sider-item-active
+  color $color-primary
+  background: #363e4f
+  border-right 2px solid $color-primary
+  &:hover
+    color $color-primary
