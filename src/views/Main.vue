@@ -17,7 +17,7 @@
     <Layout>
       <router-view></router-view>
     </Layout>
-    <div class="avatar">
+    <div class="avatar" @click="handleAvatarClick">
       <Avatar size="large">{{avatarName}}</Avatar>
     </div>
   </div>
@@ -69,6 +69,11 @@ export default {
           name: name
         })
       }
+    },
+    handleAvatarClick() {
+      this.$router.push({
+        name: 'profile'
+      })
     }
   }
 }
