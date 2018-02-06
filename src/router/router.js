@@ -40,7 +40,7 @@ export const page500 = {
 
 export const appRouter = [
   {
-    path: '/main',
+    path: '/',
     name: 'main',
     component: Main,
     children: [
@@ -73,14 +73,6 @@ export const appRouter = [
         },
         component: () => import('@/views/project/Project.vue')
       },
-      // {
-      //   path: 'member',
-      //   name: 'member',
-      //   meta: {
-      //     title: '成员'
-      //   },
-      //   component: () => import('@/views/member/Member.vue')
-      // },
       {
         path: 'team',
         name: 'team',
@@ -88,6 +80,21 @@ export const appRouter = [
           title: '团队'
         },
         component: () => import('@/views/team/Team.vue')
+      },
+      {
+        path: 'account',
+        name: 'account',
+        meta: {
+          title: '个人中心'
+        },
+        component: () => import('@/views/account/Account.vue'),
+        children: [
+          {
+            path: 'profile',
+            name: 'profile',
+            component: () => import('@/views/account/Profile.vue')
+          }
+        ]
       }
     ]
   }
