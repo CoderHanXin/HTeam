@@ -61,17 +61,21 @@ export default {
   },
   methods: {
     handleSaveClick() {
-      let user = {}
-      user.id = this.currentUser.id
-      user.name = this.currentUser.name
-      user.phone = this.currentUser.phone
-      user.desc = this.currentUser.desc
-      this.$http
-        .put(url.user_update.replace(':id', user.id), user)
-        .then(res => {
-          this.$Message.success('操作成功')
-          Cookies.set('currentUser', this.currentUser)
-        })
+      this.$refs.userForm.validate(valid => {
+        if (valid) {
+          let user = {}
+          user.id = this.currentUser.id
+          user.name = this.currentUser.name
+          user.phone = this.currentUser.phone
+          user.desc = this.currentUser.desc
+          this.$http
+            .put(url.user_update.replace(':id', user.id), user)
+            .then(res => {
+              this.$Message.success('操作成功')
+              Cookies.set('currentUser', this.currentUser)
+            })
+        }
+      })
     }
   }
 }
