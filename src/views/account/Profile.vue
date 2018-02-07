@@ -16,10 +16,10 @@
               <Input type="text" v-model="currentUser.username" :maxlength="20" disabled/>
             </FormItem>
             <FormItem label="姓名" prop="name">
-              <Input type="text" v-model="currentUser.name" :maxlength="20"/>
+              <Input type="text" v-model="currentUser.name" :maxlength="20" />
             </FormItem>
             <FormItem label="手机号" prop="phone">
-              <Input type="text" v-model="currentUser.phone" :maxlength="11"/>
+              <Input type="text" v-model="currentUser.phone" :maxlength="11" />
             </FormItem>
             <FormItem label="备注" prop="desc">
               <Input type="textarea" v-model="currentUser.desc" :rows="3" class="user-desc" />
@@ -36,6 +36,7 @@
 
 <script>
 import Cookies from 'js-cookie'
+import url from '../../api/url'
 export default {
   name: 'Profile',
   data() {
@@ -59,11 +60,22 @@ export default {
     this.currentUser = Cookies.getJSON('currentUser')
   },
   methods: {
-    handleSaveClick() {}
+    handleSaveClick() {
+      let user = {}
+      user.id = this.currentUser.id
+      user.name = this.currentUser.name
+      user.phone = this.currentUser.phone
+      user.desc = this.currentUser.desc
+      this.$http
+        .put(url.user_update.replace(':id', user.id), user)
+        .then(res => {
+          this.$Message.success('操作成功')
+          Cookies.set('currentUser', this.currentUser)
+        })
+    }
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-
 </style>
