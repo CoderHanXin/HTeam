@@ -1,12 +1,7 @@
 <template>
   <Layout class="main-body">
     <div class="header">
-      <div class="title">
-        <span>
-          <Icon size="18" color="#2d8cf0" type="speedometer"></Icon>
-        </span>
-        我的任务
-      </div>
+      <div class="title">我的任务</div>
       <div class="panel">
         <Select class="task-filter" v-model="taskFilterValue" @on-change="handleFilterChange">
           <Option v-for="item in taskFilters" :value="item.value" :key="item.value">{{ item.name }}</Option>
