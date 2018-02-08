@@ -6,7 +6,7 @@
       </div>
       <Menu ref="teamMenu" class="menu" theme="light" width="auto" :active-name="$route.name" @on-select="handleChangeMenu">
         <menu-item name="profile">
-            <Icon type="ios-barcode-outline" size="16"></Icon>
+            <Icon type="ios-person" size="16"></Icon>
             个人设置
         </menu-item>
       </Menu>
