@@ -9,10 +9,6 @@
             <Icon type="ios-barcode-outline" size="16"></Icon>
             个人设置
         </menu-item>
-        <menu-item name="password">
-            <Icon type="ios-barcode-outline" size="16"></Icon>
-            修改密码
-        </menu-item>
       </Menu>
     </Sider>
     <router-view/>
