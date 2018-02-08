@@ -31,13 +31,13 @@
       <h3 slot="header" style="color:#2D8CF0">修改密码</h3>
       <Form ref="changePasswordForm" :model="changePassword" :rules="rules" :label-width="80">
         <FormItem label="原密码" prop="oldPass" :error="oldPassError">
-          <Input v-model="changePassword.oldPass" placeholder="请输入现在使用的密码" />
+          <Input type="password" v-model="changePassword.oldPass" :maxlength="32" placeholder="请输入现在使用的密码" />
         </FormItem>
         <FormItem label="新密码" prop="newPass">
-          <Input v-model="changePassword.newPass" placeholder="请输入新密码，至少6位字符" />
+          <Input type="password" v-model="changePassword.newPass" :maxlength="32" placeholder="请输入新密码，至少6位字符" />
         </FormItem>
         <FormItem label="确认密码" prop="rePass">
-          <Input v-model="changePassword.rePass" placeholder="请再次输入新密码" />
+          <Input type="password" v-model="changePassword.rePass" :maxlength="32" placeholder="请再次输入新密码" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -79,7 +79,6 @@ export default {
       popMenuVisable: false,
       isToggle: false,
       saveLoading: false,
-      userId: 0,
       editPasswordModal: false,
       oldPassError: '',
       changePassword: {
