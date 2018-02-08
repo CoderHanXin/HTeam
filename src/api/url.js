@@ -4,6 +4,7 @@ export default {
   user_create: '/api/user',
   user_update: '/api/user/:id',
   user_delete: '/api/user/:id',
+  user_change_password: '/api/account/password',
   team_create: '/api/team',
   team_remove_user: '/api/team/:teamId/remove/:userId',
   group: '/api/group',
