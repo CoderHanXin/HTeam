@@ -27,28 +27,46 @@
         <div class="title">{{mainTitle}}</div>
       </div>
       <Content class="content">
-        <div class="project-list-wrapper">
-          <ul class="project-list">
+        <div class="project-list">
+          <ul>
             <li class="project-item">
-              <div class="project-item-title">项目11</div>
-              <div class="project-item-meta">
-                <span class="project-item-meta-text">待处理任务</span>
-                <span class="task-count">10</span>
-              </div>
+              <Card :bordered="false" :padding="0">
+                <div class="project-item-wrapper">
+                  <div class="project-item-body">
+                    <div class="project-item-title">项目11</div>
+                    <div class="project-item-meta">
+                      <span class="project-item-meta-text">待处理任务</span>
+                      <span class="task-count">10</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </li>
             <li class="project-item">
-              <div class="project-item-title">项目12</div>
-              <div class="project-item-meta">
-                <span class="project-item-meta-text">待处理任务</span>
-                <span class="task-count">10</span>
-              </div>
+              <Card :bordered="false" :padding="0">
+                <div class="project-item-wrapper">
+                  <div class="project-item-body">
+                    <div class="project-item-title">项目11</div>
+                    <div class="project-item-meta">
+                      <span class="project-item-meta-text">待处理任务</span>
+                      <span class="task-count">10</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </li>
             <li class="project-item">
-              <div class="project-item-title">项目13</div>
-              <div class="project-item-meta">
-                <span class="project-item-meta-text">待处理任务</span>
-                <span class="project-item-meta-count">10</span>
-              </div>
+              <Card :bordered="false" :padding="0">
+                <div class="project-item-wrapper">
+                  <div class="project-item-body">
+                    <div class="project-item-title">项目11</div>
+                    <div class="project-item-meta">
+                      <span class="project-item-meta-text">待处理任务</span>
+                      <span class="task-count">10</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
             </li>
           </ul>
         </div>
@@ -102,20 +120,19 @@ export default {
 @import '~@/style/mixin'
 @import '~@/style/variable'
 
-.project-list-wrapper
-  flex auto
-  background #fff
 .project-list
-  position relative
-  padding 8px 16px
+  flex auto
+  padding 10px 0
+  background #fdfdfd
 .project-item
-  position relative
-  display flex
-  padding 16px
+  padding-bottom 2px
   font-size 14px
   cursor pointer
-  &:hover
-    background $color-background-list-hover
+.project-item-wrapper
+  padding 0 20px
+.project-item-body
+  display flex
+  padding 16px 0
   &:after
     setBottomLine(#eee)
 .project-item-title
