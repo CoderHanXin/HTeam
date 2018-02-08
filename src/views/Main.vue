@@ -186,6 +186,12 @@ export default {
     },
     logout() {
       this.popMenuVisable = false
+      Cookies.remove('currentUser')
+      Cookies.remove('user')
+      Cookies.remove('password')
+      this.$router.push({
+        name: 'login'
+      })
     }
   }
 }
