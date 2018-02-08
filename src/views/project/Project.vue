@@ -123,7 +123,7 @@ export default {
 .project-list
   flex auto
   padding 10px 0
-  background #fdfdfd
+  background $color-background-light
 .project-item
   padding-bottom 2px
   font-size 14px
