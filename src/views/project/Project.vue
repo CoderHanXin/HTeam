@@ -131,6 +131,7 @@ export default {
 .project-item-wrapper
   padding 0 20px
 .project-item-body
+  position relative
   display flex
   padding 16px 0
   &:after
