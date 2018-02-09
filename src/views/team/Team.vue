@@ -51,7 +51,7 @@
 <script>
 import teamService from '@/api/services/team'
 import role from '../../common/constant/role'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import GroupAdd from '@/views/team/GroupAdd'
 import GroupEdit from '@/views/team/GroupEdit'
 import TeamUser from '@/views/team/TeamUser'
@@ -212,11 +212,18 @@ export default {
       }
     },
     ...mapGetters([
-      'currentTeam'
+      'currentTeam',
+      'allUsers',
+      'allGroups'
     ])
   },
   created() {
-    this.init()
+    if (this.allUsers.length === 0) {
+      this.init()
+    } else {
+      this.userList = this.allUsers
+      this.groupList = this.allGroups
+    }
   },
   methods: {
     handleSearch() {
@@ -293,6 +300,7 @@ export default {
       }
     },
     init() {
+      console.log('init')
       this.getUserList()
     },
     getUserList() {
@@ -301,14 +309,21 @@ export default {
       teamService.getAllUsersAndGroups(this.search).then(res => {
         this.userList = res.data.data.users
         this.groupList = res.data.data.groups
+        this.setAllUsers(this.userList)
+        this.setAllGroups(this.groupList)
         this.isLoading = false
       })
     },
     getGroupList() {
       teamService.getAllGroups(this.currentTeam.id).then(res => {
         this.groupList = res.data.data
+        this.setAllGroups(this.groupList)
       })
-    }
+    },
+    ...mapMutations([
+      'setAllUsers',
+      'setAllGroups'
+    ])
   }
 }
 </script>
