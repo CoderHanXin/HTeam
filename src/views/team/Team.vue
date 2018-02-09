@@ -218,12 +218,7 @@ export default {
     ])
   },
   created() {
-    if (this.allUsers.length === 0) {
-      this.init()
-    } else {
-      this.userList = this.allUsers
-      this.groupList = this.allGroups
-    }
+    this.init()
   },
   methods: {
     handleSearch() {
@@ -300,8 +295,12 @@ export default {
       }
     },
     init() {
-      console.log('init')
-      this.getUserList()
+      if (this.allUsers.length === 0) {
+        this.getUserList()
+      } else {
+        this.userList = this.allUsers
+        this.groupList = this.allGroups
+      }
     },
     getUserList() {
       this.isLoading = true
