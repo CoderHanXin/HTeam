@@ -11,18 +11,18 @@
     <Content class="content">
       <Card>
         <div style="width: 400px">
-          <Form ref="userForm" :model="currentUser" :rules="rules" :label-width="80">
+          <Form ref="userForm" :model="editUser" :rules="rules" :label-width="80">
             <FormItem label="用户名" prop="username">
-              <Input type="text" v-model="currentUser.username" :maxlength="20" disabled/>
+              <Input type="text" v-model="editUser.username" :maxlength="20" disabled/>
             </FormItem>
             <FormItem label="姓名" prop="name">
-              <Input type="text" v-model="currentUser.name" :maxlength="20" />
+              <Input type="text" v-model="editUser.name" :maxlength="20" />
             </FormItem>
             <FormItem label="手机号" prop="phone">
-              <Input type="text" v-model="currentUser.phone" :maxlength="11" />
+              <Input type="text" v-model="editUser.phone" :maxlength="11" />
             </FormItem>
             <FormItem label="备注" prop="desc">
-              <Input type="textarea" v-model="currentUser.desc" :rows="3" class="user-desc" />
+              <Input type="textarea" v-model="editUser.desc" :rows="3" class="user-desc" />
             </FormItem>
             <FormItem>
               <Button type="primary" style="width: 100px;" :loading="saveLoading" @click="handleSaveClick">保存</Button>
@@ -37,12 +37,13 @@
 <script>
 import Cookies from 'js-cookie'
 import url from '../../api/url'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'Profile',
   data() {
     return {
       saveLoading: false,
-      currentUser: {},
+      editUser: {},
       rules: {
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
         phone: [
@@ -56,27 +57,36 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'currentUser'
+    ])
+  },
   created() {
-    this.currentUser = Cookies.getJSON('currentUser')
+    this.editUser = Object.assign({}, this.currentUser)
   },
   methods: {
     handleSaveClick() {
       this.$refs.userForm.validate(valid => {
         if (valid) {
           let user = {}
-          user.id = this.currentUser.id
-          user.name = this.currentUser.name
-          user.phone = this.currentUser.phone
-          user.desc = this.currentUser.desc
+          user.id = this.editUser.id
+          user.name = this.editUser.name
+          user.phone = this.editUser.phone
+          user.desc = this.editUser.desc
           this.$http
             .put(url.user_update.replace(':id', user.id), user)
             .then(res => {
+              Cookies.set('currentUser', this.editUser)
+              this.setCurrentUser(Object.assign({}, this.editUser))
               this.$Message.success('操作成功')
-              Cookies.set('currentUser', this.currentUser)
             })
         }
       })
-    }
+    },
+    ...mapMutations([
+      'setCurrentUser'
+    ])
   }
 }
 </script>

@@ -91,14 +91,12 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 // import url from '../../api/url'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Project',
   data() {
     return {
-      currentTeam: {},
-      currentUser: {},
       activeMenuName: 'all',
       list: [],
       users: [],
@@ -127,10 +125,13 @@ export default {
         case 'joined':
           return '我参与的'
       }
-    }
+    },
+    ...mapGetters([
+      'currentUser',
+      'currentTeam'
+    ])
   },
   created() {
-    this.currentTeam = Cookies.getJSON('currentTeam')
     this.init()
   },
   methods: {

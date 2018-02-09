@@ -108,10 +108,9 @@
 </template>
 
 <script>
-// import { mapActions, mapMutations, mapGetters } from 'vuex'
-import Cookies from 'js-cookie'
 import url from '../../api/url'
 import util from '../../libs/util'
+import { mapGetters } from 'vuex'
 import { taskMyFilters } from '../../common/constant/task_filter'
 const ALL_KEYS = [
   'today',
@@ -125,7 +124,6 @@ export default {
   name: 'Task',
   data() {
     return {
-      currentUser: {},
       taskFilterValue: 100,
       taskFilters: taskMyFilters,
       task: {
@@ -229,10 +227,12 @@ export default {
       } else {
       }
       return groups
-    }
+    },
+    ...mapGetters([
+      'currentUser'
+    ])
   },
   created() {
-    this.currentUser = Cookies.getJSON('currentUser')
     this.getTaskInbox()
   },
   methods: {

@@ -1,6 +1,9 @@
+
+import Cookies from 'js-cookie'
+
 const state = {
-  currentUser: {},
-  currentTeam: {}
+  currentUser: Cookies.getJSON('currentUser'),
+  currentTeam: Cookies.getJSON('currentTeam')
 }
 
 const getters = {

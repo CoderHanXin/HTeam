@@ -51,6 +51,7 @@
 <script>
 import Cookies from 'js-cookie'
 import url from '@/api/url'
+import { mapGetters, mapMutations } from 'vuex'
 import clickoutside from '@/directives/clickoutside'
 import MainSider from '@/views/components/sider/MainSider'
 import MainSiderItem from '@/views/components/sider/MainSiderItem'
@@ -75,7 +76,6 @@ export default {
       }
     }
     return {
-      currentUser: {},
       popMenuVisable: false,
       isToggle: false,
       saveLoading: false,
@@ -116,10 +116,12 @@ export default {
           display: 'none'
         }
       }
-    }
+    },
+    ...mapGetters([
+      'currentUser'
+    ])
   },
   created() {
-    this.currentUser = Cookies.getJSON('currentUser')
   },
   methods: {
     handleChangeMenu(name) {
@@ -186,13 +188,18 @@ export default {
     },
     logout() {
       this.popMenuVisable = false
-      Cookies.remove('currentUser')
+      this.setCurrentUser({})
       Cookies.remove('user')
       Cookies.remove('password')
+      Cookies.remove('currentUser')
+      Cookies.remove('currentTeam')
       this.$router.push({
         name: 'login'
       })
-    }
+    },
+    ...mapMutations([
+      'setCurrentUser'
+    ])
   }
 }
 </script>

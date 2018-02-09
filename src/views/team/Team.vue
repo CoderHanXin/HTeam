@@ -67,9 +67,9 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 import url from '../../api/url'
 import role from '../../common/constant/role'
+import { mapGetters } from 'vuex'
 import GroupAdd from '@/views/team/GroupAdd'
 import GroupEdit from '@/views/team/GroupEdit'
 import TeamUser from '@/views/team/TeamUser'
@@ -85,7 +85,6 @@ export default {
       isLoading: false,
       roleList: role,
       activeMenuName: 'team',
-      currentTeam: {},
       isGroupAddVisable: false,
       isGroupEditVisable: false,
       currentGroupUsers: [],
@@ -229,10 +228,12 @@ export default {
         let temp = this.activeMenuName.split('-')
         return temp[2]
       }
-    }
+    },
+    ...mapGetters([
+      'currentTeam'
+    ])
   },
   created() {
-    this.currentTeam = Cookies.getJSON('currentTeam')
     this.init()
   },
   methods: {

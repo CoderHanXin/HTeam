@@ -35,6 +35,7 @@
 <script>
 import Cookies from 'js-cookie'
 import url from '../api/url'
+import { mapMutations } from 'vuex'
 export default {
   name: 'Login',
   data() {
@@ -60,10 +61,12 @@ export default {
               Cookies.set('username', this.user.username, { expires: 30 })
               Cookies.set('password', this.user.password, { expires: 30 })
               Cookies.set('currentUser', res.data.data)
+              this.setCurrentUser(res.data.data)
               this.$Message.info('登录成功')
               const teamCount = res.data.data.teams.length
               if (teamCount === 1) {
                 Cookies.set('currentTeam', res.data.data.teams[0])
+                this.setCurrentTeam(res.data.data.teams[0])
                 this.$router.replace({
                   name: 'task-my'
                 })
@@ -81,13 +84,18 @@ export default {
           })
         }
       })
-    }
+    },
+    ...mapMutations([
+      'setCurrentUser',
+      'setCurrentTeam'
+    ])
   }
 }
 </script>
 
 <style lang="stylus" scoped>
 @import '~@/style/variable'
+
 .login
   width 100%
   height 100%
