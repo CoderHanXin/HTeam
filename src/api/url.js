@@ -15,6 +15,11 @@ export default {
   group_update: '/api/group/:id',
   group_delete: '/api/group/:id',
 
+  project: '/api/project',
+  project_create: '/api/project',
+  project_update: '/api/project/:id',
+  project_delete: '/api/project/:id',
+
   task_create: '/api/task/create',
   task_update: '/api/task/:id',
   task_inbox: '/api/task/inbox'
