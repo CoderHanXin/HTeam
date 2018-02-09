@@ -4,7 +4,7 @@
       <div class="header">
         <h5 class="title">项目</h5>
         <div class="more">
-          <Button type="ghost" shape="circle" size="small" icon="android-add"></Button>
+          <Button @click="handleAddClick" type="ghost" shape="circle" size="small" icon="android-add"></Button>
         </div>
       </div>
       <Menu class="menu" theme="light" width="auto" :activeName="activeMenuName" @on-select="handleChangeMenu">
@@ -72,6 +72,21 @@
         </div>
       </Content>
     </Layout>
+    <Modal v-model="modalVisable" :loading="modalLoading" @on-ok="handleOk" @on-cancel="handleCancel" :title="modalTitle" :mask-closable="false" width="480">
+      <Form ref="projectAddForm" :model="project" :rules="rules" :label-width="80">
+        <FormItem label="项目名称" prop="name">
+          <Input type="text" v-model="project.name" :maxlength="20" />
+        </FormItem>
+        <FormItem label="项目描述" prop="desc">
+          <Input type="textarea" v-model="project.desc" :rows="3" :maxlength="200" />
+        </FormItem>
+        <FormItem label="项目成员">
+          <CheckboxGroup v-model="checkedUsers" @on-change="handleCheckGroupChange">
+            <Checkbox v-for="item in users" :key="item.id" :label="item.id">{{item.name}}</Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+      </Form>
+    </Modal>
   </Layout>
 </template>
 
@@ -85,7 +100,21 @@ export default {
       currentTeam: {},
       currentUser: {},
       activeMenuName: 'all',
-      list: []
+      list: [],
+      users: [],
+      userList: [],
+      groupList: [],
+      modalVisable: false,
+      modalLoading: true,
+      modalTitle: '创建新项目',
+      project: {
+        name: '',
+        desc: ''
+      },
+      checkedUsers: [],
+      rules: {
+        name: [{ required: true, message: '项目名称不能为空', trigger: 'blur' }]
+      }
     }
   },
   computed: {
@@ -109,6 +138,18 @@ export default {
       this.activeMenuName = name
     },
     init() {
+
+    },
+    handleAddClick() {
+      this.modalVisable = true
+    },
+    handleCancel() {
+
+    },
+    handleOk() {
+
+    },
+    handleCheckGroupChange() {
 
     }
   }
