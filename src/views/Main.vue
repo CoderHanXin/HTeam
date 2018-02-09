@@ -168,7 +168,7 @@ export default {
           params.newPass = this.changePassword.newPass
           params.rePass = this.changePassword.rePass
           this.$http
-            .put(url.user_change_password, params)
+            .put(url.account_change_password, params)
             .then(res => {
               if (res.data.code === 0) {
                 this.saveLoading = false

@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import Cookies from 'js-cookie'
 import url from '../api/url'
 export default {
@@ -56,12 +55,11 @@ export default {
     handleSubmit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.$http.post(url.user_login, this.user).then(res => {
+          this.$http.post(url.account_login, this.user).then(res => {
             if (res.data.code === 0) {
               Cookies.set('username', this.user.username, { expires: 30 })
               Cookies.set('password', this.user.password, { expires: 30 })
               Cookies.set('currentUser', res.data.data)
-              this.setCurrentUser(res.data.data)
               this.$Message.info('登录成功')
               const teamCount = res.data.data.teams.length
               if (teamCount === 1) {
@@ -83,8 +81,7 @@ export default {
           })
         }
       })
-    },
-    ...mapActions(['setCurrentUser'])
+    }
   }
 }
 </script>
