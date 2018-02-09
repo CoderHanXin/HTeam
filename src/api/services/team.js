@@ -7,13 +7,14 @@ import url from '../url'
 class TeamService {
   /**
    * 获取所有用户和组
-   * @param   {Number}   query.teamId 团队id
-   * @param   {String}   query.name   用户姓名
-   * @param   {Number}   query.status 用户状态（1:正常,0:停用）
+   * @param   {Number}   teamId 团队id
    * @return  {users, groups} 用户,组
    */
-  getAllUsersAndGroups(query) {
-    return http.get(url.user, query)
+  getAllUsersAndGroups(teamId) {
+    return http.get(url.user, {
+      teamId,
+      status: 1
+    })
   }
 
   /**

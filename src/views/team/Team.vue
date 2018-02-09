@@ -305,8 +305,7 @@ export default {
     },
     getUserList() {
       this.isLoading = true
-      this.search.teamId = this.currentTeam.id
-      teamService.getAllUsersAndGroups(this.search).then(res => {
+      teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
         this.userList = res.data.data.users
         this.groupList = res.data.data.groups
         this.setAllUsers(this.userList)
