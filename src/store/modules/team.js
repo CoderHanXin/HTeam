@@ -1,19 +1,19 @@
 const state = {
-  allUsers: {},
-  groups: {}
+  allUsers: [],
+  allGroups: []
 }
 
 const getters = {
   allUsers: state => state.allUsers,
-  groups: state => state.groups
+  allGroups: state => state.allGroups
 }
 
 const mutations = {
   setAllUsers(state, users) {
     state.allUsers = users
   },
-  setGroups(state, groups) {
-    state.groups = groups
+  setAllGroups(state, groups) {
+    state.allGroups = groups
   }
 }
 
