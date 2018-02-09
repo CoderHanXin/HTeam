@@ -9,8 +9,8 @@
       </div>
       <Menu ref="teamMenu" class="menu" theme="light" width="auto" :active-name="activeMenuName" @on-select="handleChangeMenu">
         <menu-item name="team">
-            <Icon type="ios-barcode-outline" size="16"></Icon>
-            {{currentTeam.name}}
+          <Icon type="ios-barcode-outline" size="16"></Icon>
+          {{currentTeam.name}}
         </menu-item>
         <MenuGroup title="分组">
           <menu-item v-for="(item, index) in groupList" :key="item.id" :name="`group-${index}-${item.id}`">
@@ -39,27 +39,9 @@
             </Form>
           </div>
           <Table border :columns="columns" :data="currentUserList" :loading="isLoading" ref="table" class="team-table"></Table>
-          <TeamUser 
-            v-model="isTeamUserVisable"
-            @onTeamUserOk="handleTeamUserOk"
-            @onTeamUserCancel="handleTeamUserCancel" 
-            :isEdit="isEditTeamUser"
-            :teamId="currentTeam.id" 
-            :teamUser="teamUser"></TeamUser>
-          <GroupAdd 
-            v-model="isGroupAddVisable" 
-            @onGroupAddOk="handleGroupAddOk" 
-            @onGroupAddCancel="handleGroupAddCancel" 
-            :teamId="currentTeam.id" 
-            :users="userList"></GroupAdd>
-          <GroupEdit 
-            v-if="groupList"
-            v-model="isGroupEditVisable" 
-            @onGroupEditOk="handleGroupEditOk" 
-            @onGroupEditCancel="handleGroupEditCancel" 
-            :group="currentGroup" 
-            :groupUsers="currentGroupUsers" 
-            :users="userList"></GroupEdit>
+          <TeamUser v-model="isTeamUserVisable" @onTeamUserOk="handleTeamUserOk" @onTeamUserCancel="handleTeamUserCancel" :isEdit="isEditTeamUser" :teamId="currentTeam.id" :teamUser="teamUser"></TeamUser>
+          <GroupAdd v-model="isGroupAddVisable" @onGroupAddOk="handleGroupAddOk" @onGroupAddCancel="handleGroupAddCancel" :teamId="currentTeam.id" :users="userList"></GroupAdd>
+          <GroupEdit v-if="groupList" v-model="isGroupEditVisable" @onGroupEditOk="handleGroupEditOk" @onGroupEditCancel="handleGroupEditCancel" :group="currentGroup" :groupUsers="currentGroupUsers" :users="userList"></GroupEdit>
         </div>
       </Content>
     </Layout>
@@ -67,7 +49,7 @@
 </template>
 
 <script>
-import url from '../../api/url'
+import teamService from '@/api/services/team'
 import role from '../../common/constant/role'
 import { mapGetters } from 'vuex'
 import GroupAdd from '@/views/team/GroupAdd'
@@ -290,17 +272,15 @@ export default {
         content: '分组中的成员不会被从团队中删除。',
         loading: true,
         onOk: () => {
-          this.$http
-            .delete(url.group_delete.replace(':id', this.currentGroupId))
-            .then(res => {
-              this.activeMenuName = 'team'
-              this.$nextTick(() => {
-                this.$refs.teamMenu.updateActiveName()
-                this.handleChangeMenu('team')
-              })
-              this.getGroupList()
-              this.$Modal.remove()
+          teamService.deleteGroup(this.currentGroupId).then(res => {
+            this.activeMenuName = 'team'
+            this.$nextTick(() => {
+              this.$refs.teamMenu.updateActiveName()
+              this.handleChangeMenu('team')
             })
+            this.getGroupList()
+            this.$Modal.remove()
+          })
         }
       })
     },
@@ -318,14 +298,14 @@ export default {
     getUserList() {
       this.isLoading = true
       this.search.teamId = this.currentTeam.id
-      this.$http.get(url.user, this.search).then(res => {
+      teamService.getAllUsersAndGroups(this.search).then(res => {
         this.userList = res.data.data.users
         this.groupList = res.data.data.groups
         this.isLoading = false
       })
     },
     getGroupList() {
-      this.$http.get(url.group, { teamId: this.currentTeam.id }).then(res => {
+      teamService.getAllGroups(this.currentTeam.id).then(res => {
         this.groupList = res.data.data
       })
     }
