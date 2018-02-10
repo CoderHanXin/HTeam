@@ -24,7 +24,7 @@
       <ul class="pop-menu">
         <li class="pop-menu-item" @click="gotoAccount">个人中心</li>
         <li class="pop-menu-item" @click="showEditPass">修改密码</li>
-        <li class="pop-menu-item" @click="logout">退出</li>
+        <li class="pop-menu-item" @click="loginOut">退出</li>
       </ul>
     </div>
     <Modal v-model="editPasswordModal" :mask-closable="false" :width="500">
@@ -49,9 +49,8 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 import url from '@/api/url'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import clickoutside from '@/directives/clickoutside'
 import MainSider from '@/views/components/sider/MainSider'
 import MainSiderItem from '@/views/components/sider/MainSiderItem'
@@ -186,19 +185,15 @@ export default {
     cancelEditPass() {
       this.editPasswordModal = false
     },
-    logout() {
+    loginOut() {
       this.popMenuVisable = false
-      this.setCurrentUser({})
-      Cookies.remove('user')
-      Cookies.remove('password')
-      Cookies.remove('currentUser')
-      Cookies.remove('currentTeam')
+      this.logout()
       this.$router.push({
         name: 'login'
       })
     },
-    ...mapMutations([
-      'setCurrentUser'
+    ...mapActions([
+      'logout'
     ])
   }
 }

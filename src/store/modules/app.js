@@ -1,4 +1,3 @@
-
 import Cookies from 'js-cookie'
 
 const state = {
@@ -20,7 +19,16 @@ const mutations = {
   }
 }
 
-const actions = {}
+const actions = {
+  logout({ commit }) {
+    commit('setCurrentUser', null)
+    commit('setCurrentTeam', null)
+    Cookies.remove('username')
+    Cookies.remove('password')
+    Cookies.remove('currentUser')
+    Cookies.remove('currentTeam')
+  }
+}
 
 export default {
   state,
