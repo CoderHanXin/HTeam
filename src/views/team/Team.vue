@@ -3,7 +3,7 @@
     <Sider class="sub-sider">
       <div class="header">
         <h5 class="title">团队</h5>
-        <div class="more">
+        <div v-if="isAdmin" class="more">
           <Button type="ghost" shape="circle" size="small" icon="android-add"></Button>
         </div>
       </div>
@@ -210,6 +210,10 @@ export default {
         let temp = this.activeMenuName.split('-')
         return temp[2]
       }
+    },
+    isAdmin() {
+      return this.currentTeam.team_user.role_id === 1 ||
+        this.currentTeam.team_user.role_id === 2
     },
     ...mapGetters([
       'currentTeam',

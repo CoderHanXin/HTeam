@@ -3,7 +3,7 @@
     <Sider class="sub-sider">
       <div class="header">
         <h5 class="title">项目</h5>
-        <div class="more">
+        <div v-if="isAdmin" class="more">
           <Button @click="handleAddClick" type="ghost" shape="circle" size="small" icon="android-add"></Button>
         </div>
       </div>
@@ -92,7 +92,8 @@
 
 <script>
 // import url from '../../api/url'
-import { mapGetters } from 'vuex'
+import teamService from '@/api/services/team'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'Project',
   data() {
@@ -126,20 +127,38 @@ export default {
           return '我参与的'
       }
     },
+    isAdmin() {
+      return this.currentTeam.team_user.role_id === 1 ||
+        this.currentTeam.team_user.role_id === 2
+    },
     ...mapGetters([
       'currentUser',
-      'currentTeam'
+      'currentTeam',
+      'allUsers',
+      'allGroups'
     ])
   },
   created() {
     this.init()
   },
   methods: {
+    init() {
+      this.getProjectList()
+      if (this.allUsers.length === 0) {
+        this.getUserList()
+      }
+    },
+    getProjectList() {
+
+    },
+    getUserList() {
+      teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
+        this.setAllUsers(res.data.data.users)
+        this.setAllGroups(res.data.data.groups)
+      })
+    },
     handleChangeMenu(name) {
       this.activeMenuName = name
-    },
-    init() {
-
     },
     handleAddClick() {
       this.modalVisable = true
@@ -152,7 +171,11 @@ export default {
     },
     handleCheckGroupChange() {
 
-    }
+    },
+    ...mapMutations([
+      'setAllUsers',
+      'setAllGroups'
+    ])
   }
 
 }
