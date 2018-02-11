@@ -4,7 +4,6 @@
       <div class="header">
         <h5 class="title">团队</h5>
         <div v-if="isAdmin" class="more">
-          <Button type="ghost" shape="circle" size="small" icon="android-add"></Button>
         </div>
       </div>
       <Menu ref="teamMenu" class="menu" theme="light" width="auto" :active-name="activeMenuName" @on-select="handleChangeMenu">

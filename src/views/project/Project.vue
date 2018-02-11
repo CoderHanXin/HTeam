@@ -3,8 +3,8 @@
     <Sider class="sub-sider">
       <div class="header">
         <h5 class="title">项目</h5>
-        <div v-if="isAdmin" class="more">
-          <Button @click="handleAddClick" type="ghost" shape="circle" size="small" icon="android-add"></Button>
+        <div v-if="isAdmin" @click="handleProjectAddShow" class="more">
+          <Icon type="android-add"></Icon>
         </div>
       </div>
       <Menu class="menu" theme="light" width="auto" :activeName="activeMenuName" @on-select="handleChangeMenu">
@@ -29,37 +29,11 @@
       <Content class="content">
         <div class="project-list">
           <ul>
-            <li class="project-item">
+            <li v-for="item in list" :key="item.id" @click="gotoDetail(item)" class="project-item">
               <Card :bordered="false" :padding="0">
                 <div class="project-item-wrapper">
                   <div class="project-item-body">
-                    <div class="project-item-title">项目11</div>
-                    <div class="project-item-meta">
-                      <span class="project-item-meta-text">待处理任务</span>
-                      <span class="task-count">10</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </li>
-            <li class="project-item">
-              <Card :bordered="false" :padding="0">
-                <div class="project-item-wrapper">
-                  <div class="project-item-body">
-                    <div class="project-item-title">项目11</div>
-                    <div class="project-item-meta">
-                      <span class="project-item-meta-text">待处理任务</span>
-                      <span class="task-count">10</span>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </li>
-            <li class="project-item">
-              <Card :bordered="false" :padding="0">
-                <div class="project-item-wrapper">
-                  <div class="project-item-body">
-                    <div class="project-item-title">项目11</div>
+                    <div class="project-item-title">{{item.name}}</div>
                     <div class="project-item-meta">
                       <span class="project-item-meta-text">待处理任务</span>
                       <span class="task-count">10</span>
@@ -72,48 +46,26 @@
         </div>
       </Content>
     </Layout>
-    <Modal v-model="modalVisable" :loading="modalLoading" @on-ok="handleOk" @on-cancel="handleCancel" :title="modalTitle" :mask-closable="false" width="480">
-      <Form ref="projectAddForm" :model="project" :rules="rules" :label-width="80">
-        <FormItem label="项目名称" prop="name">
-          <Input type="text" v-model="project.name" :maxlength="20" />
-        </FormItem>
-        <FormItem label="项目描述" prop="desc">
-          <Input type="textarea" v-model="project.desc" :rows="3" :maxlength="200" />
-        </FormItem>
-        <FormItem label="项目成员">
-          <CheckboxGroup v-model="checkedUsers" @on-change="handleCheckGroupChange">
-            <Checkbox v-for="item in users" :key="item.id" :label="item.id">{{item.name}}</Checkbox>
-          </CheckboxGroup>
-        </FormItem>
-      </Form>
-    </Modal>
+    <ProjectAdd v-model="isProjectAddVisable" @onProjectAddOk="handleProjectAddOk" @onProjectAddCancel="handleProjectAddCancel" :teamId="currentTeam.id" :users="allUsers" :groups="allGroups">
+    </ProjectAdd>
   </Layout>
 </template>
 
 <script>
-// import url from '../../api/url'
 import teamService from '@/api/services/team'
+import projectService from '@/api/services/project'
 import { mapGetters, mapMutations } from 'vuex'
+import ProjectAdd from '@/views/project/ProjectAdd'
 export default {
   name: 'Project',
+  components: {
+    ProjectAdd
+  },
   data() {
     return {
       activeMenuName: 'all',
-      list: [],
-      users: [],
-      userList: [],
-      groupList: [],
-      modalVisable: false,
-      modalLoading: true,
-      modalTitle: '创建新项目',
-      project: {
-        name: '',
-        desc: ''
-      },
-      checkedUsers: [],
-      rules: {
-        name: [{ required: true, message: '项目名称不能为空', trigger: 'blur' }]
-      }
+      isProjectAddVisable: false,
+      list: []
     }
   },
   computed: {
@@ -149,7 +101,9 @@ export default {
       }
     },
     getProjectList() {
-
+      projectService.getList(this.currentTeam.id).then(res => {
+        this.list = res.data.data
+      })
     },
     getUserList() {
       teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
@@ -160,17 +114,25 @@ export default {
     handleChangeMenu(name) {
       this.activeMenuName = name
     },
-    handleAddClick() {
-      this.modalVisable = true
+    handleProjectAddOk() {
+      this.getProjectList()
+      this.$Message.info('操作成功')
+      this.isProjectAddVisable = false
     },
-    handleCancel() {
-
+    handleProjectAddCancel() {
+      this.isProjectAddVisable = false
     },
-    handleOk() {
-
+    handleProjectAddShow() {
+      this.isProjectAddVisable = true
     },
-    handleCheckGroupChange() {
-
+    gotoDetail(project) {
+      this.$router.push({
+        name: 'project-detail',
+        params: {
+          id: project.id,
+          name: project.name
+        }
+      })
     },
     ...mapMutations([
       'setAllUsers',
