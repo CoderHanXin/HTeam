@@ -12,7 +12,7 @@
           <Icon type="ios-barcode-outline" size="16"></Icon>
           {{currentTeam.name}}
         </menu-item>
-        <MenuGroup title="分组">
+        <MenuGroup v-if="groupList.length" title="分组">
           <menu-item v-for="(item, index) in groupList" :key="item.id" :name="`group-${index}-${item.id}`">
             <Icon type="ios-people" size="16"></Icon>
             {{item.name}}
