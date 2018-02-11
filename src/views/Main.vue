@@ -1,6 +1,11 @@
 <template>
   <div class="layout">
     <MainSider :activeName="mainRoute" @on-select="handleChangeMenu">
+      <div class="sider-logo">
+        <div class="sider-logo-img">
+          <img src="../../static/logo.png">
+        </div>
+      </div>
       <MainSiderItem name="task">
         <Icon class="icon" size="18" type="ios-checkmark"></Icon>
         <p>任务</p>
@@ -117,7 +122,8 @@ export default {
       }
     },
     ...mapGetters([
-      'currentUser'
+      'currentUser',
+      'currentTeam'
     ])
   },
   created() {
@@ -210,14 +216,14 @@ export default {
 .avatar
   position absolute
   bottom 16px
-  left 15px
+  left 16px
   cursor pointer
   &:hover
     color #000
     opacity 0.6
 .pop-box
   position absolute
-  left 70px
+  left 72px
   bottom 16px
   min-width 120px
   padding 5px 0
