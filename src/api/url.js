@@ -16,6 +16,7 @@ export default {
   group_delete: '/api/group/:id',
 
   project: '/api/project',
+  project_show: '/api/project/:id',
   project_create: '/api/project',
   project_update: '/api/project/:id',
   project_delete: '/api/project/:id',

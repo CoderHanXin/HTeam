@@ -74,6 +74,14 @@ export const appRouter = [
         component: () => import('@/views/project/Project.vue')
       },
       {
+        path: 'project/:id',
+        name: 'project-detail',
+        meta: {
+          title: '项目主页'
+        },
+        component: () => import('@/views/project/ProjectDetail.vue')
+      },
+      {
         path: 'team',
         name: 'team',
         meta: {
