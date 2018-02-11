@@ -6,7 +6,7 @@
           <Input type="text" v-model="project.name" :maxlength="20" />
         </FormItem>
         <FormItem label="项目描述" prop="desc">
-          <Input type="textarea" v-model="project.desc" :rows="3" :maxlength="200" />
+          <Input type="textarea" v-model="project.desc" :rows="3" :maxlength="200" class="textarea-desc" />
         </FormItem>
         <FormItem label="项目成员">
           <CheckboxGroup v-model="checkedGroups" @on-change="handleCheckGroupsChange">

@@ -22,7 +22,7 @@
               <Input type="text" v-model="editUser.phone" :maxlength="11" />
             </FormItem>
             <FormItem label="备注" prop="desc">
-              <Input type="textarea" v-model="editUser.desc" :rows="3" class="user-desc" />
+              <Input type="textarea" v-model="editUser.desc" :rows="3" class="textarea-desc" />
             </FormItem>
             <FormItem>
               <Button type="primary" style="width: 100px;" :loading="saveLoading" @click="handleSaveClick">保存</Button>
