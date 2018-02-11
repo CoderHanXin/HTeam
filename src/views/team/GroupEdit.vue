@@ -72,7 +72,8 @@ export default {
       this.visable = val
     },
     group(val) {
-      this.editGroup = val
+      this.editGroup.id = val.id
+      this.editGroup.name = val.name
     },
     groupUsers(val) {
       this.checkedUsers = val
