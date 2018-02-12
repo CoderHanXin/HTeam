@@ -21,9 +21,7 @@
     </Sider>
     <Layout class="main-body">
       <div class="header">
-        <div class="title">
-          <CzsIcon type="control-rank" size="16" class="margin-right-4"></CzsIcon>全部成员
-        </div>
+        <div class="title">{{mainTitle}}</div>
       </div>
       <Content class="content">
         <div>
@@ -193,6 +191,12 @@ export default {
         let temp = this.activeMenuName.split('-')
         return temp[2]
       }
+    },
+    mainTitle() {
+      if (this.activeMenuName === 'team') {
+        return '全部成员'
+      }
+      return this.currentGroup.name
     },
     isAdmin() {
       return this.currentTeam.team_user.role_id === 1 ||
