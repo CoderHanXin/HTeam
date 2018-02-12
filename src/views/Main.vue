@@ -1,11 +1,13 @@
 <template>
   <div class="layout">
     <MainSider :activeName="mainRoute" @on-select="handleChangeMenu">
+      <Tooltip :content="currentTeam.name" placement="right">
       <div class="sider-logo">
-        <div class="sider-logo-img">
+        <div>
           <img src="../../static/logo.png">
         </div>
       </div>
+      </Tooltip>
       <MainSiderItem name="task">
         <Icon class="icon" size="18" type="ios-checkmark"></Icon>
         <p>任务</p>
@@ -213,6 +215,14 @@ export default {
   display flex
   background #f5f7f9
   height 100vh
+.sider-logo
+  display inline-block
+  padding 20px 20px 16px
+  cursor pointer
+  img
+    display block
+    width 100%
+    height 100%
 .avatar
   position absolute
   bottom 16px
