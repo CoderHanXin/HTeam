@@ -170,7 +170,8 @@ export default {
     },
     currentGroup() {
       if (this.groupList.length > 0) {
-        return this.groupList[this.currentGroupIndex]
+        // copy object
+        return Object.assign({}, this.groupList[this.currentGroupIndex])
       } else {
         return {
           name: ''
