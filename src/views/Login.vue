@@ -68,7 +68,7 @@ export default {
                 Cookies.set('currentTeam', res.data.data.teams[0])
                 this.setCurrentTeam(res.data.data.teams[0])
                 this.$router.replace({
-                  name: 'task-my'
+                  name: 'project'
                 })
               } else if (teamCount > 1) {
                 // 大于一个团队，需要选择团队
