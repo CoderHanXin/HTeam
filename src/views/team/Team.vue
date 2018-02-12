@@ -149,24 +149,7 @@ export default {
             )
           }
         }
-      ],
-      rules: {
-        name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
-        username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ],
-        phone: [
-          {
-            type: 'string',
-            pattern: /^\d+$/gi,
-            message: '手机号只能是数字',
-            trigger: 'blur'
-          }
-        ]
-      }
+      ]
     }
   },
   computed: {
