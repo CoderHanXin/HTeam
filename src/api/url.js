@@ -21,7 +21,9 @@ export default {
   project_update: '/api/project/:id',
   project_delete: '/api/project/:id',
 
-  task_create: '/api/task/create',
+  task: '/api/task',
+  task_show: '/api/task/:id',
+  task_create: '/api/task',
   task_update: '/api/task/:id',
   task_inbox: '/api/task/inbox'
 }
