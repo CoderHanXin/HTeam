@@ -37,6 +37,7 @@
 <script>
 import teamService from '@/api/services/team'
 import projectService from '@/api/services/project'
+import taskService from '@/api/services/task'
 import { mapGetters, mapMutations } from 'vuex'
 import ProjectEdit from '@/views/project/ProjectEdit'
 export default {
@@ -93,6 +94,7 @@ export default {
   methods: {
     init() {
       this.getProject()
+      this.getTask()
       if (this.allUsers.length === 0) {
         this.getUserList()
       }
@@ -100,6 +102,12 @@ export default {
     getProject() {
       projectService.get(this.project.id).then(res => {
         this.project = res.data.data
+      })
+    },
+    getTask() {
+      taskService.get(this.project.id).then(res => {
+        this.list = res.data.data
+        console.log(this.list)
       })
     },
     getUserList() {
