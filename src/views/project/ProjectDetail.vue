@@ -167,7 +167,13 @@ export default {
       })
     },
     getTask() {
-      taskService.getList(this.project.id).then(res => {
+      let done
+      if (this.activeMenuName === 'processing') {
+        done = false
+      } else if (this.activeMenuName === 'done') {
+        done = true
+      }
+      taskService.getList(this.project.id, done).then(res => {
         this.list = res.data.data
         console.log(this.list)
       })
@@ -191,6 +197,7 @@ export default {
     },
     handleChangeMenu(name) {
       this.activeMenuName = name
+      this.getTask()
     },
     handleProjectEditOk() {
       this.$Message.info('操作成功')
