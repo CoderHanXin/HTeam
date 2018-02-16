@@ -83,9 +83,9 @@
               <Card :bordered="false" :padding="0">
                 <div class="task-item-wrapper">
                   <div class="task-item-body">
-                    <Checkbox :size="'large'" class="task-check"></Checkbox>
+                    <Checkbox @on-change="handleTaskCheck(item)" v-model="item.done" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
                     <div class="task-item-title">
-                      <span>{{item.title}}</span>
+                      <span :class="{'task-done': item.done}">{{item.title}}</span>
                     </div>
                     <div class="task-item-meta">
                       <span class="task-assignee">{{item.user ? item.user.name : '未指派'}}</span>
@@ -261,6 +261,13 @@ export default {
         this.projectUsers.push(user.id)
       }
       this.isProjectEditVisable = true
+    },
+    handleTaskCheck(item) {
+      let task = {}
+      task.done = item.done
+      taskService.update(item.id, task).then(res => {
+        console.log(res.data)
+      })
     },
     assign(name) {
       this.assigneeId = name
