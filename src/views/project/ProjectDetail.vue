@@ -68,6 +68,24 @@
                 </div>
               </Card>
             </li>
+            <li v-for="item in list" :key="item.id" class="task-item">
+              <Card :bordered="false" :padding="0">
+                <div class="task-item-wrapper">
+                  <div class="task-item-body">
+                    <Checkbox :size="'large'" class="task-check"></Checkbox>
+                    <div class="task-item-title">
+                      <span>{{item.title}}</span>
+                    </div>
+                    <div class="task-item-meta">
+                      <span class="task-owner">{{item.user_id}}</span>
+                      <span class="task-label">
+                        <Icon type="ios-clock-outline"></Icon>
+                        {{item.deadline | deadline}}</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </li>
           </ul>
         </div>
       </Content>
@@ -188,6 +206,14 @@ export default {
       if (this.task.deadline) {
         task.deadline = this.task.deadline
       }
+      if (this.ownerId !== -1) {
+        task.user_id = this.ownerId
+      }
+      task.project_id = this.project.id
+      taskService.add(task).then(res => {
+        this.getTask()
+        this.$Message.success('操作成功')
+      })
     },
     getUserList() {
       teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
