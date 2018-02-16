@@ -77,7 +77,7 @@
                       <span>{{item.title}}</span>
                     </div>
                     <div class="task-item-meta">
-                      <span class="task-owner">{{item.user_id}}</span>
+                      <span class="task-owner">{{item.user.name}}</span>
                       <span class="task-label">
                         <Icon type="ios-clock-outline"></Icon>
                         {{item.deadline | deadline}}</span>
