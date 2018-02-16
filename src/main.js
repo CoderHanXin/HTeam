@@ -15,6 +15,9 @@ Vue.use(iView)
 Vue.prototype.$http = http
 
 Vue.filter('deadline', function(date) {
+  if (!date) {
+    return '没有截止时间'
+  }
   let d = moment(date, ['YYYY-MM-DD HH:mm', moment.ISO_8601])
   if (d.hour() === 0 && d.minute() === 0 && d.second() === 0) {
     return d.format('YYYY-MM-DD')
