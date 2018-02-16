@@ -15,7 +15,7 @@
       float right
       line-height 50px
       padding 0 16px
-      color $color-text-light 
+      color $color-text-light
       font-size 22px
       cursor pointer
       &:hover
@@ -47,27 +47,31 @@
         width 100px
   .content
     display flex
-    flex-direction: column
+    flex-direction column
     margin $spacing-medium
     .filter-container
       padding-bottom 16px
+.list-empty
+  padding 16px
+  text-align center
+  font-size 14px
 .task-list
   flex auto
   padding 10px 0
   background $color-background-light
 .task-item
   padding-bottom 2px
-  cursor: pointer
+  cursor pointer
 .task-item-wrapper
   padding 0 20px
-.task-item-body 
+.task-item-body
   position relative
   display flex
   align-items center
   padding 16px 0
   &:after
     setBottomLine(#eee)
-.task-item-title 
+.task-item-title
   flex 1
   width 0
   padding-right 16px
@@ -78,15 +82,15 @@
 .task-item-complete
   color $color-grey
   text-decoration line-through
-.task-item-meta 
+.task-item-meta
   flex-shrink 0
   font-size 12px
   color $color-grey
-  .task-owner 
+  .task-owner
     margin-right 6px
-  .task-label 
+  .task-label
     margin-right 6px
-  .task-tag   
+  .task-tag
     margin-right 6px
     padding 2px 6px
     border-radius 3px
@@ -119,14 +123,14 @@
     font-size 14px
     .owner
       margin-right 8px
-      cursor pointer 
+      cursor pointer
     .deadline
-      text-align right 
+      text-align right
 .team-table
-  padding: 0
-  .team-cell-user-name 
+  padding 0
+  .team-cell-user-name
     padding-right 8px
     font-size 16px
-  .team-cell-user-role 
+  .team-cell-user-role
     font-size 10px
     color $color-grey

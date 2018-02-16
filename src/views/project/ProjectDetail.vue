@@ -87,6 +87,7 @@
               </Card>
             </li>
           </ul>
+          <div v-if="list.length === 0" class="list-empty">{{listEmpty}}</div>
         </div>
       </Content>
     </Layout>
@@ -143,6 +144,16 @@ export default {
           return '已完成'
       }
     },
+    listEmpty() {
+      switch (this.activeMenuName) {
+        case 'all':
+          return '开始添加任务吧'
+        case 'processing':
+          return '没有正在处理的任务'
+        case 'done':
+          return '还没有完成任何任务'
+      }
+    },
     isAdmin() {
       return this.currentTeam.team_user.role_id === 1 ||
         this.currentTeam.team_user.role_id === 2
@@ -187,9 +198,9 @@ export default {
     getTask() {
       let done
       if (this.activeMenuName === 'processing') {
-        done = false
+        done = 0
       } else if (this.activeMenuName === 'done') {
-        done = true
+        done = 1
       }
       taskService.getList(this.project.id, done).then(res => {
         this.list = res.data.data
