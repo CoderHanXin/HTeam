@@ -30,20 +30,31 @@
         <div class="task-quick-add">
           <input class="title" v-model="task.title" @keyup.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
           <div class="meta">
-            <div class="owner">
-              <Dropdown @on-click="selectOwner" trigger="click">
+            <div class="assignee">
+              <Dropdown @on-click="assign" trigger="click">
                 <a class="link-text" href="javascript:void(0)">
-                  {{owner}}
+                  {{assignee}}
                   <Icon type="arrow-down-b"></Icon>
                 </a>
                 <DropdownMenu slot="list">
-                  <DropdownItem v-if="isOwnerSelected" :name="-1">未指派</DropdownItem>
-                  <DropdownItem v-for="(item, index) in allUsers" :divided="isOwnerSelected && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
+                  <DropdownItem v-if="isAssigned" :name="-1">未指派</DropdownItem>
+                  <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
-            <DatePicker @on-change="datePickerChange" @on-clear="datePickerClear" @on-ok="datePickerOk" :open="isDatePickerOpen" :value="task.deadline" :options="dateOptions" :transfer="true" type="datetime" format="yyyy-MM-dd HH:mm" placement="bottom-end">
-              <a class="link-text" @click="datePickerClick" v-show="!isDateSelected">没有截止时间</a>
+            <DatePicker 
+              @on-change="datePickerChange" 
+              @on-clear="datePickerClear" 
+              @on-ok="datePickerOk" 
+              :open="isDatePickerOpen" 
+              :value="task.deadline" 
+              :options="dateOptions" 
+              :transfer="true" 
+              confirm
+              type="date" 
+              format="yyyy-MM-dd" 
+              placement="bottom-end">
+              <a class="link-text deadline" @click="datePickerClick" v-show="!isDateSelected">没有截止时间</a>
               <a class="link-text deadline" @click="datePickerClick" v-show="isDateSelected">{{deadlineLabel | deadline}}</a>
             </DatePicker>
           </div>
@@ -59,7 +70,7 @@
                       <span>任务001任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长</span>
                     </div>
                     <div class="task-item-meta">
-                      <span class="task-owner">老韩</span>
+                      <span class="task-assignee">老韩</span>
                       <span class="task-label">
                         <Icon type="ios-clock-outline"></Icon>
                         1月31日</span>
@@ -77,8 +88,8 @@
                       <span>{{item.title}}</span>
                     </div>
                     <div class="task-item-meta">
-                      <span class="task-owner">{{item.user ? item.user.name : '未指派'}}</span>
-                      <span class="task-label">
+                      <span class="task-assignee">{{item.user ? item.user.name : '未指派'}}</span>
+                      <span v-if="item.deadline" class="task-label">
                         <Icon type="ios-clock-outline"></Icon>
                         {{item.deadline | deadline}}</span>
                     </div>
@@ -122,8 +133,8 @@ export default {
         title: '',
         deadline: ''
       },
-      owner: '未指派',
-      ownerId: -1,
+      assignee: '未指派',
+      assigneeId: -1,
       deadlineLabel: '',
       dateOptions: {
         disabledDate(date) {
@@ -161,8 +172,8 @@ export default {
     isDateSelected() {
       return this.deadlineLabel && true
     },
-    isOwnerSelected() {
-      return this.owner !== '未指派'
+    isAssigned() {
+      return this.assignee !== '未指派'
     },
     ...mapGetters([
       'currentUser',
@@ -217,8 +228,8 @@ export default {
       if (this.task.deadline) {
         task.deadline = this.task.deadline
       }
-      if (this.ownerId !== -1) {
-        task.user_id = this.ownerId
+      if (this.assigneeId !== -1) {
+        task.user_id = this.assigneeId
       }
       task.project_id = this.project.id
       taskService.add(task).then(res => {
@@ -251,16 +262,16 @@ export default {
       }
       this.isProjectEditVisable = true
     },
-    selectOwner(name) {
-      this.ownerId = name
+    assign(name) {
+      this.assigneeId = name
       if (name === -1) {
-        this.owner = '未指派'
+        this.assignee = '未指派'
         return
       }
 
       for (const user of this.allUsers) {
         if (user.id === name) {
-          this.owner = user.name
+          this.assignee = user.name
           return
         }
       }
