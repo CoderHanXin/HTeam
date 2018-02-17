@@ -216,7 +216,7 @@ export default {
     },
     handleTaskClick(item) {
       this.$router.push({
-        name: 'project-task-detail',
+        name: 'project-task',
         params: {
           id: this.project.id,
           name: this.project.name,

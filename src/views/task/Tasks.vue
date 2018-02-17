@@ -34,7 +34,7 @@ import projectService from '@/api/services/project'
 import { mapGetters, mapMutations } from 'vuex'
 import ProjectEdit from '@/views/project/ProjectEdit'
 export default {
-  name: 'Task',
+  name: 'Tasks',
   components: {
     ProjectEdit
   },
@@ -47,8 +47,7 @@ export default {
       },
       projectUsers: [],
       activeMenuName: 'all',
-      isProjectEditVisable: false,
-      list: []
+      isProjectEditVisable: false
     }
   },
   computed: {

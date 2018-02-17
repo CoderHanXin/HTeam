@@ -53,25 +53,28 @@ export const appRouter = [
         component: () => import('@/views/project/Project.vue')
       },
       {
-        path: 'project/:id/task',
-        name: 'project-task',
-        redirect: 'project/:id/task/all',
+        path: 'project/:id/tasks',
+        name: 'project-tasks',
+        redirect: 'project/:id/tasks/all',
         meta: {
           title: '任务'
         },
-        component: () => import('@/views/task/Task.vue'),
+        component: () => import('@/views/task/Tasks.vue'),
         children: [
           {
             path: ':listType',
             name: 'project-task-list',
             component: () => import('@/views/task/TaskList.vue')
-          },
-          {
-            path: ':taskId',
-            name: 'project-task-detail',
-            component: () => import('@/views/task/TaskDetail.vue')
           }
         ]
+      },
+      {
+        path: 'project/:id/task/:taskId',
+        name: 'project-task',
+        meta: {
+          title: '任务'
+        },
+        component: () => import('@/views/task/TaskDetail.vue')
       },
       {
         path: 'team',
