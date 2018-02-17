@@ -45,35 +45,6 @@ export const appRouter = [
     component: Main,
     children: [
       {
-        path: 'project/:id/task',
-        name: 'task',
-        redirect: 'project/:id/task/all',
-        meta: {
-          title: '任务'
-        },
-        component: () => import('@/views/task/Task.vue'),
-        children: [
-          {
-            path: ':type',
-            name: 'task-list',
-            component: () => import('@/views/task/TaskList.vue')
-          },
-          {
-            path: ':taskId',
-            name: 'task-detail',
-            component: () => import('@/views/task/TaskDetail.vue')
-          }
-        ]
-      },
-      // {
-      //   path: 'project/:id/task/:taskId',
-      //   name: 'task-detail',
-      //   meta: {
-      //     title: '任务'
-      //   },
-      //   component: () => import('@/views/task/TaskDetail.vue')
-      // },
-      {
         path: 'project',
         name: 'project',
         meta: {
@@ -82,12 +53,25 @@ export const appRouter = [
         component: () => import('@/views/project/Project.vue')
       },
       {
-        path: 'project/:id',
-        name: 'project-detail',
+        path: 'project/:id/task',
+        name: 'project-task',
+        redirect: 'project/:id/task/all',
         meta: {
-          title: '项目主页'
+          title: '任务'
         },
-        component: () => import('@/views/project/ProjectDetail.vue')
+        component: () => import('@/views/task/Task.vue'),
+        children: [
+          {
+            path: ':listType',
+            name: 'project-task-list',
+            component: () => import('@/views/task/TaskList.vue')
+          },
+          {
+            path: ':taskId',
+            name: 'project-task-detail',
+            component: () => import('@/views/task/TaskDetail.vue')
+          }
+        ]
       },
       {
         path: 'team',
