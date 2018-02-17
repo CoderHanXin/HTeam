@@ -110,8 +110,9 @@ export default {
   },
   computed: {
     mainRoute() {
-      let main = this.$route.name.split('-')
-      return main && main[0]
+      // let main = this.$route.name.split('-')
+      let main = this.$route.path.split('/')
+      return main && main[1]
     },
     avatarName() {
       return this.currentUser.name.substr(-2)
