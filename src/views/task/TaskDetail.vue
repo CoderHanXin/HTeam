@@ -34,11 +34,53 @@
           <div class="task-detail-body">
             <div class="task-detail-info">
               <div class="info-item">
-                <Dropdown trigger="click">
+                <Dropdown trigger="click" placement="bottom">
                   <a class="link-text">{{task.user.name || '未指派'}}</a>
                   <DropdownMenu slot="list">
                     <DropdownItem v-if="isAssigned" :name="-1">未指派</DropdownItem>
                     <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+              <div class="info-item">
+                <DatePicker @on-change="datePickerChange" @on-clear="datePickerClear" @on-ok="datePickerOk" :open="isDatePickerOpen" :value="task.deadline" :options="dateOptions" confirm type="date" format="yyyy-MM-dd" placement="bottom">
+                  <a class="link-text deadline" @click="datePickerClick" v-show="!isDateSelected">没有截止时间</a>
+                  <a class="link-text deadline" @click="datePickerClick" v-show="isDateSelected">{{deadlineLabel | deadline}}</a>
+                </DatePicker>
+              </div>
+              <div class="info-item">
+                <Dropdown trigger="click" placement="bottom">
+                  <a class="link-text">
+                    <Icon class="level-icon-off" type="alert"></Icon>
+                    <Icon class="level-icon-off" type="alert"></Icon>
+                    <Icon class="level-icon-off" type="alert"></Icon>
+                    正常处理
+                  </a>
+                  <DropdownMenu slot="list">
+                    <DropdownItem>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      有空再看
+                    </DropdownItem>
+                    <DropdownItem>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      正常处理
+                    </DropdownItem>
+                    <DropdownItem>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      优先处理
+                    </DropdownItem>
+                    <DropdownItem>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      十万火急
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
               </div>
@@ -61,19 +103,26 @@ export default {
     return {
       project: {
         id: '',
-        name: '',
-        users: []
+        name: ''
       },
-      projectUsers: [],
-      activeMenuName: 'all',
-      isProjectEditVisable: false,
       task: {
+        deadline: '',
         done: 0,
         user: {}
-      }
+      },
+      deadlineLabel: '',
+      dateOptions: {
+        disabledDate(date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        }
+      },
+      isDatePickerOpen: false
     }
   },
   computed: {
+    isDateSelected() {
+      return this.deadlineLabel && true
+    },
     isAssigned() {
       if (!this.task.user) {
         return false
@@ -137,6 +186,22 @@ export default {
     handleTaskCheck() {
 
     },
+    datePickerClick() {
+      this.isDatePickerOpen = !this.isDatePickerOpen
+    },
+    datePickerChange(date) {
+      this.task.deadline = date
+      if (this.task.deadline === '') {
+        this.deadlineLabel = this.task.deadline
+      }
+    },
+    datePickerClear() {
+      this.isDatePickerOpen = false
+    },
+    datePickerOk() {
+      this.deadlineLabel = this.task.deadline
+      this.isDatePickerOpen = false
+    },
     ...mapMutations([
       'setAllUsers',
       'setAllGroups'
@@ -145,6 +210,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="stylus" scoped>
+.level-icon-on
+  color #ed3f14
+.level-icon-off
+  color #ccc
 </style>
+
