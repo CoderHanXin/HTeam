@@ -66,12 +66,17 @@ export default {
   watch: {
     $route(to, from) {
       this.project.id = to.params.id
-      this.project.name = to.params.name
+      if (to.params.name) {
+        this.project.name = to.params.name
+      }
+      this.activeMenuName = this.$route.params.listType || 'all'
     }
   },
   created() {
     this.project.id = this.$route.params.id
-    this.project.name = this.$route.params.name
+    if (this.$route.params.name) {
+      this.project.name = this.$route.params.name
+    }
     this.activeMenuName = this.$route.params.listType || 'all'
     this.init()
   },
