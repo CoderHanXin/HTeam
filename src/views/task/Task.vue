@@ -72,6 +72,7 @@ export default {
   created() {
     this.project.id = this.$route.params.id
     this.project.name = this.$route.params.name
+    this.activeMenuName = this.$route.params.listType || 'all'
     this.init()
   },
   methods: {
@@ -95,11 +96,11 @@ export default {
     handleChangeMenu(name) {
       this.activeMenuName = name
       this.$router.push({
-        name: 'task-list',
+        name: 'project-task-list',
         params: {
           id: this.project.id,
           name: this.project.name,
-          type: name
+          listType: name
         }
       })
     },

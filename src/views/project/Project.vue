@@ -127,7 +127,7 @@ export default {
     },
     gotoDetail(project) {
       this.$router.push({
-        name: 'task',
+        name: 'project-task',
         params: {
           id: project.id,
           name: project.name

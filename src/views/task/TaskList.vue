@@ -147,14 +147,14 @@ export default {
     $route(to, from) {
       this.project.id = to.params.id
       this.project.name = to.params.name
-      this.listType = this.$route.params.type
+      this.listType = this.$route.params.listType
       this.getTask()
     }
   },
   created() {
     this.project.id = this.$route.params.id
     this.project.name = this.$route.params.name
-    this.listType = this.$route.params.type
+    this.listType = this.$route.params.listType
     this.init()
   },
   methods: {
@@ -216,7 +216,7 @@ export default {
     },
     handleTaskClick(item) {
       this.$router.push({
-        name: 'task-detail',
+        name: 'project-task-detail',
         params: {
           id: this.project.id,
           name: this.project.name,
