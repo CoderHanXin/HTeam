@@ -133,24 +133,91 @@
   flex auto
   padding 10px 0
   background $color-background-light
-.task-detail-header
-  position relative
-  display flex
-  padding 16px
-  .title
-    flex 1
-    width 0
-    font-size 16px
-    color $color-text
-.task-detail-body
-  padding-left 40px
-  padding-right 16px
-  .task-detail-info
+  &-header
+    position relative
     display flex
+    padding 16px
+    .title
+      flex 1
+      width 0
+      font-size 16px
+      color $color-text
+  &-content
+    margin 0 16px
+    padding-left 24px
+    border-bottom 1px solid $color-light-grey
+  &-info
+    align-items center
     .info-item
+      display inline-block
       padding-right 8px
-  .task-detail-content
-    padding-top 16px
+  &-desc
+    padding 16px 0
+    font-size 14px
+  &-events
+    padding 16px
+  &-event-item
+    display flex
+    align-items center
+    padding 8px 16px
+    .event-icon
+      width 64px
+      text-align center
+    .event-text
+      padding-right 8px
+      color $color-grey
+  &-comments
+    padding 0 16px 16px
+  &-comment-item
+    display flex
+    padding 16px
+    .comment-icon
+      width 64px
+      text-align center
+      cursor pointer
+    .comment-box
+      flex 1
+      padding 8px
+      border-radius 4px
+      background #eee
+    .comment-meta
+      padding-top 0
+      span
+        padding-right 8px
+    .comment-content
+      padding-top 8px
+      font-size 14px
+  .editor-wrapper
+    margin 16px 0
+    border-radius 4px
+    border 1px solid $color-light-grey
+    .editor
+      position relative
+      padding 8px 16px
+      border-radius 4px
+      background #fff
+      overflow auto
+      z-index 1
+      &-textarea
+        display block
+        line-height 1.6
+        width 100%
+        background #fff
+        border-style none
+        resize none
+        outline 0
+        font-size 14px
+        word-wrap break-word
+        overflow hidden
+    .toolbar
+      height 30px
+      background rgb(246, 246, 246)
+      border-top 1px solid rgb(238, 238, 238)
+      .editor-submit
+        float right
+        height 30px
+        padding 8px
+        cursor pointer
 .team-table
   padding 0
   .team-cell-user-name

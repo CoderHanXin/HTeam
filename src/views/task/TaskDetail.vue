@@ -20,9 +20,9 @@
       </Menu>
     </Sider>
     <Layout class="main-body">
-      <div class="header">
+      <!-- <div class="header">
         <div class="title">task detail</div>
-      </div>
+      </div> -->
       <Content class="content">
         <div class="task-detail">
           <div class="task-detail-header">
@@ -31,7 +31,7 @@
               <span>任务001任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长</span>
             </div>
           </div>
-          <div class="task-detail-body">
+          <div class="task-detail-content">
             <div class="task-detail-info">
               <div class="info-item">
                 <Dropdown trigger="click" placement="bottom">
@@ -84,8 +84,82 @@
                   </DropdownMenu>
                 </Dropdown>
               </div>
+              <div class="info-item right">
+                <Button type="primary" shape="circle" size="small">编辑</Button>
+                <Button type="error" shape="circle" size="small">删除</Button>
+              </div>
             </div>
-            <div class="task-detail-content">contents</div>
+            <div class="task-detail-desc">这里是任务描述1234</div>
+          </div>
+          <div class="task-detail-events">
+            <ul>
+              <li class="task-detail-event-item">
+                <div class="event-icon">
+                  <Icon size="32" type="plus-circled"></Icon>
+                </div>
+                <span class="event-text">02-14 14:14</span>
+                <span class="event-text">老韩</span>
+                <span class="event-text">创建了任务</span>
+              </li>
+              <li class="task-detail-event-item">
+                <div class="event-icon">
+                  <Icon size="32" type="information-circled"></Icon>
+                </div>
+                <span class="event-text">02-16 16:16</span>
+                <span class="event-text">老韩</span>
+                <span class="event-text">更新了任务</span>
+              </li>
+              <li class="task-detail-event-item">
+                <div class="event-icon">
+                  <Icon size="32" type="checkmark-circled"></Icon>
+                </div>
+                <span class="event-text">02-18 18:18</span>
+                <span class="event-text">老韩</span>
+                <span class="event-text">完成了任务</span>
+              </li>
+            </ul>
+          </div>
+          <div class="task-detail-comments">
+            <ul>
+              <li class="task-detail-comment-item">
+                <div class="comment-icon">
+                  <Avatar style="background:#5cadff" size="large">老韩</Avatar>
+                </div>
+                <div class="comment-box">
+                  <div class="comment-meta">
+                    <span>老韩</span>
+                    <span>
+                      <Icon type="ios-clock-outline"></Icon>
+                      02-18 18:18</span>
+                  </div>
+                  <div class="comment-content">这个任务的评论需要仔细斟酌一下</div>
+                </div>
+              </li>
+              <li class="task-detail-comment-item">
+                <div class="comment-icon">
+                  <Avatar style="background:#5cadff" size="large">老韩</Avatar>
+                </div>
+                <div class="comment-box">
+                  <div class="comment-meta">
+                    <span>老韩</span>
+                    <span>
+                      <Icon type="ios-clock-outline"></Icon>
+                      02-18 18:18</span>
+                  </div>
+                  <div class="comment-content">测试评论001</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="editor-wrapper">
+            <div class="editor">
+              <textarea class="editor-textarea" rows="4" placeholder="在此输入评论内容，按回车键（Enter）提交"></textarea>
+            </div>
+            <div class="toolbar">
+              <div class="editor-submit" title="提交">
+                <Icon size="14" type="ios-redo"></Icon>
+              </div>
+            </div>
           </div>
         </div>
       </Content>
