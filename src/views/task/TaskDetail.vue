@@ -35,7 +35,7 @@
             <div class="task-detail-info">
               <div class="info-item">
                 <Dropdown trigger="click" placement="bottom">
-                  <a class="link-text">{{task.user.name || '未指派'}}</a>
+                  <a class="link-text">{{task.user ? task.user.name : '未指派'}}</a>
                   <DropdownMenu slot="list">
                     <DropdownItem v-if="isAssigned" :name="-1">未指派</DropdownItem>
                     <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
@@ -135,28 +135,28 @@
                   <div class="comment-content">这个任务的评论需要仔细斟酌一下</div>
                 </div>
               </li>
-              <li class="task-detail-comment-item">
+              <li v-for="item in task.comments" :key="item.id" class="task-detail-comment-item">
                 <div class="comment-icon">
-                  <Avatar style="background:#5cadff" size="large">老韩</Avatar>
+                  <Avatar style="background:#5cadff" size="large">{{item.user.name.substr(-2)}}</Avatar>
                 </div>
                 <div class="comment-box">
                   <div class="comment-meta">
-                    <span>老韩</span>
+                    <span>{{item.user.name}}</span>
                     <span>
                       <Icon type="ios-clock-outline"></Icon>
-                      02-18 18:18</span>
+                      {{item.created_at}}</span>
                   </div>
-                  <div class="comment-content">测试评论001</div>
+                  <div class="comment-content">{{item.content}}</div>
                 </div>
               </li>
             </ul>
           </div>
           <div class="editor-wrapper">
             <div class="editor">
-              <textarea class="editor-textarea" rows="4" placeholder="在此输入评论内容，按回车键（Enter）提交"></textarea>
+              <textarea v-model="comment" @keyup.enter="submitComment" class="editor-textarea" rows="4" placeholder="在此输入评论内容，按回车键（Enter）提交"></textarea>
             </div>
             <div class="toolbar">
-              <div class="editor-submit" title="提交">
+              <div @click="submitComment" class="editor-submit" title="提交">
                 <Icon size="14" type="ios-redo"></Icon>
               </div>
             </div>
@@ -168,6 +168,7 @@
 </template>
 
 <script>
+import taskService from '@/api/services/task'
 import teamService from '@/api/services/team'
 import projectService from '@/api/services/project'
 import { mapGetters, mapMutations } from 'vuex'
@@ -179,11 +180,13 @@ export default {
         id: '',
         name: ''
       },
+      taskId: -1,
       task: {
         deadline: '',
         done: 0,
         user: {}
       },
+      comment: '',
       deadlineLabel: '',
       dateOptions: {
         disabledDate(date) {
@@ -219,6 +222,8 @@ export default {
       if (to.params.name) {
         this.project.name = to.params.name
       }
+      this.taskId = this.$route.params.taskId
+      this.init()
     }
   },
   created() {
@@ -226,11 +231,13 @@ export default {
     if (this.$route.params.name) {
       this.project.name = this.$route.params.name
     }
+    this.taskId = this.$route.params.taskId
     this.init()
   },
   methods: {
     init() {
       this.getProject()
+      this.getTask()
       if (this.allUsers.length === 0) {
         this.getUserList()
       }
@@ -238,6 +245,12 @@ export default {
     getProject() {
       projectService.get(this.project.id).then(res => {
         this.project = res.data.data
+      })
+    },
+    getTask() {
+      taskService.get(this.taskId).then(res => {
+        this.task = res.data.data
+        console.log(this.task)
       })
     },
     getUserList() {
@@ -259,6 +272,15 @@ export default {
     },
     handleTaskCheck() {
 
+    },
+    submitComment() {
+      let comment = {}
+      comment.content = this.comment
+      comment.user_id = this.currentUser.id
+      taskService.addComment(this.taskId, comment).then(res => {
+        this.comment = ''
+        this.getTask()
+      })
     },
     datePickerClick() {
       this.isDatePickerOpen = !this.isDatePickerOpen

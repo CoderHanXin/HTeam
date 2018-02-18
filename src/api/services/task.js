@@ -42,6 +42,15 @@ class TaskService {
   update(id, task) {
     return http.put(url.task_update.replace(':id', id), task)
   }
+
+  /**
+   * 新增任务评论
+   * @param {Number}  id       任务id
+   * @param {Object}  comment  评论信息
+   */
+  addComment(id, comment) {
+    return http.post(url.task_comment_create.replace(':id', id), comment)
+  }
 }
 
 export default new TaskService()
