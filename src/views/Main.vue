@@ -8,10 +8,6 @@
         </div>
       </div>
       </Tooltip>
-      <MainSiderItem name="task">
-        <Icon class="icon" size="18" type="ios-checkmark"></Icon>
-        <p>任务</p>
-      </MainSiderItem>
       <MainSiderItem name="project">
         <Icon size="18" type="ios-navigate"></Icon>
         <p>项目</p>
