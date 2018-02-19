@@ -96,4 +96,9 @@ let deadline = date => {
   return d.format('YYYY-MM-DD')
 }
 
-export { deadline }
+let eventTime = date => {
+  const d = moment(date, ['YYYY-MM-DD HH:mm', moment.ISO_8601])
+  return d.format('MM-DD HH:mm')
+}
+
+export { deadline, eventTime }

@@ -39,9 +39,10 @@ class TaskService {
    * 更新任务
    * @param {Number}  id    任务id
    * @param {Object}  task  任务信息
+   * @param {Object}  event 事件信息
    */
-  update(id, task) {
-    return http.put(url.task_update.replace(':id', id), task)
+  update(id, task, event) {
+    return http.put(url.task_update.replace(':id', id), { task, event })
   }
 
   /**

@@ -28,24 +28,23 @@
           <div class="task-detail-header">
             <Checkbox @on-change="handleTaskCheck()" v-model="task.done" :true-value="1" :false-value="0" :size="'large'"></Checkbox>
             <div class="title">
-              <span>任务001任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长</span>
+              <span>{{task.title}}</span>
             </div>
           </div>
           <div class="task-detail-content">
             <div class="task-detail-info">
               <div class="info-item">
-                <Dropdown trigger="click" placement="bottom">
-                  <a class="link-text">{{task.user ? task.user.name : '未指派'}}</a>
+                <Dropdown @on-click="assign" trigger="click" placement="bottom">
+                  <a class="link-text">{{assignee}}</a>
                   <DropdownMenu slot="list">
-                    <DropdownItem v-if="isAssigned" :name="-1">未指派</DropdownItem>
+                    <DropdownItem v-if="isAssigned" :name="null">未指派</DropdownItem>
                     <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
               </div>
               <div class="info-item">
                 <DatePicker @on-change="datePickerChange" @on-clear="datePickerClear" @on-ok="datePickerOk" :open="isDatePickerOpen" :value="task.deadline" :options="dateOptions" confirm type="date" format="yyyy-MM-dd" placement="bottom">
-                  <a class="link-text deadline" @click="datePickerClick" v-show="!isDateSelected">没有截止时间</a>
-                  <a class="link-text deadline" @click="datePickerClick" v-show="isDateSelected">{{deadlineLabel | deadline}}</a>
+                  <a class="link-text deadline" @click="datePickerClick">{{deadlineLabel | deadline}}</a>
                 </DatePicker>
               </div>
               <div class="info-item">
@@ -89,33 +88,18 @@
                 <Button type="error" shape="circle" size="small">删除</Button>
               </div>
             </div>
-            <div class="task-detail-desc">这里是任务描述1234</div>
+            <div class="task-detail-desc">{{task.desc}}</div>
           </div>
           <div class="task-detail-events">
             <ul>
-              <li class="task-detail-event-item">
+              <li v-for="item in task.events" :key="item.id" class="task-detail-event-item">
                 <div class="event-icon">
-                  <Icon size="32" type="plus-circled"></Icon>
+                  <Icon size="32" :type="eventIcon(item.type)" :color="eventIconColor(item.type)"></Icon>
                 </div>
-                <span class="event-text">02-14 14:14</span>
-                <span class="event-text">老韩</span>
-                <span class="event-text">创建了任务</span>
-              </li>
-              <li class="task-detail-event-item">
-                <div class="event-icon">
-                  <Icon size="32" type="information-circled"></Icon>
-                </div>
-                <span class="event-text">02-16 16:16</span>
-                <span class="event-text">老韩</span>
-                <span class="event-text">更新了任务</span>
-              </li>
-              <li class="task-detail-event-item">
-                <div class="event-icon">
-                  <Icon size="32" type="checkmark-circled"></Icon>
-                </div>
-                <span class="event-text">02-18 18:18</span>
-                <span class="event-text">老韩</span>
-                <span class="event-text">完成了任务</span>
+                <span class="event-text">{{item.created_at | eventTime}}</span>
+                <span class="event-text">{{item.user.name}}</span>
+                <span class="event-text">{{item.event}}</span>
+                <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
               </li>
             </ul>
           </div>
@@ -171,6 +155,7 @@
 import taskService from '@/api/services/task'
 import teamService from '@/api/services/team'
 import projectService from '@/api/services/project'
+import taskEvent from '../../common/constant/task_event'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'TaskDetail',
@@ -182,11 +167,13 @@ export default {
       },
       taskId: -1,
       task: {
+        title: '',
         deadline: '',
         done: 0,
         user: {}
       },
       comment: '',
+      assignee: '未指派',
       deadlineLabel: '',
       dateOptions: {
         disabledDate(date) {
@@ -197,17 +184,8 @@ export default {
     }
   },
   computed: {
-    isDateSelected() {
-      return this.deadlineLabel && true
-    },
     isAssigned() {
-      if (!this.task.user) {
-        return false
-      }
-      if (!this.task.user.name) {
-        return false
-      }
-      return true
+      return this.assignee !== '未指派'
     },
     ...mapGetters([
       'currentUser',
@@ -250,6 +228,8 @@ export default {
     getTask() {
       taskService.get(this.taskId).then(res => {
         this.task = res.data.data
+        this.assignee = this.task.user ? this.task.user.name : '未指派'
+        this.deadlineLabel = this.task.deadline
         console.log(this.task)
       })
     },
@@ -282,6 +262,33 @@ export default {
         this.getTask()
       })
     },
+    assign(name) {
+      let tempAssignee = ''
+      let task = {}
+      task.user_id = name
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+
+      if (name === null) {
+        tempAssignee = '未指派'
+        event.type = taskEvent.unassign
+        event.event = taskEvent.unassignText.replace('{assignee}', this.assignee)
+      } else {
+        for (const user of this.allUsers) {
+          if (user.id === name) {
+            tempAssignee = user.name
+            break
+          }
+        }
+        event.type = taskEvent.assign
+        event.event = taskEvent.assignText.replace('{assignee}', tempAssignee)
+      }
+
+      taskService.update(this.taskId, task, event).then(res => {
+        this.assignee = tempAssignee
+      })
+    },
     datePickerClick() {
       this.isDatePickerOpen = !this.isDatePickerOpen
     },
@@ -292,11 +299,70 @@ export default {
       }
     },
     datePickerClear() {
-      this.isDatePickerOpen = false
+      let task = {}
+      task.deadline = null
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      event.type = taskEvent.noDeadline
+      event.event = taskEvent.noDeadlineText
+      taskService.update(this.taskId, task, event).then(res => {
+        this.isDatePickerOpen = false
+      })
     },
     datePickerOk() {
-      this.deadlineLabel = this.task.deadline
-      this.isDatePickerOpen = false
+      let task = {}
+      task.deadline = this.task.deadline
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      event.type = taskEvent.deadline
+      event.event = taskEvent.deadlineText
+      event.deadline = this.task.deadline
+      taskService.update(this.taskId, task, event).then(res => {
+        this.deadlineLabel = this.task.deadline
+        this.isDatePickerOpen = false
+      })
+    },
+    eventIcon(type) {
+      switch (type) {
+        case 'create':
+          return 'ios-plus'
+        case 'done':
+          return 'ios-checkmark'
+        case 'reopen':
+          return 'ios-refresh'
+        case 'update':
+          return 'ios-information'
+        case 'assign':
+          return 'ios-navigate'
+        case 'unassign':
+          return 'ios-navigate'
+        case 'deadline':
+          return 'ios-clock'
+        case 'noDeadline':
+          return 'ios-clock'
+      }
+    },
+    eventIconColor(type) {
+      switch (type) {
+        case 'create':
+          return '#2d8cf0'
+        case 'done':
+          return '#19be6b'
+        case 'reopen':
+          return '#ff9900'
+        case 'update':
+          return '#b47fd4'
+        case 'assign':
+          return '#2d8cf0'
+        case 'unassign':
+          return '#ff9900'
+        case 'deadline':
+          return '#b47fd4'
+        case 'noDeadline':
+          return '#ff9900'
+      }
     },
     ...mapMutations([
       'setAllUsers',

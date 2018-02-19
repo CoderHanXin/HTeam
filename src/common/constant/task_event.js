@@ -8,5 +8,11 @@ export default {
   update: 'update',
   updateText: '更新了任务',
   assign: 'assign',
-  assignText: '把任务指派给'
+  assignText: '把任务指派给  {assignee}',
+  unassign: 'unassign',
+  unassignText: '取消了  {assignee}  的任务  ',
+  deadline: 'deadline',
+  deadlineText: '将任务截止日期设置为',
+  noDeadline: 'noDeadline',
+  noDeadlineText: '取消了任务截止日期'
 }
