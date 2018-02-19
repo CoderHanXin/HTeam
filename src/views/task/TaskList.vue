@@ -83,6 +83,7 @@
 
 <script>
 import taskService from '@/api/services/task'
+import events from '../../common/constant/task_event'
 import { mapGetters } from 'vuex'
 export default {
   name: 'TaskList',
@@ -187,7 +188,13 @@ export default {
         task.user_id = this.assigneeId
       }
       task.project_id = this.project.id
-      taskService.add(task).then(res => {
+
+      let event = {}
+      event.type = events.create
+      event.event = events.createText
+      event.user_id = this.currentUser.id
+
+      taskService.add(task, event).then(res => {
         this.getTask()
         this.$Message.success('操作成功')
       })

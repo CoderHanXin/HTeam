@@ -28,10 +28,11 @@ class TaskService {
 
   /**
    * 新增任务
-   * @param {Object} task 任务信息
+   * @param {Object} task  任务信息
+   * @param {Object} event 事件信息
    */
-  add(task) {
-    return http.post(url.task_create, task)
+  add(task, event) {
+    return http.post(url.task_create, { task, event })
   }
 
   /**
