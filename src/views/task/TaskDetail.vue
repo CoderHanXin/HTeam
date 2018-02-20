@@ -26,15 +26,15 @@
       <Content class="content">
         <div class="task-detail">
           <div class="task-detail-header">
-            <Checkbox @on-change="handleTaskCheck()" v-model="task.done" :true-value="1" :false-value="0" :size="'large'"></Checkbox>
+            <Checkbox @on-change="handleCheck()" v-model="task.done" :true-value="1" :false-value="0" :size="'large'"></Checkbox>
             <div class="title">
-              <span>{{task.title}}</span>
+              <span :class="{'task-done': task.done}">{{task.title}}</span>
             </div>
           </div>
           <div class="task-detail-content">
             <div class="task-detail-info">
               <div class="info-item">
-                <Dropdown @on-click="assign" trigger="click" placement="bottom">
+                <Dropdown @on-click="setAssignee" trigger="click" placement="bottom">
                   <a class="link-text">{{assignee}}</a>
                   <DropdownMenu slot="list">
                     <DropdownItem v-if="isAssigned" :name="null">未指派</DropdownItem>
@@ -84,8 +84,8 @@
                 </Dropdown>
               </div>
               <div class="info-item right">
-                <Button type="primary" shape="circle" size="small">编辑</Button>
-                <Button type="error" shape="circle" size="small">删除</Button>
+                <Button @click="handleEdit" type="primary" shape="circle" size="small">编辑</Button>
+                <Button @click="handleDelete" type="error" shape="circle" size="small">删除</Button>
               </div>
             </div>
             <div class="task-detail-desc">{{task.desc}}</div>
@@ -250,9 +250,6 @@ export default {
         }
       })
     },
-    handleTaskCheck() {
-
-    },
     submitComment() {
       let comment = {}
       comment.content = this.comment
@@ -262,7 +259,7 @@ export default {
         this.getTask()
       })
     },
-    assign(name) {
+    setAssignee(name) {
       let tempAssignee = ''
       let task = {}
       task.user_id = name
@@ -288,6 +285,28 @@ export default {
       taskService.update(this.taskId, task, event).then(res => {
         this.assignee = tempAssignee
       })
+    },
+    handleCheck() {
+      let task = {}
+      task.done = this.task.done
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      if (task.done) {
+        event.type = taskEvent.done
+        event.event = taskEvent.doneText
+      } else {
+        event.type = taskEvent.reopen
+        event.event = taskEvent.reopenText
+      }
+      taskService.update(this.taskId, task, event).then(res => {
+      })
+    },
+    handleEdit() {
+
+    },
+    handleDelete() {
+
     },
     datePickerClick() {
       this.isDatePickerOpen = !this.isDatePickerOpen
