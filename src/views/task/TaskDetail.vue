@@ -131,6 +131,16 @@
         </div>
       </Content>
     </Layout>
+    <Modal v-model="isTaskEditvisable" :loading="modalLoading" @on-ok="handleTaskEditOk" @on-cancel="handleTaskEditCancel" :title="编辑任务" :mask-closable="false" width="480">
+      <Form ref="taskEditForm" :model="editTask" :rules="rules" :label-width="80">
+        <FormItem label="任务标题" prop="title">
+          <Input type="textarea" v-model="editTask.title" :rows="3" :maxlength="200" class="textarea-desc" />
+        </FormItem>
+        <FormItem label="任务描述" prop="desc">
+          <Input type="textarea" v-model="editTask.desc" :rows="5" :maxlength="1000" class="textarea-desc" />
+        </FormItem>
+      </Form>
+    </Modal>
   </Layout>
 </template>
 
@@ -151,10 +161,17 @@ export default {
       taskId: -1,
       task: {
         title: '',
+        desc: '',
         deadline: '',
         done: 0,
         user: {}
       },
+      editTask: {
+        title: '',
+        desc: ''
+      },
+      isTaskEditvisable: false,
+      modalLoading: true,
       comment: '',
       assignee: '未指派',
       deadlineLabel: '',
@@ -163,7 +180,10 @@ export default {
           return date && date.valueOf() < Date.now() - 86400000
         }
       },
-      isDatePickerOpen: false
+      isDatePickerOpen: false,
+      rules: {
+        title: [{ required: true, message: '任务标题不能为空', trigger: 'blur' }]
+      }
     }
   },
   computed: {
@@ -286,7 +306,30 @@ export default {
       })
     },
     handleEdit() {
-
+      this.editTask.title = this.task.title
+      this.editTask.desc = this.task.desc
+      this.isTaskEditvisable = true
+    },
+    handleTaskEditOk() {
+      this.$refs.taskEditForm.validate(valid => {
+        if (valid) {
+          let event = {}
+          event.user_id = this.currentUser.id
+          event.task_id = this.taskId
+          event.type = taskEvent.update
+          event.event = taskEvent.updateText
+          taskService
+            .update(this.taskId, this.editTask, event)
+            .then(res => {
+              this.task.title = this.editTask.title
+              this.task.desc = this.editTask.desc
+              this.isTaskEditvisable = false
+            })
+        }
+      })
+    },
+    handleTaskEditCancel() {
+      this.$refs.taskEditForm.resetFields()
     },
     handleDelete() {
       this.$Modal.confirm({
