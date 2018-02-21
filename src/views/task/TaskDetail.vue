@@ -89,7 +89,7 @@
           </div>
           <div class="task-detail-events">
             <ul>
-              <li v-for="item in task.events" :key="item.id" class="task-detail-event-item">
+              <li v-for="(item, index) in task.events" v-if="showMoreEvents || index === 0 || index === task.events.length - 1" :key="item.id" class="task-detail-event-item">
                 <div class="event-icon">
                   <Icon size="32" :type="eventIcon(item.type)" :color="eventIconColor(item.type)"></Icon>
                 </div>
@@ -97,6 +97,7 @@
                 <span class="event-text">{{item.user.name}}</span>
                 <span class="event-text">{{item.event}}</span>
                 <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
+                <a @click="showMore" v-if="!showMoreEvents && task.events.length > 2 && index === task.events.length - 1" class="link-text">（查看更多动态）</a>
               </li>
             </ul>
           </div>
@@ -131,7 +132,7 @@
         </div>
       </Content>
     </Layout>
-    <Modal v-model="isTaskEditvisable" :loading="modalLoading" @on-ok="handleTaskEditOk" @on-cancel="handleTaskEditCancel" :title="编辑任务" :mask-closable="false" width="480">
+    <Modal v-model="isTaskEditvisable" :loading="modalLoading" @on-ok="handleTaskEditOk" @on-cancel="handleTaskEditCancel" title="编辑任务" :mask-closable="false" width="480">
       <Form ref="taskEditForm" :model="editTask" :rules="rules" :label-width="80">
         <FormItem label="任务标题" prop="title">
           <Input type="textarea" v-model="editTask.title" :rows="3" :maxlength="200" class="textarea-desc" />
@@ -170,6 +171,7 @@ export default {
         title: '',
         desc: ''
       },
+      showMoreEvents: false,
       isTaskEditvisable: false,
       modalLoading: true,
       comment: '',
@@ -378,6 +380,9 @@ export default {
         this.deadlineLabel = this.task.deadline
         this.isDatePickerOpen = false
       })
+    },
+    showMore() {
+      this.showMoreEvents = true
     },
     eventIcon(type) {
       switch (type) {
