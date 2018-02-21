@@ -8,13 +8,13 @@
         <input class="title" v-model="task.title" @keyup.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
         <div class="meta">
           <div class="assignee">
-            <Dropdown @on-click="assign" trigger="click">
+            <Dropdown @on-click="setAssignee" trigger="click">
               <a class="link-text" href="javascript:void(0)">
                 {{assignee}}
                 <Icon type="arrow-down-b"></Icon>
               </a>
               <DropdownMenu slot="list">
-                <DropdownItem v-if="isAssigned" :name="-1">未指派</DropdownItem>
+                <DropdownItem v-if="isAssigned" :name="null">未指派</DropdownItem>
                 <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -82,7 +82,7 @@ export default {
         deadline: ''
       },
       assignee: '未指派',
-      assigneeId: -1,
+      assigneeId: null,
       deadlineLabel: '',
       dateOptions: {
         disabledDate(date) {
@@ -165,7 +165,7 @@ export default {
       if (this.task.deadline) {
         task.deadline = this.task.deadline
       }
-      if (this.assigneeId !== -1) {
+      if (this.assigneeId !== null) {
         task.user_id = this.assigneeId
       }
       task.project_id = this.project.id
@@ -212,9 +212,9 @@ export default {
         }
       })
     },
-    assign(name) {
+    setAssignee(name) {
       this.assigneeId = name
-      if (name === -1) {
+      if (name === null) {
         this.assignee = '未指派'
         return
       }
