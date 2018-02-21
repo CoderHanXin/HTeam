@@ -20,9 +20,6 @@
       </Menu>
     </Sider>
     <Layout class="main-body">
-      <!-- <div class="header">
-        <div class="title">task detail</div>
-      </div> -->
       <Content class="content">
         <div class="task-detail">
           <div class="task-detail-header">
@@ -105,20 +102,6 @@
           </div>
           <div class="task-detail-comments">
             <ul>
-              <li class="task-detail-comment-item">
-                <div class="comment-icon">
-                  <Avatar style="background:#5cadff" size="large">老韩</Avatar>
-                </div>
-                <div class="comment-box">
-                  <div class="comment-meta">
-                    <span>老韩</span>
-                    <span>
-                      <Icon type="ios-clock-outline"></Icon>
-                      02-18 18:18</span>
-                  </div>
-                  <div class="comment-content">这个任务的评论需要仔细斟酌一下</div>
-                </div>
-              </li>
               <li v-for="item in task.comments" :key="item.id" class="task-detail-comment-item">
                 <div class="comment-icon">
                   <Avatar style="background:#5cadff" size="large">{{item.user.name.substr(-2)}}</Avatar>
