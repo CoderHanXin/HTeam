@@ -32,7 +32,7 @@
             <div class="task-detail-info">
               <div class="info-item">
                 <Dropdown @on-click="setAssignee" trigger="click" placement="bottom">
-                  <a class="link-text">{{assignee}}</a>
+                  <a class="link-text info-item-assignee">{{assignee}}</a>
                   <DropdownMenu slot="list">
                     <DropdownItem v-if="isAssigned" :name="null">未指派</DropdownItem>
                     <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
@@ -41,12 +41,12 @@
               </div>
               <div class="info-item">
                 <DatePicker @on-change="datePickerChange" @on-clear="datePickerClear" @on-ok="datePickerOk" :open="isDatePickerOpen" :value="task.deadline" :options="dateOptions" confirm type="date" format="yyyy-MM-dd" placement="bottom">
-                  <a class="link-text deadline" @click="datePickerClick">{{deadlineLabel | deadline}}</a>
+                  <a class="link-text info-item-deadline" :class="{'task-expired':taskExpired(task.deadline)}" @click="datePickerClick">{{deadlineLabel | deadline}}</a>
                 </DatePicker>
               </div>
               <div class="info-item">
                 <Dropdown trigger="click" placement="bottom">
-                  <a class="link-text">
+                  <a class="link-text info-item-level">
                     <Icon class="level-icon-off" type="alert"></Icon>
                     <Icon class="level-icon-off" type="alert"></Icon>
                     <Icon class="level-icon-off" type="alert"></Icon>
@@ -150,6 +150,7 @@ import taskService from '@/api/services/task'
 import teamService from '@/api/services/team'
 import projectService from '@/api/services/project'
 import taskEvent from '../../common/constant/task_event'
+import util from '../../libs/util'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'TaskDetail',
@@ -178,9 +179,9 @@ export default {
       assignee: '未指派',
       deadlineLabel: '',
       dateOptions: {
-        disabledDate(date) {
-          return date && date.valueOf() < Date.now() - 86400000
-        }
+        // disabledDate(date) {
+        //   return date && date.valueOf() < Date.now() - 86400000
+        // }
       },
       isDatePickerOpen: false,
       rules: {
@@ -380,6 +381,9 @@ export default {
         this.deadlineLabel = this.task.deadline
         this.isDatePickerOpen = false
       })
+    },
+    taskExpired(date) {
+      return util.timeBeforeNow(date)
     },
     showMore() {
       this.showMoreEvents = true

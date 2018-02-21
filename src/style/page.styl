@@ -99,6 +99,9 @@
     border-radius 3px
     color #fff
     background-color $color-error
+.task-expired
+  color #d45d51
+  background #fbdbdb
 .task-quick-add
   flex-shrink 0
   position relative
@@ -150,7 +153,13 @@
     align-items center
     .info-item
       display inline-block
-      padding-right 8px
+      padding-right 0
+      &-assignee
+        padding-right 2px
+      &-deadline
+        padding 3px 6px
+      &-level
+        padding-left 2px
   &-desc
     padding 16px 0
     font-size 14px

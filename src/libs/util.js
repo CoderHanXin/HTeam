@@ -36,6 +36,14 @@ util.timeCompareNow = function(t) {
   return diff >= 0
 }
 
+util.timeBeforeNow = function(t) {
+  const m = moment(t)
+  const today = moment(moment().format('YYYY-MM-DD'))
+  const diff = m.diff(today)
+
+  return diff < 0
+}
+
 util.timeLessThanToday = function(t) {
   const m = moment(t)
   const today = moment().format('YYYY-MM-DD')
