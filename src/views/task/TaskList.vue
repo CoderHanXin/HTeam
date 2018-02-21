@@ -38,24 +38,6 @@
       </div>
       <div class="task-list">
         <ul>
-          <li class="task-item">
-            <Card :bordered="false" :padding="0">
-              <div class="task-item-wrapper">
-                <div class="task-item-body">
-                  <Checkbox :size="'large'" class="task-check"></Checkbox>
-                  <div class="task-item-title">
-                    <span>任务001任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长任务标题特别的长</span>
-                  </div>
-                  <div class="task-item-meta">
-                    <span class="task-assignee">老韩</span>
-                    <span class="task-label">
-                      <Icon type="ios-clock-outline"></Icon>
-                      1月31日</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </li>
           <li @click="handleTaskClick(item)" v-for="item in list" :key="item.id" class="task-item">
             <Card :bordered="false" :padding="0">
               <div class="task-item-wrapper">
@@ -171,7 +153,6 @@ export default {
       }
       taskService.getList(this.project.id, done).then(res => {
         this.list = res.data.data
-        console.log(this.list)
       })
     },
     createTask() {
