@@ -3,7 +3,7 @@ let deadline = date => {
   if (!date) {
     return '没有截止时间'
   }
-  const d = moment(date, ['YYYY-MM-DD HH:mm', moment.ISO_8601])
+  const d = moment(moment(date, moment.ISO_8601).format('YYYY-MM-DD'))
   const today = moment(moment().format('YYYY-MM-DD'))
   let diff = d.diff(today)
   if (diff === 0) {
