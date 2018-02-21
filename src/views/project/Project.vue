@@ -36,7 +36,7 @@
                     <div class="project-item-title">{{item.name}}</div>
                     <div class="project-item-meta">
                       <span class="project-item-meta-text">待处理任务</span>
-                      <span class="task-count">10</span>
+                      <span class="project-item-meta-count">{{item.tasks.length}}</span>
                     </div>
                   </div>
                 </div>
@@ -180,4 +180,5 @@ export default {
 .project-item-meta-count
   color $color-text
   font-size 14px
+  font-weight 600
 </style>
