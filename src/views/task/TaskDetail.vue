@@ -289,7 +289,17 @@ export default {
 
     },
     handleDelete() {
-
+      this.$Modal.confirm({
+        title: `删除确认`,
+        content: '确定要删除这条任务吗？',
+        loading: true,
+        onOk: () => {
+          taskService.delete(this.taskId).then(res => {
+            this.$router.go(-1)
+            this.$Modal.remove()
+          })
+        }
+      })
     },
     datePickerClick() {
       this.isDatePickerOpen = !this.isDatePickerOpen

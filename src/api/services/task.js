@@ -36,6 +36,14 @@ class TaskService {
   }
 
   /**
+   * 删除任务
+   * @param {Number} id 任务id
+   */
+  delete(id) {
+    return http.delete(url.task_delete.replace(':id', id))
+  }
+
+  /**
    * 更新任务
    * @param {Number}  id    任务id
    * @param {Object}  task  任务信息
