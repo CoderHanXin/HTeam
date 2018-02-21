@@ -111,7 +111,7 @@
                     <span>{{item.user.name}}</span>
                     <span>
                       <Icon type="ios-clock-outline"></Icon>
-                      {{item.created_at}}</span>
+                      {{item.created_at | eventTime}}</span>
                   </div>
                   <div class="comment-content">{{item.content}}</div>
                 </div>
