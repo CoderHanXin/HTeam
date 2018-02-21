@@ -9,7 +9,7 @@
         <div class="form-con">
           <Form :model="user" :rules="rules" ref="loginForm">
             <FormItem prop="username">
-              <Input v-model="user.username" placeholder="请输入用户名">
+              <Input v-model="user.username" :autofocus="true" placeholder="请输入用户名">
               <span slot="prepend">
                 <Icon :size="16" type="person"></Icon>
               </span>
