@@ -133,6 +133,7 @@
     .deadline
       text-align right
 .task-detail
+  display flex
   flex auto
   padding 10px 0
   background $color-background-light
@@ -196,6 +197,20 @@
     .comment-content
       padding-top 8px
       font-size 14px
+  &-main
+    flex 1
+  &-sider
+    width 150px
+    margin 0 32px
+    padding-top 100px
+    &-item
+      margin-bottom 12px
+      .item-dropdown
+        width 150px
+      .item-wrapper
+        cursor pointer
+      .item-header
+        padding-bottom: 6px
   .editor-wrapper
     margin 16px 32px 100px
     border-radius 4px
