@@ -7,33 +7,14 @@
       <div class="task-quick-add">
         <input class="title" v-model="task.title" @keyup.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
         <div class="meta">
-          <div class="assignee">
-            <Dropdown @on-click="setAssignee" trigger="click">
-              <a class="link-text" href="javascript:void(0)">
-                {{assignee}}
-                <Icon type="arrow-down-b"></Icon>
-              </a>
-              <DropdownMenu slot="list">
-                <DropdownItem v-if="isAssigned" :name="null">未指派</DropdownItem>
-                <DropdownItem v-for="(item, index) in allUsers" :divided="isAssigned && index===0" :key="item.id" :name="item.id">{{item.name}}</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+          <div class="meta-item">
+            <Select v-model="assigneeId" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
+              <Option v-for="item in allUsers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
+            </Select>
           </div>
-          <DatePicker 
-            @on-change="datePickerChange" 
-            @on-clear="datePickerClear" 
-            @on-ok="datePickerOk" 
-            :open="isDatePickerOpen" 
-            :value="task.deadline" 
-            :options="dateOptions" 
-            :transfer="true" 
-            confirm
-            type="date" 
-            format="yyyy-MM-dd" 
-            placement="bottom-end">
-            <a class="link-text deadline" @click="datePickerClick" v-show="!isDateSelected">没有截止时间</a>
-            <a class="link-text deadline" @click="datePickerClick" v-show="isDateSelected">{{deadlineLabel | deadline}}</a>
-          </DatePicker>
+          <div class="meta-item">
+            <DatePicker v-model="task.deadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom-end" size="small" placeholder="截止时间"></DatePicker>
+          </div>
         </div>
       </div>
       <div class="task-list">
@@ -81,15 +62,12 @@ export default {
         title: '',
         deadline: ''
       },
-      assignee: '未指派',
       assigneeId: null,
-      deadlineLabel: '',
       dateOptions: {
         disabledDate(date) {
           return date && date.valueOf() < Date.now() - 86400000
         }
-      },
-      isDatePickerOpen: false
+      }
     }
   },
   computed: {
@@ -112,12 +90,6 @@ export default {
         case 'done':
           return '还没有完成任何任务'
       }
-    },
-    isDateSelected() {
-      return this.deadlineLabel && true
-    },
-    isAssigned() {
-      return this.assignee !== '未指派'
     },
     ...mapGetters([
       'currentUser',
@@ -165,7 +137,7 @@ export default {
       if (this.task.deadline) {
         task.deadline = this.task.deadline
       }
-      if (this.assigneeId !== null) {
+      if (this.assigneeId) {
         task.user_id = this.assigneeId
       }
       task.project_id = this.project.id
@@ -177,7 +149,6 @@ export default {
 
       taskService.add(task, event).then(res => {
         this.getTask()
-        this.$Message.success('操作成功')
       })
     },
     handleProjectEditOk() {
@@ -211,36 +182,6 @@ export default {
           taskId: item.id
         }
       })
-    },
-    setAssignee(name) {
-      this.assigneeId = name
-      if (name === null) {
-        this.assignee = '未指派'
-        return
-      }
-
-      for (const user of this.allUsers) {
-        if (user.id === name) {
-          this.assignee = user.name
-          return
-        }
-      }
-    },
-    datePickerClick() {
-      this.isDatePickerOpen = !this.isDatePickerOpen
-    },
-    datePickerChange(date) {
-      this.task.deadline = date
-      if (this.task.deadline === '') {
-        this.deadlineLabel = this.task.deadline
-      }
-    },
-    datePickerClear() {
-      this.isDatePickerOpen = false
-    },
-    datePickerOk() {
-      this.deadlineLabel = this.task.deadline
-      this.isDatePickerOpen = false
     }
   }
 }
