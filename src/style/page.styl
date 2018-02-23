@@ -82,9 +82,6 @@
   white-space nowrap
   text-overflow ellipsis
   overflow hidden
-.task-done
-  color $color-grey
-  text-decoration line-through
 .task-item-meta
   flex-shrink 0
   font-size 12px
@@ -99,9 +96,6 @@
     border-radius 3px
     color #fff
     background-color $color-error
-.task-expired
-  color #d45d51
-  background #fbdbdb
 .task-quick-add
   flex-shrink 0
   position relative
@@ -133,10 +127,26 @@
     .deadline
       text-align right
 .task-detail
+  position relative
   display flex
   flex auto
   padding 10px 0
   background $color-background-light
+  &-main
+    flex 1
+    height 100%
+  &-sider
+    width 150px
+    margin 0 32px
+    padding-top 56px
+    &-item
+      margin-bottom 12px
+      .item-dropdown
+        width 150px
+      .item-wrapper
+        cursor pointer
+      .item-header
+        padding-bottom 6px
   &-header
     position relative
     display flex
@@ -154,13 +164,9 @@
     align-items center
     .info-item
       display inline-block
-      padding-right 0
-      &-assignee
-        padding-right 2px
-      &-deadline
-        padding 3px 6px
-      &-level
-        padding-left 2px
+      color $color-grey
+      &-label
+        padding 2px 6px
   &-desc
     padding 16px 0
     font-size 14px
@@ -197,20 +203,6 @@
     .comment-content
       padding-top 8px
       font-size 14px
-  &-main
-    flex 1
-  &-sider
-    width 150px
-    margin 0 32px
-    padding-top 100px
-    &-item
-      margin-bottom 12px
-      .item-dropdown
-        width 150px
-      .item-wrapper
-        cursor pointer
-      .item-header
-        padding-bottom: 6px
   .editor-wrapper
     margin 16px 32px 100px
     border-radius 4px
@@ -242,6 +234,18 @@
         height 30px
         padding 8px
         cursor pointer
+.task-done
+  color $color-grey
+  text-decoration line-through
+.task-expired
+  color #d45d51
+  background #fbdbdb
+.task-level
+  padding 2px 6px
+.level-icon-on
+  color #ed3f14
+.level-icon-off
+  color #ccc
 .team-table
   padding 0
   .team-cell-user-name
