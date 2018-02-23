@@ -19,7 +19,7 @@
       <router-view></router-view>
     </Layout>
     <div class="avatar" @click="togglePopMenu">
-      <Avatar size="large">{{avatarName}}</Avatar>
+      <Avatar :style="{background: currentUser.color || '#2d8cf0'}" size="large">{{avatarName}}</Avatar>
     </div>
     <div class="pop-box" v-clickoutside="handlePopMenuClose" :style="popMenuStyle">
       <ul class="pop-menu">
