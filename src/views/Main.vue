@@ -1,13 +1,11 @@
 <template>
   <div class="layout">
     <MainSider :activeName="mainRoute" @on-select="handleChangeMenu">
-      <Tooltip :content="currentTeam.name" placement="right">
-      <div class="sider-logo">
+      <div :title="currentTeam.name" class="sider-logo">
         <div>
           <img src="../../static/logo.png">
         </div>
       </div>
-      </Tooltip>
       <MainSiderItem name="project">
         <Icon size="18" type="ios-navigate"></Icon>
         <p>项目</p>
