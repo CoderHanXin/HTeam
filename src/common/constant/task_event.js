@@ -8,11 +8,13 @@ export default {
   update: 'update',
   updateText: '更新了任务',
   assign: 'assign',
-  assignText: '把任务指派给  {assignee}',
+  assignText: '把任务指派给&nbsp;&nbsp;{assignee}',
   unassign: 'unassign',
-  unassignText: '取消了  {assignee}  的任务  ',
+  unassignText: '取消了&nbsp;&nbsp;{assignee}&nbsp;&nbsp;的任务  ',
   deadline: 'deadline',
   deadlineText: '将任务截止日期设置为',
   noDeadline: 'noDeadline',
-  noDeadlineText: '取消了任务截止日期'
+  noDeadlineText: '取消了任务截止日期',
+  level: 'level',
+  levelText: '将任务设置为&nbsp;&nbsp;{level}'
 }

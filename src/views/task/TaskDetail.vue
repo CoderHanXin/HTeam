@@ -39,7 +39,7 @@
                     <span class="info-item-label" :class="{'task-expired':taskExpired(task.deadline)}">{{task.deadline | deadline}}</span>
                   </div>
                   <div class="info-item">
-                    <TaskLevel :value="level" />
+                    <TaskLevel :value="task.level" />
                   </div>
                 </div>
                 <div class="task-detail-desc">{{task.desc}}</div>
@@ -52,7 +52,7 @@
                     </div>
                     <span class="event-text">{{item.created_at | eventTime}}</span>
                     <span class="event-text">{{item.user.name}}</span>
-                    <span class="event-text">{{item.event}}</span>
+                    <span v-html="item.event" class="event-text"></span>
                     <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
                     <a @click="showMore" v-if="!showMoreEvents && task.events.length > 2 && index === task.events.length - 1" class="link-text">（查看更多动态）</a>
                   </li>
@@ -104,23 +104,23 @@
                 <li class="task-detail-sider-item">
                   <header class="item-header">紧急程度
                   </header>
-                  <Select v-model="level" size="small" :clearable="true" placeholder="请选择">
-                    <Option :value="0">
+                  <Select v-model="task.level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
+                    <Option :value="0" label="有空再看">
                       <Icon class="level-icon-off" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       有空再看</Option>
-                    <Option :value="1">
+                    <Option :value="1" label="优先处理">
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       优先处理</Option>
-                    <Option :value="2">
+                    <Option :value="2" label="正常处理">
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       正常处理</Option>
-                    <Option :value="3">
+                    <Option :value="3" label="十万火急">
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-on" type="alert"></Icon>
@@ -183,7 +183,6 @@ export default {
         title: '',
         desc: ''
       },
-      level: 0,
       showMoreEvents: false,
       isTaskEditvisable: false,
       modalLoading: true,
@@ -191,9 +190,9 @@ export default {
       assigneeId: null,
       assignee: '未指派',
       dateOptions: {
-        // disabledDate(date) {
-        //   return date && date.valueOf() < Date.now() - 86400000
-        // }
+        disabledDate(date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        }
       },
       isDatePickerOpen: false,
       rules: {
@@ -202,9 +201,6 @@ export default {
     }
   },
   computed: {
-    isAssigned() {
-      return this.assignee !== '未指派'
-    },
     ...mapGetters([
       'currentUser',
       'currentTeam',
@@ -284,10 +280,20 @@ export default {
       })
     },
     changeAssignee(val) {
-      // 如果是初始化赋值，返回
+      console.log(val)
+      // 如果是页面刷新，返回
       if (val.value && !val.label) {
+        console.log('refresh')
         return
       }
+      // 如果是页面初始化，返回
+      if (this.task.user) {
+        if (this.task.user.id === val.value) {
+          console.log('init')
+          return
+        }
+      }
+
       let task = {}
       let event = {}
       event.user_id = this.currentUser.id
@@ -302,7 +308,7 @@ export default {
         event.event = taskEvent.unassignText.replace('{assignee}', this.assignee)
       }
       taskService.update(this.taskId, task, event).then(res => {
-        this.assignee = val.label
+        this.assignee = val.label || '未指派'
       })
     },
     changeDeadline(date) {
@@ -321,6 +327,25 @@ export default {
       }
       taskService.update(this.taskId, task, event).then(res => {
         this.task.deadline = date
+      })
+    },
+    changeLevel(val) {
+      console.log(val)
+      // 如果是页面刷新，返回
+      if (val.value && !val.label) {
+        console.log('return')
+        return
+      }
+      console.log(val)
+      let task = {}
+      task.level = val.value
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      event.type = taskEvent.level
+      event.event = taskEvent.levelText.replace('{level}', val.label)
+
+      taskService.update(this.taskId, task, event).then(res => {
       })
     },
     handleCheck() {
@@ -402,6 +427,8 @@ export default {
           return 'ios-clock'
         case 'noDeadline':
           return 'ios-clock'
+        case 'level':
+          return 'ios-speedometer'
       }
     },
     eventIconColor(type) {
@@ -422,6 +449,8 @@ export default {
           return '#b47fd4'
         case 'noDeadline':
           return '#ff9900'
+        case 'level':
+          return '#2d8cf0'
       }
     },
     ...mapMutations([
