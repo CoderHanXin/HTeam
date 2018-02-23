@@ -3,10 +3,10 @@
     <Modal v-model="visable" :loading="modalLoading" @on-ok="handleOk" @on-cancel="handleCancel" :title="modalTitle" :mask-closable="false" width="480">
       <Form ref="projectAddForm" :model="project" :rules="rules" :label-width="80">
         <FormItem label="项目名称" prop="name">
-          <Input type="text" v-model="project.name" :maxlength="20" />
+          <Input type="text" v-model.trim="project.name" :maxlength="20" />
         </FormItem>
         <FormItem label="项目描述" prop="desc">
-          <Input type="textarea" v-model="project.desc" :rows="3" :maxlength="200" class="textarea-desc" />
+          <Input type="textarea" v-model.trim="project.desc" :rows="3" :maxlength="200" class="textarea-desc" />
         </FormItem>
         <FormItem label="项目成员">
           <CheckboxGroup v-model="checkedGroups" @on-change="handleCheckGroupsChange">

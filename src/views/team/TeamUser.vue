@@ -8,19 +8,19 @@
       width="480">
       <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
         <FormItem label="姓名" prop="name">
-          <Input type="text" v-model="user.name" :maxlength="20" placeholder="请输入对方真实姓名"/>
+          <Input type="text" v-model.trim="user.name" :maxlength="20" placeholder="请输入对方真实姓名"/>
         </FormItem>
         <FormItem label="用户名" prop="username" v-if="!isEdit">
-          <Input type="text" v-model="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony"/>
+          <Input type="text" v-model.trim="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony"/>
         </FormItem>
         <FormItem label="默认密码" prop="password" v-if="!isEdit">
-          <Input type="password" v-model="user.password" :maxlength="32" placeholder="请输入默认密码"/>
+          <Input type="password" v-model.trim="user.password" :maxlength="32" placeholder="请输入默认密码"/>
         </FormItem>
         <FormItem label="手机号" prop="phone">
-          <Input type="text" v-model="user.phone" :maxlength="11" placeholder="请输入手机号"/>
+          <Input type="text" v-model.trim="user.phone" :maxlength="11" placeholder="请输入手机号"/>
         </FormItem>
         <FormItem label="备注" prop="desc">
-          <Input type="textarea" v-model="user.desc" :rows="3" class="user-desc"/>
+          <Input type="textarea" v-model.trim="user.desc" :rows="3" class="user-desc"/>
         </FormItem>
         <!-- <FormItem label="权限">    
           <RadioGroup v-model="user.roleId">

@@ -23,13 +23,13 @@
               <Input type="text" v-model="editUser.username" :maxlength="20" disabled/>
             </FormItem>
             <FormItem label="姓名" prop="name">
-              <Input type="text" v-model="editUser.name" :maxlength="20" />
+              <Input type="text" v-model.trim="editUser.name" :maxlength="20" />
             </FormItem>
             <FormItem label="手机号" prop="phone">
-              <Input type="text" v-model="editUser.phone" :maxlength="11" />
+              <Input type="text" v-model.trim="editUser.phone" :maxlength="11" />
             </FormItem>
             <FormItem label="备注" prop="desc">
-              <Input type="textarea" v-model="editUser.desc" :rows="3" class="textarea-desc" />
+              <Input type="textarea" v-model.trim="editUser.desc" :rows="3" class="textarea-desc" />
             </FormItem>
             <FormItem>
               <Button type="primary" style="width: 100px;" :loading="saveLoading" @click="handleSaveClick">保存</Button>

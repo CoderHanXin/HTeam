@@ -10,7 +10,7 @@
       width="480">
       <Form ref="groupAddForm" :model="group" :rules="rules" :label-width="80">
         <FormItem label="分组名称" prop="name">
-          <Input type="text" v-model="group.name" :maxlength="20" placeholder="请输入分组名称"/>
+          <Input type="text" v-model.trim="group.name" :maxlength="20" placeholder="请输入分组名称"/>
         </FormItem>
         <FormItem label="选择成员">
             <Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">所有人</Checkbox>
