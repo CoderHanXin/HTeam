@@ -404,7 +404,7 @@ export default {
       })
     },
     taskExpired(date) {
-      return util.timeBeforeNow(date)
+      return util.timeBeforeToday(date)
     },
     showMore() {
       this.showMoreEvents = true
