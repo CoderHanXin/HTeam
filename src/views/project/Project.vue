@@ -146,7 +146,6 @@ export default {
 <style lang="stylus" scoped>
 @import '~@/style/mixin'
 @import '~@/style/variable'
-
 .project-list
   flex auto
   padding 10px 0
@@ -160,6 +159,7 @@ export default {
 .project-item-body
   position relative
   display flex
+  align-items center
   padding 16px 0
   &:after
     setBottomLine(#eee)
@@ -178,7 +178,7 @@ export default {
   color $color-grey
   font-size 12px
 .project-item-meta-count
-  color $color-text
-  font-size 14px
-  font-weight 600
+  color $color-text-light
+  font-size 20px
+  font-weight 500
 </style>
