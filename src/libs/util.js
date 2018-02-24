@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 
+moment.locale('zh-cn')
 let util = {}
 util.title = function(title) {
   if (title) {
@@ -12,42 +13,11 @@ util.title = function(title) {
   window.document.title = title
 }
 
-util.trimDate = function(date) {
-  let d = moment(date, 'YYYY-MM-DD HH:mm')
-  if (d.hour() === 0 && d.minute() === 0 && d.second() === 0) {
-    return d.format('YYYY-MM-DD')
-  } else {
-    return date
-  }
-}
-
-util.timeCompare = function(a, b) {
-  const m1 = moment(a)
-  const m2 = moment(b)
-  const diff = m1.diff(m2)
-
-  return diff >= 0
-}
-
-util.timeCompareNow = function(t) {
-  const m = moment(t)
-  const diff = m.diff(moment())
-
-  return diff >= 0
-}
-
-util.timeBeforeNow = function(t) {
+util.timeBeforeToday = function(t) {
   const m = moment(t)
   const today = moment(moment().format('YYYY-MM-DD'))
   const diff = m.diff(today)
 
-  return diff < 0
-}
-
-util.timeLessThanToday = function(t) {
-  const m = moment(t)
-  const today = moment().format('YYYY-MM-DD')
-  const diff = m.diff(moment(today))
   return diff < 0
 }
 
@@ -65,15 +35,26 @@ util.timeEqualTomorrow = function(t) {
   return m === tomorrow
 }
 
-util.timeLessThanNextWeek = function(t) {
-  const m = moment(t)
-  const nextWeek = moment(
+util.timeInThisWeek = function(t) {
+  const m = moment(moment(t).format('YYYY-MM-DD'))
+  const thisSunday = moment(
     moment()
-      .weekday(7)
+      .weekday(6)
       .format('YYYY-MM-DD')
   )
-  const diff = m.diff(nextWeek)
-  return diff < 0
+  const diff = m.diff(thisSunday)
+  return diff <= 0
+}
+
+util.timeInNextWeek = function(t) {
+  const m = moment(moment(t).format('YYYY-MM-DD'))
+  const nextSunday = moment(
+    moment()
+      .weekday(13)
+      .format('YYYY-MM-DD')
+  )
+  const diff = m.diff(nextSunday)
+  return diff <= 0
 }
 
 util.timeLessThanNextMonth = function(t) {
