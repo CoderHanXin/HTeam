@@ -7,11 +7,11 @@
         </div>
       </div>
       <MainSiderItem name="project">
-        <Icon size="18" type="ios-navigate"></Icon>
+        <Icon size="20" type="ios-folder"></Icon>
         <p>项目</p>
       </MainSiderItem>
       <MainSiderItem name="team">
-        <Icon size="18" type="ios-clock"></Icon>
+        <Icon size="20" type="ios-people"></Icon>
         <p>团队</p>
       </MainSiderItem>
     </MainSider>

@@ -13,7 +13,7 @@
           所有项目
         </menu-item>
         <menu-item name="created">
-          <Icon type="ios-list" size="16"></Icon>
+          <Icon type="ios-plus" size="16"></Icon>
           我创建的
         </menu-item>
         <menu-item name="joined">

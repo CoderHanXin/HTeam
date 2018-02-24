@@ -9,15 +9,15 @@
       </div>
       <Menu class="menu" theme="light" width="auto" :activeName="activeMenuName" @on-select="handleChangeMenu">
         <menu-item name="all">
-          <Icon type="ios-folder" size="16"></Icon>
+          <Icon type="ios-settings-strong" size="16"></Icon>
           所有任务
         </menu-item>
         <menu-item name="processing">
-          <Icon type="ios-list" size="16"></Icon>
+          <Icon type="ios-shuffle-strong" size="16"></Icon>
           正在进行
         </menu-item>
         <menu-item name="done">
-          <Icon type="ios-pricetag" size="16"></Icon>
+          <Icon type="ios-checkmark" size="16"></Icon>
           已完成
         </menu-item>
       </Menu>
