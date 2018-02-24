@@ -58,7 +58,7 @@
             </Card>
           </li>
         </ul>
-        <div v-if="list.length === 0" class="list-empty">{{listEmpty}}</div>
+        <div v-if="!list || list.length === 0" class="list-empty">{{listEmpty}}</div>
       </div>
     </Content>
   </Layout>
@@ -68,7 +68,7 @@
 import taskService from '@/api/services/task'
 import events from '../../common/constant/task_event'
 import util from '../../libs/util'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'TaskList',
   data() {
@@ -92,7 +92,7 @@ export default {
         title: '',
         deadline: ''
       },
-      dateFilter: 'all',
+      dateFilter: this.taskDateFilter || 'all',
       assigneeId: null,
       dateOptions: {
         disabledDate(date) {
@@ -164,6 +164,7 @@ export default {
       }
     },
     ...mapGetters([
+      'taskDateFilter',
       'currentUser',
       'currentTeam',
       'allUsers',
@@ -175,6 +176,7 @@ export default {
       this.project.id = to.params.id
       this.project.name = to.params.name
       this.listType = this.$route.params.listType
+      this.dateFilter = this.taskDateFilter
       this.getTask()
     }
   },
@@ -182,6 +184,7 @@ export default {
     this.project.id = this.$route.params.id
     this.project.name = this.$route.params.name
     this.listType = this.$route.params.listType
+    this.dateFilter = this.taskDateFilter
     this.init()
   },
   methods: {
@@ -257,6 +260,7 @@ export default {
     },
     handleDateFilter(name) {
       this.dateFilter = name
+      this.setTaskDateFilter(name)
     },
     setTaskGroup() {
       this.taskGroup.today = []
@@ -298,7 +302,10 @@ export default {
     },
     taskExpired(date) {
       return util.timeBeforeToday(date)
-    }
+    },
+    ...mapMutations([
+      'setTaskDateFilter'
+    ])
   }
 }
 </script>
