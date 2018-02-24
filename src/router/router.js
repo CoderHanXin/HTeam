@@ -85,6 +85,32 @@ export const appRouter = [
         component: () => import('@/views/team/Team.vue')
       },
       {
+        path: 'stats',
+        name: 'stats',
+        redirect: 'stats/summary',
+        meta: {
+          title: '统计'
+        },
+        component: () => import('@/views/stats/Stats.vue'),
+        children: [
+          {
+            path: 'summary',
+            name: 'stats-summary',
+            component: () => import('@/views/stats/StatsSummary.vue')
+          },
+          {
+            path: 'weekly',
+            name: 'stats-weekly',
+            component: () => import('@/views/stats/StatsWeekly.vue')
+          },
+          {
+            path: 'team',
+            name: 'stats-team',
+            component: () => import('@/views/stats/StatsTeam.vue')
+          }
+        ]
+      },
+      {
         path: 'account',
         name: 'account',
         meta: {

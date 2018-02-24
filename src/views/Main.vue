@@ -14,6 +14,10 @@
         <Icon size="20" type="ios-people"></Icon>
         <p>团队</p>
       </MainSiderItem>
+      <MainSiderItem name="stats">
+        <Icon size="20" type="stats-bars"></Icon>
+        <p>统计</p>
+      </MainSiderItem>
     </MainSider>
     <Layout>
       <router-view></router-view>
