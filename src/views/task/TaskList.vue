@@ -2,6 +2,26 @@
   <Layout class="main-body">
     <div class="header">
       <div class="title">{{mainTitle}}</div>
+      <div class="panel">
+        <div class="panel-item">
+          <Dropdown @on-click="handleDateFilter">
+            <a class="link-text">
+              {{dateFilterLabel}}
+              <Icon type="arrow-down-b"></Icon>
+            </a>
+            <DropdownMenu slot="list">
+              <DropdownItem name="all" :selected="dateFilter === 'all'">所有时间</DropdownItem>
+              <DropdownItem name="today" :selected="dateFilter === 'today'" divided>今天</DropdownItem>
+              <DropdownItem name="tomorrow" :selected="dateFilter === 'tomorrow'">明天</DropdownItem>
+              <DropdownItem name="thisWeek" :selected="dateFilter === 'thisWeek'">本周</DropdownItem>
+              <DropdownItem name="nextWeek" :selected="dateFilter === 'nextWeek'">下周</DropdownItem>
+              <DropdownItem name="after" :selected="dateFilter === 'after'">以后</DropdownItem>
+              <DropdownItem name="expired" :selected="dateFilter === 'expired'" divided>已延误</DropdownItem>
+              <DropdownItem name="noDeadline" :selected="dateFilter === 'noDeadline'">没有截止时间</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+      </div>
     </div>
     <Content class="content">
       <div class="task-quick-add">
@@ -28,8 +48,8 @@
                     <span :class="{'task-done': item.done}">{{item.title}}</span>
                   </div>
                   <div class="task-item-meta">
-                    <span class="task-assignee">{{item.user ? item.user.name : '未指派'}}</span>
-                    <span v-if="item.deadline" class="task-label">
+                    <span class="task-item-meta-label">{{item.user ? item.user.name : '未指派'}}</span>
+                    <span v-if="item.deadline" class="task-item-meta-label" :class="{'task-expired':taskExpired(item.deadline)}">
                       <Icon type="ios-clock-outline"></Icon>
                       {{item.deadline | deadline}}</span>
                   </div>
@@ -47,6 +67,7 @@
 <script>
 import taskService from '@/api/services/task'
 import events from '../../common/constant/task_event'
+import util from '../../libs/util'
 import { mapGetters } from 'vuex'
 export default {
   name: 'TaskList',
@@ -57,11 +78,21 @@ export default {
         name: ''
       },
       listType: 'all',
-      list: [],
+      taskList: [],
+      taskGroup: {
+        today: [],
+        tomorrow: [],
+        thisWeek: [],
+        nextWeek: [],
+        after: [],
+        expired: [],
+        noDeadline: []
+      },
       task: {
         title: '',
         deadline: ''
       },
+      dateFilter: 'all',
       assigneeId: null,
       dateOptions: {
         disabledDate(date) {
@@ -89,6 +120,47 @@ export default {
           return '没有正在处理的任务'
         case 'done':
           return '还没有完成任何任务'
+      }
+    },
+    dateFilterLabel() {
+      switch (this.dateFilter) {
+        case 'all':
+          return '所有时间'
+        case 'today':
+          return '今天'
+        case 'tomorrow':
+          return '明天'
+        case 'thisWeek':
+          return '本周'
+        case 'nextWeek':
+          return '下周'
+        case 'after':
+          return '以后'
+        case 'expired':
+          return '已延误'
+        case 'noDeadline':
+          return '没有截至时间'
+      }
+    },
+    list() {
+      if (this.dateFilter === 'all') {
+        return this.taskList
+      }
+      switch (this.dateFilter) {
+        case 'today':
+          return this.taskGroup.today
+        case 'tomorrow':
+          return this.taskGroup.tomorrow
+        case 'thisWeek':
+          return this.taskGroup.thisWeek
+        case 'nextWeek':
+          return this.taskGroup.nextWeek
+        case 'after':
+          return this.taskGroup.after
+        case 'expired':
+          return this.taskGroup.expired
+        case 'noDeadline':
+          return this.taskGroup.noDeadline
       }
     },
     ...mapGetters([
@@ -124,7 +196,8 @@ export default {
         done = 1
       }
       taskService.getList(this.project.id, done).then(res => {
-        this.list = res.data.data
+        this.taskList = res.data.data
+        this.setTaskGroup()
       })
     },
     createTask() {
@@ -181,6 +254,50 @@ export default {
           taskId: item.id
         }
       })
+    },
+    handleDateFilter(name) {
+      this.dateFilter = name
+    },
+    setTaskGroup() {
+      this.taskGroup.today = []
+      this.taskGroup.tomorrow = []
+      this.taskGroup.thisWeek = []
+      this.taskGroup.nextWeek = []
+      this.taskGroup.after = []
+      this.taskGroup.expired = []
+      this.taskGroup.noDeadline = []
+      for (const task of this.taskList) {
+        if (!task.deadline) {
+          this.taskGroup.noDeadline.push(task)
+          continue
+        }
+        if (util.timeBeforeToday(task.deadline)) {
+          this.taskGroup.expired.push(task)
+          continue
+        }
+        if (util.timeEqualToday(task.deadline)) {
+          this.taskGroup.today.push(task)
+          this.taskGroup.thisWeek.push(task)
+          continue
+        }
+        if (util.timeEqualTomorrow(task.deadline)) {
+          this.taskGroup.tomorrow.push(task)
+          this.taskGroup.thisWeek.push(task)
+          continue
+        }
+        if (util.timeInThisWeek(task.deadline)) {
+          this.taskGroup.thisWeek.push(task)
+          continue
+        }
+        if (util.timeInNextWeek(task.deadline)) {
+          this.taskGroup.nextWeek.push(task)
+          continue
+        }
+        this.taskGroup.after.push(task)
+      }
+    },
+    taskExpired(date) {
+      return util.timeBeforeToday(date)
     }
   }
 }
