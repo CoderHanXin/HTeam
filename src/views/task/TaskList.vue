@@ -215,6 +215,7 @@ export default {
       if (this.assigneeId) {
         task.user_id = this.assigneeId
       }
+      task.team_id = this.currentTeam.id
       task.project_id = this.project.id
 
       let event = {}
@@ -223,6 +224,7 @@ export default {
       event.user_id = this.currentUser.id
 
       taskService.add(task, event).then(res => {
+        this.task.title = ''
         this.getTask()
       })
     },
