@@ -39,12 +39,12 @@
       </div>
       <div class="task-list">
         <ul>
-          <li @click="handleTaskClick(item)" v-for="item in list" :key="item.id" class="task-item">
+          <li v-for="item in list" :key="item.id" class="task-item">
             <Card :bordered="false" :padding="0">
               <div class="task-item-wrapper">
                 <div class="task-item-body">
                   <Checkbox @on-change="handleTaskCheck(item)" v-model="item.done" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
-                  <div class="task-item-title">
+                  <div @click="handleTaskClick(item)" class="task-item-title">
                     <span :class="{'task-done': item.done}">{{item.title}}</span>
                   </div>
                   <div class="task-item-meta">
@@ -66,7 +66,7 @@
 
 <script>
 import taskService from '@/api/services/task'
-import events from '../../common/constant/task_event'
+import taskEvent from '../../common/constant/task_event'
 import util from '../../libs/util'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
@@ -219,8 +219,8 @@ export default {
       task.project_id = this.project.id
 
       let event = {}
-      event.type = events.create
-      event.event = events.createText
+      event.type = taskEvent.create
+      event.event = taskEvent.createText
       event.user_id = this.currentUser.id
 
       taskService.add(task, event).then(res => {
@@ -246,7 +246,17 @@ export default {
     handleTaskCheck(item) {
       let task = {}
       task.done = item.done
-      taskService.update(item.id, task).then(res => {
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      if (task.done) {
+        event.type = taskEvent.done
+        event.event = taskEvent.doneText
+      } else {
+        event.type = taskEvent.reopen
+        event.event = taskEvent.reopenText
+      }
+      taskService.update(item.id, task, event).then(res => {
         console.log(res.data)
       })
     },
@@ -305,6 +315,7 @@ export default {
     taskExpired(date) {
       return util.timeBeforeToday(date)
     },
+    stop() { },
     ...mapMutations([
       'setTaskDateFilter'
     ])
