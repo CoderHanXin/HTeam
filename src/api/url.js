@@ -27,5 +27,8 @@ export default {
   task_update: '/api/task/:id',
   task_delete: '/api/task/:id',
   task_comment_create: '/api/task/:id/comment',
-  task_inbox: '/api/task/inbox'
+  task_inbox: '/api/task/inbox',
+
+  stats_summary: '/api/stats/summary',
+  stats_weekly: '/api/stats/weekly'
 }

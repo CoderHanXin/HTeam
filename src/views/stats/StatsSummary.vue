@@ -24,19 +24,19 @@
           <div class="flex-cell">
             <div class="stats-item">
               <p class="stats-item-label">进行中</p>
-              <p class="stats-item-number grey">30</p>
+              <p class="stats-item-number grey">{{processing}}</p>
             </div>
             <div class="stats-item">
               <p class="stats-item-label">延误</p>
-              <p class="stats-item-number red">30</p>
+              <p class="stats-item-number red">{{summary.expired}}</p>
             </div>
             <div class="stats-item">
               <p class="stats-item-label">已完成</p>
-              <p class="stats-item-number green">30</p>
+              <p class="stats-item-number green">{{summary.done}}</p>
             </div>
             <div class="stats-item">
               <p class="stats-item-label">任务总数</p>
-              <p class="stats-item-number grey">30</p>
+              <p class="stats-item-number grey">{{summary.all}}</p>
             </div>
           </div>
         </div>
@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import statsService from '@/api/services/stats'
+import { mapGetters } from 'vuex'
 import ECharts from 'vue-echarts/components/ECharts.vue'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/tooltip'
@@ -72,12 +74,10 @@ export default {
   data() {
     return {
       mainTitle: '任务概况',
-      options: {
-        series: [
-          {
-            data: [{ value: 0, name: '' }]
-          }
-        ]
+      summary: {
+        all: 0,
+        done: 0,
+        expired: 0
       },
       doneGauge: getGauge(),
       expiredGauge: getGauge(),
@@ -116,20 +116,31 @@ export default {
     }
   },
   computed: {
+    processing() {
+      return this.summary.all - this.summary.done
+    },
+    ...mapGetters([
+      'currentUser',
+      'currentTeam'
+    ])
   },
   created() {
+    this.init()
   },
   mounted() {
-    this.init()
   },
   methods: {
     init() {
-      this.options.series[0].data[0].value = 90
-      this.options.series[0].data[0].name = '完成率'
-      this.$refs.done.mergeOptions(this.options)
-      this.options.series[0].data[0].value = 11
-      this.options.series[0].data[0].name = '延期率'
-      this.$refs.expired.mergeOptions(this.options)
+      this.getSummary()
+    },
+    getSummary() {
+      statsService.getSummary(this.currentTeam.id).then(res => {
+        this.summary = res.data.data
+        this.doneGauge.series[0].data[0].value = (this.summary.done * 100 / this.summary.all).toFixed()
+        this.doneGauge.series[0].data[0].name = '完成率'
+        this.expiredGauge.series[0].data[0].value = (this.summary.expired * 100 / this.summary.all).toFixed()
+        this.expiredGauge.series[0].data[0].name = '延期率'
+      })
     }
   }
 }
