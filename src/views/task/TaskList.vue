@@ -25,7 +25,7 @@
     </div>
     <Content class="content">
       <div class="task-quick-add">
-        <input class="title" v-model.trim="task.title" @keyup.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
+        <input class="title" v-model.trim="task.title" @keydown.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
         <div class="meta">
           <div class="meta-item">
             <Select v-model="assigneeId" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">

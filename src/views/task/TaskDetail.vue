@@ -78,7 +78,7 @@
               </div>
               <div class="editor-wrapper">
                 <div class="editor">
-                  <textarea v-model="comment" @keyup.enter="submitComment" class="editor-textarea" rows="4" placeholder="在此输入评论内容，按回车键（Enter）提交"></textarea>
+                  <textarea v-model="comment" @keydown.enter="submitComment" class="editor-textarea" rows="4" placeholder="在此输入评论内容，按回车键（Enter）提交"></textarea>
                 </div>
                 <div class="toolbar">
                   <div @click="submitComment" class="editor-submit" title="提交">
