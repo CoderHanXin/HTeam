@@ -92,19 +92,19 @@
                 <li class="task-detail-sider-item">
                   <header class="item-header">执行者
                   </header>
-                  <Select v-model="assigneeId" @on-change="changeAssignee" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
+                  <Select :disabled="disabled" v-model="assigneeId" @on-change="changeAssignee" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
                     <Option v-for="item in allUsers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
                   </Select>
                 </li>
                 <li class="task-detail-sider-item">
                   <header class="item-header">截止日期
                   </header>
-                  <DatePicker v-model="deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
+                  <DatePicker :disabled="disabled" v-model="deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
                 </li>
                 <li class="task-detail-sider-item">
                   <header class="item-header">紧急程度
                   </header>
-                  <Select v-model="level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
+                  <Select :disabled="disabled" v-model="level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
                     <Option :value="0" label="有空再看">
                       <Icon class="level-icon-off" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
@@ -128,7 +128,7 @@
                   </Select>
                 </li>
                 <li class="task-detail-sider-item with-border-top">
-                  <Button @click="handleEdit" type="primary" shape="circle" size="small" class="margin-right-4">编辑任务</Button>
+                  <Button :disabled="disabled" @click="handleEdit" type="primary" shape="circle" size="small" class="margin-right-4">编辑任务</Button>
                   <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
                 </li>
                 <li class="task-detail-sider-item">
@@ -203,6 +203,9 @@ export default {
     }
   },
   computed: {
+    disabled() {
+      return this.task.done === 1
+    },
     ...mapGetters([
       'currentUser',
       'currentTeam',
