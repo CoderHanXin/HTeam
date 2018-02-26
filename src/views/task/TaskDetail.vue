@@ -99,7 +99,7 @@
                 <li class="task-detail-sider-item">
                   <header class="item-header">截止日期
                   </header>
-                  <DatePicker v-model="task.deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
+                  <DatePicker v-model="deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
                 </li>
                 <li class="task-detail-sider-item">
                   <header class="item-header">紧急程度
@@ -153,6 +153,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import taskService from '@/api/services/task'
 import teamService from '@/api/services/team'
 import projectService from '@/api/services/project'
@@ -189,10 +190,11 @@ export default {
       comment: '',
       assigneeId: null,
       assignee: '未指派',
+      deadline: null,
       dateOptions: {
-        disabledDate(date) {
-          return date && date.valueOf() < Date.now() - 86400000
-        }
+        // disabledDate(date) {
+        //   return date && date.valueOf() < Date.now() - 86400000
+        // }
       },
       isDatePickerOpen: false,
       rules: {
@@ -249,7 +251,8 @@ export default {
           this.assigneeId = null
           this.assignee = '未指派'
         }
-        this.deadlineLabel = this.task.deadline
+        // 将utc时间转换为Date
+        this.deadline = this.task.deadline ? moment(this.task.deadline).toDate() : null
         console.log(this.task)
       })
     },
@@ -313,7 +316,8 @@ export default {
     },
     changeDeadline(date) {
       let task = {}
-      task.deadline = date
+      // 转换为utc时间再保存
+      task.deadline = date ? moment(date).utc().toDate() : null
       let event = {}
       event.user_id = this.currentUser.id
       event.task_id = this.taskId
@@ -326,7 +330,7 @@ export default {
         event.event = taskEvent.noDeadlineText
       }
       taskService.update(this.taskId, task, event).then(res => {
-        this.task.deadline = date
+        this.task.deadline = task.deadline
       })
     },
     changeLevel(val) {
@@ -336,7 +340,6 @@ export default {
         console.log('return')
         return
       }
-      console.log(val)
       let task = {}
       task.level = val.value
       let event = {}
