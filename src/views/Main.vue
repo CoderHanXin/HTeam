@@ -10,7 +10,7 @@
         <Icon size="20" type="ios-folder"></Icon>
         <p>项目</p>
       </MainSiderItem>
-      <MainSiderItem name="team">
+      <MainSiderItem v-if="isAdmin" name="team">
         <Icon size="20" type="ios-people"></Icon>
         <p>团队</p>
       </MainSiderItem>
@@ -121,6 +121,10 @@ export default {
           display: 'none'
         }
       }
+    },
+    isAdmin() {
+      return this.currentTeam.team_user.role_id === 1 ||
+        this.currentTeam.team_user.role_id === 2
     },
     ...mapGetters([
       'currentUser',
