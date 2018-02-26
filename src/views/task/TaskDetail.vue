@@ -104,7 +104,7 @@
                 <li class="task-detail-sider-item">
                   <header class="item-header">紧急程度
                   </header>
-                  <Select v-model="task.level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
+                  <Select v-model="level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
                     <Option :value="0" label="有空再看">
                       <Icon class="level-icon-off" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
@@ -177,8 +177,7 @@ export default {
         title: '',
         desc: '',
         deadline: '',
-        done: 0,
-        user: {}
+        done: 0
       },
       editTask: {
         title: '',
@@ -191,6 +190,7 @@ export default {
       assigneeId: null,
       assignee: '未指派',
       deadline: null,
+      level: null,
       dateOptions: {
         // disabledDate(date) {
         //   return date && date.valueOf() < Date.now() - 86400000
@@ -253,6 +253,7 @@ export default {
         }
         // 将utc时间转换为Date
         this.deadline = this.task.deadline ? moment(this.task.deadline).toDate() : null
+        this.level = this.task.level
         console.log(this.task)
       })
     },
@@ -283,16 +284,9 @@ export default {
       })
     },
     changeAssignee(val) {
-      console.log(val)
-      // 如果是页面刷新，返回
-      if (val.value && !val.label) {
-        console.log('refresh')
-        return
-      }
       // 如果是页面初始化，返回
       if (this.task.user) {
         if (this.task.user.id === val.value) {
-          console.log('init')
           return
         }
       }
@@ -334,10 +328,8 @@ export default {
       })
     },
     changeLevel(val) {
-      console.log(val)
-      // 如果是页面刷新，返回
-      if (val.value && !val.label) {
-        console.log('return')
+      // 如果是页面初始化，返回
+      if (this.task.level === val.value) {
         return
       }
       let task = {}
@@ -349,6 +341,7 @@ export default {
       event.event = taskEvent.levelText.replace('{level}', val.label)
 
       taskService.update(this.taskId, task, event).then(res => {
+        this.task.level = val.value
       })
     },
     handleCheck() {
