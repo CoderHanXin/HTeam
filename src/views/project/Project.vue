@@ -72,7 +72,7 @@ export default {
     mainTitle() {
       switch (this.activeMenuName) {
         case 'all':
-          return '所有任务'
+          return '所有项目'
         case 'created':
           return '我创建的'
         case 'joined':
