@@ -64,6 +64,9 @@ export const appRouter = [
           {
             path: ':listType',
             name: 'project-task-list',
+            meta: {
+              title: '任务列表'
+            },
             component: () => import('@/views/task/TaskList.vue')
           }
         ]
@@ -96,16 +99,25 @@ export const appRouter = [
           {
             path: 'summary',
             name: 'stats-summary',
+            meta: {
+              title: '任务概况'
+            },
             component: () => import('@/views/stats/StatsSummary.vue')
           },
           {
             path: 'weekly',
             name: 'stats-weekly',
+            meta: {
+              title: '任务周报'
+            },
             component: () => import('@/views/stats/StatsWeekly.vue')
           },
           {
             path: 'team',
             name: 'stats-team',
+            meta: {
+              title: '团队统计'
+            },
             component: () => import('@/views/stats/StatsTeam.vue')
           }
         ]
@@ -121,6 +133,9 @@ export const appRouter = [
           {
             path: 'profile',
             name: 'profile',
+            meta: {
+              title: '个人设置'
+            },
             component: () => import('@/views/account/Profile.vue')
           }
         ]
