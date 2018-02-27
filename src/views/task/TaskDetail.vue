@@ -93,7 +93,7 @@
                   <header class="item-header">执行者
                   </header>
                   <Select :disabled="disabled" v-model="assigneeId" @on-change="changeAssignee" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
-                    <Option v-for="item in allUsers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
+                    <Option v-for="item in projectMembers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
                   </Select>
                 </li>
                 <li class="task-detail-sider-item">
@@ -207,6 +207,7 @@ export default {
       return this.task.done === 1
     },
     ...mapGetters([
+      'projectMembers',
       'currentUser',
       'currentTeam',
       'allUsers',
@@ -242,6 +243,7 @@ export default {
     getProject() {
       projectService.get(this.project.id).then(res => {
         this.project = res.data.data
+        this.setProjectMembers(this.project.users)
       })
     },
     getTask() {
@@ -453,6 +455,7 @@ export default {
       }
     },
     ...mapMutations([
+      'setProjectMembers',
       'setAllUsers',
       'setAllGroups'
     ])

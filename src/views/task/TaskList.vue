@@ -29,7 +29,7 @@
         <div class="meta">
           <div class="meta-item">
             <Select v-model="assigneeId" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
-              <Option v-for="item in allUsers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
+              <Option v-for="item in projectMembers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
             </Select>
           </div>
           <div class="meta-item">
@@ -164,6 +164,7 @@ export default {
       }
     },
     ...mapGetters([
+      'projectMembers',
       'taskDateFilter',
       'currentUser',
       'currentTeam',

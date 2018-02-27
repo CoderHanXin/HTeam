@@ -89,6 +89,7 @@ export default {
     getProject() {
       projectService.get(this.project.id).then(res => {
         this.project = res.data.data
+        this.setProjectMembers(this.project.users)
       })
     },
     getUserList() {
@@ -124,6 +125,7 @@ export default {
       this.isProjectEditVisable = true
     },
     ...mapMutations([
+      'setProjectMembers',
       'setAllUsers',
       'setAllGroups'
     ])
