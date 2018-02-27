@@ -12,10 +12,6 @@
           <Icon type="ios-folder" size="16"></Icon>
           所有项目
         </menu-item>
-        <menu-item name="created">
-          <Icon type="ios-plus" size="16"></Icon>
-          我创建的
-        </menu-item>
         <menu-item name="joined">
           <Icon type="ios-pricetag" size="16"></Icon>
           我参与的
@@ -73,8 +69,6 @@ export default {
       switch (this.activeMenuName) {
         case 'all':
           return '所有项目'
-        case 'created':
-          return '我创建的'
         case 'joined':
           return '我参与的'
       }
