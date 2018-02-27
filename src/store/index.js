@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import app from './modules/app'
 import team from './modules/team'
+import project from './modules/project'
 import task from './modules/task'
 import createLogger from 'vuex/dist/logger'
 
@@ -13,6 +14,7 @@ export default new Vuex.Store({
   modules: {
     app,
     team,
+    project,
     task
   },
   strict: debug,
