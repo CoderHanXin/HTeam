@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
     })
   } else if (store.state.app.currentUser && to.name === 'login') {
     next({
-      name: 'task'
+      name: 'project'
     })
   } else {
     next()
