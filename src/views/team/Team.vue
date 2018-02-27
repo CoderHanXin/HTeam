@@ -25,7 +25,7 @@
       </div>
       <Content class="content">
         <div>
-          <div class="filter-container">
+          <div v-if="isAdmin" class="filter-container">
             <Form inline>
               <!-- <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
               <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button> -->
@@ -85,7 +85,7 @@ export default {
         phone: '',
         desc: ''
       },
-      columns: [
+      tabelColumns: [
         {
           title: '姓名',
           key: 'name',
@@ -201,6 +201,14 @@ export default {
     isAdmin() {
       return this.currentTeam.team_user.role_id === 1 ||
         this.currentTeam.team_user.role_id === 2
+    },
+    columns() {
+      if (this.isAdmin) {
+        return this.tabelColumns
+      } else {
+        this.tabelColumns.pop()
+        return this.tabelColumns
+      }
     },
     ...mapGetters([
       'currentTeam',
