@@ -61,7 +61,7 @@ export default {
     return {
       activeMenuName: 'all',
       isProjectAddVisable: false,
-      list: []
+      allList: []
     }
   },
   computed: {
@@ -76,6 +76,27 @@ export default {
     isAdmin() {
       return this.currentTeam.team_user.role_id === 1 ||
         this.currentTeam.team_user.role_id === 2
+    },
+    joinedList() {
+      let list = []
+      for (const project of this.allList) {
+        for (const user of project.users) {
+          if (user.id === this.currentUser.id) {
+            list.push(project)
+            break
+          }
+        }
+      }
+      return list
+    },
+    list() {
+      if (this.activeMenuName === 'all') {
+        return this.allList
+      } else if (this.activeMenuName === 'joined') {
+        return this.joinedList
+      } else {
+        return []
+      }
     },
     ...mapGetters([
       'currentUser',
@@ -96,7 +117,7 @@ export default {
     },
     getProjectList() {
       projectService.getList(this.currentTeam.id).then(res => {
-        this.list = res.data.data
+        this.allList = res.data.data
       })
     },
     getUserList() {
@@ -140,6 +161,7 @@ export default {
 <style lang="stylus" scoped>
 @import '~@/style/mixin'
 @import '~@/style/variable'
+
 .project-list
   flex auto
   padding 10px 0
