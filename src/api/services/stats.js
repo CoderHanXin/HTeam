@@ -8,12 +8,22 @@ class StatsService {
   /**
    * 获取任务概况
    * @param   {Number} teamId 团队id
-   * @return  {Object:{all, done, expired}}
+   * @param   {Number} start  开始时间
+   * @param   {Number} end    截至时间
+   * @return  {Object:{processing, done, expired}}
    */
-  getSummary(teamId) {
-    return http.get(url.stats_summary, {
-      teamId
-    })
+  getSummary(teamId, start, end) {
+    if (start) {
+      return http.get(url.stats_summary, {
+        teamId,
+        start,
+        end
+      })
+    } else {
+      return http.get(url.stats_summary, {
+        teamId
+      })
+    }
   }
 
   /**

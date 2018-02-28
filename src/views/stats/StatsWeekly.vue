@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import statsService from '@/api/services/stats'
 import DateRange from './components/DateRange'
 import TaskStats from './components/TaskStats'
@@ -30,7 +31,9 @@ export default {
         processing: 0,
         done: 0,
         expired: 0
-      }
+      },
+      start: null,
+      end: null
     }
   },
   computed: {
@@ -40,6 +43,8 @@ export default {
     ])
   },
   created() {
+    this.start = moment(moment().weekday(0).format('YYYY-MM-DD')).toDate()
+    this.end = moment(moment().weekday(6).format('YYYY-MM-DD')).toDate()
     this.init()
   },
   methods: {
@@ -47,10 +52,12 @@ export default {
       this.getSummary()
     },
     handleRangeChange(start, end) {
-
+      this.start = start
+      this.end = end
+      this.getSummary()
     },
     getSummary() {
-      statsService.getSummary(this.currentTeam.id).then(res => {
+      statsService.getSummary(this.currentTeam.id, this.start, this.end).then(res => {
         this.summary = res.data.data
       })
     }
