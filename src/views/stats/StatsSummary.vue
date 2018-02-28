@@ -6,7 +6,7 @@
       </div>
     </div>
     <Content class="content">
-      <TaskStats :all="summary.all" :done="summary.done" :expired="summary.expired"></TaskStats>
+      <TaskStats :processing="summary.processing" :done="summary.done" :expired="summary.expired"></TaskStats>
       <Card class="margin-top-16" shadow>
         <div class="card-header">
           <div class="card-header-title">
@@ -56,7 +56,7 @@ export default {
     return {
       mainTitle: '任务概况',
       summary: {
-        all: 0,
+        processing: 0,
         done: 0,
         expired: 0
       },

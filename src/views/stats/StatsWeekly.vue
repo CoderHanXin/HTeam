@@ -7,7 +7,7 @@
       </div>
     </div>
     <Content class="content">
-      <TaskStats :all="summary.all" :done="summary.done" :expired="summary.expired"></TaskStats>
+      <TaskStats :processing="summary.processing" :done="summary.done" :expired="summary.expired"></TaskStats>
     </Content>
   </Layout>
 </template>
@@ -27,7 +27,7 @@ export default {
     return {
       mainTitle: '任务周报',
       summary: {
-        all: 0,
+        processing: 0,
         done: 0,
         expired: 0
       }
