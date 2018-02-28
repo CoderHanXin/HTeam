@@ -30,5 +30,6 @@ export default {
   task_inbox: '/api/task/inbox',
 
   stats_summary: '/api/stats/summary',
+  stats_trend: '/api/stats/trend',
   stats_weekly: '/api/stats/weekly'
 }

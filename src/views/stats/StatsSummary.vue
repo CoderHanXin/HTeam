@@ -8,7 +8,9 @@
     <Content class="content">
       <Card shadow>
         <div class="card-header">
-          <span class="card-title">任务统计</span>
+          <div class="card-header-title">
+            <span>任务统计</span>
+          </div>
         </div>
         <div class="card-body">
           <div class="flex-cell border-right">
@@ -43,11 +45,30 @@
       </Card>
       <Card class="margin-top-16" shadow>
         <div class="card-header">
-          <span class="card-title">每日新增完成任务趋势</span>
+          <div class="card-header-title">
+            <span>每日新增完成任务趋势</span>
+          </div>
+          <div class="card-header-meta">
+            <!-- <Icon class="card-header-meta-icon" type="ios-arrow-back"></Icon>
+            <div class="card-header-meta-date">
+              <span>本周</span>
+            </div>
+            <Icon class="card-header-meta-icon" type="ios-arrow-forward"></Icon> -->
+            <Dropdown @on-click="handTrendRangeChange">
+              <a class="link-text">
+                {{trendRangeLabel}}
+                <Icon type="arrow-down-b"></Icon>
+              </a>
+              <DropdownMenu slot="list">
+                <DropdownItem name="week">本周</DropdownItem>
+                <DropdownItem name="month">最近一个月</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
         <div class="card-body">
           <div class="chart-line">
-            <chart :options="taskLine" ref="taskLine" auto-resize></chart>
+            <chart :options="trendLine" ref="trendLine" auto-resize></chart>
           </div>
         </div>
       </Card>
@@ -57,6 +78,7 @@
 
 <script>
 import statsService from '@/api/services/stats'
+import util from '@/libs/util'
 import { mapGetters } from 'vuex'
 import ECharts from 'vue-echarts/components/ECharts.vue'
 import 'echarts/lib/component/title'
@@ -79,9 +101,14 @@ export default {
         done: 0,
         expired: 0
       },
+      trendRange: {
+        value: 'week',
+        start: null,
+        end: null
+      },
       doneGauge: getGauge(),
       expiredGauge: getGauge(),
-      taskLine: {
+      trendLine: {
         tooltip: {
           trigger: 'axis'
         },
@@ -95,7 +122,8 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          axisTick: { alignWithLabel: true },
+          data: []
         },
         yAxis: {
           type: 'value'
@@ -103,12 +131,12 @@ export default {
         color: ['#2d8cf0', '#19be6b'],
         series: [{
           name: '新增任务',
-          data: [10, 20, 30, 25, 5, 40, 10],
+          data: [],
           type: 'line',
           smooth: true
         }, {
           name: '完成任务',
-          data: [20, 10, 30, 25, 15, 30, 0],
+          data: [],
           type: 'line',
           smooth: true
         }]
@@ -118,6 +146,14 @@ export default {
   computed: {
     processing() {
       return this.summary.all - this.summary.done
+    },
+    trendRangeLabel() {
+      switch (this.trendRange.value) {
+        case 'week':
+          return '本周'
+        case 'month':
+          return '最近一个月'
+      }
     },
     ...mapGetters([
       'currentUser',
@@ -132,6 +168,7 @@ export default {
   methods: {
     init() {
       this.getSummary()
+      this.getTrend()
     },
     getSummary() {
       statsService.getSummary(this.currentTeam.id).then(res => {
@@ -141,6 +178,39 @@ export default {
         this.expiredGauge.series[0].data[0].value = (this.summary.expired * 100 / this.summary.all).toFixed()
         this.expiredGauge.series[0].data[0].name = '延期率'
       })
+    },
+    getTrend() {
+      if (this.trendRange.start === null) {
+        this.setTrendRange(this.trendRange.value)
+      }
+
+      statsService.getTrend(this.currentTeam.id, this.trendRange.start, this.trendRange.end).then(res => {
+        const dateList = util.getDateRangeArray(this.trendRange.start, this.trendRange.end)
+        const createList = util.groupByDateRange(res.data.data.create, dateList)
+        const doneList = util.groupByDateRange(res.data.data.done, dateList)
+        const shortList = dateList.map(val => val.substr(-5))
+        this.trendLine.xAxis.data = shortList
+        this.trendLine.series[0].data = createList
+        this.trendLine.series[1].data = doneList
+      })
+    },
+    handTrendRangeChange(name) {
+      this.trendRange.value = name
+      this.setTrendRange(name)
+      this.getTrend()
+    },
+    setTrendRange(name) {
+      let range
+      switch (name) {
+        case 'week':
+          range = util.getThisWeekRange()
+          break
+        case 'month':
+          range = util.getLastMonthRange()
+          break
+      }
+      this.trendRange.start = range.start
+      this.trendRange.end = range.end
     }
   }
 }
@@ -149,9 +219,30 @@ export default {
 <style lang="stylus" scoped>
 @import '~@/style/variable'
 @import '~@/style/common'
-.card-title
-  padding-left 8px
-  border-left 3px solid $color-primary
+
+.card-header
+  display flex
+  padding 0
+  &-meta
+    display flex
+    align-items center
+    flex-shrink 0
+    padding-right 8px
+    font-size 12px
+    &-icon
+      padding 6px
+      cursor pointer
+    &-date
+      min-width 80px
+      padding 0 6px
+      text-align center
+  &-title
+    display flex
+    align-items center
+    flex 1
+    span
+      padding-left 8px
+      border-left 3px solid $color-primary
 .card-body
   display flex
   padding 16px

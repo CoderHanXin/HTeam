@@ -57,6 +57,70 @@ util.timeInNextWeek = function(t) {
   return diff <= 0
 }
 
+util.getThisWeekRange = function() {
+  const start = moment(
+    moment()
+      .weekday(0)
+      .format('YYYY-MM-DD')
+  ).toDate()
+  const end = moment(
+    moment()
+      .weekday(7)
+      .format('YYYY-MM-DD')
+  )
+    .subtract(1, 'seconds')
+    .toDate()
+  return { start, end }
+}
+
+util.getLastMonthRange = function() {
+  let today = moment(moment().format('YYYY-MM-DD'))
+  const start = today.subtract(1, 'months').toDate()
+  today = moment(moment().format('YYYY-MM-DD'))
+  const end = today
+    .add(1, 'days')
+    .subtract(1, 'seconds')
+    .toDate()
+  return { start, end }
+}
+
+/**
+ * 获取区间日期数组
+ * @param {Date} start 开始时间
+ * @param {Date} end   截止时间
+ */
+util.getDateRangeArray = function(start, end) {
+  let list = []
+  let startDate = moment(moment(start).format('YYYY-MM-DD'))
+  let endDate = moment(moment(end).format('YYYY-MM-DD'))
+  while (startDate.diff(endDate) <= 0) {
+    list.push(startDate.format('YYYY-MM-DD'))
+    startDate.add(1, 'days')
+  }
+  return list
+}
+
+/**
+ * 分组统计每日任务数
+ * @param {Array} array 任务列表
+ * @param {Array} range 日期数组
+ */
+util.groupByDateRange = function(array, range) {
+  let list = new Array(range.length)
+  list.fill(0)
+  let operateDate
+  for (const item of array) {
+    operateDate = moment(item.operateTime).format('YYYY-MM-DD')
+    for (let index = 0; index < range.length; index++) {
+      if (operateDate === range[index]) {
+        list[index]++
+        break
+      }
+    }
+  }
+  return list
+}
+
 util.timeLessThanNextMonth = function(t) {
   const m = moment(t)
   const nextMonth = moment().add(1, 'month')

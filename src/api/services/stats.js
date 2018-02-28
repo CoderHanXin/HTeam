@@ -15,6 +15,21 @@ class StatsService {
       teamId
     })
   }
+
+  /**
+   * 获取每日任务趋势
+   * @param   {Number} teamId 团队id
+   * @param   {Number} start  开始时间
+   * @param   {Number} end    截至时间
+   * @return  {Object:{create[], done[]}
+   */
+  getTrend(teamId, start, end) {
+    return http.get(url.stats_trend, {
+      teamId,
+      start,
+      end
+    })
+  }
 }
 
 export default new StatsService()
