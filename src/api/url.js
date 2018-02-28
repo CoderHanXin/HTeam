@@ -31,5 +31,5 @@ export default {
 
   stats_summary: '/api/stats/summary',
   stats_trend: '/api/stats/trend',
-  stats_weekly: '/api/stats/weekly'
+  stats_projects_with_tasks: '/api/stats/pwt'
 }

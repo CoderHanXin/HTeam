@@ -50,15 +50,21 @@ export default {
   methods: {
     init() {
       this.getSummary()
+      this.getProjectsWithTasks()
     },
     handleRangeChange(start, end) {
       this.start = start
       this.end = end
-      this.getSummary()
+      this.init()
     },
     getSummary() {
       statsService.getSummary(this.currentTeam.id, this.start, this.end).then(res => {
         this.summary = res.data.data
+      })
+    },
+    getProjectsWithTasks() {
+      statsService.getProjectsWithTasks(this.currentTeam.id, this.start, this.end).then(res => {
+        console.log(res.data.data)
       })
     }
   }

@@ -40,6 +40,14 @@ class StatsService {
       end
     })
   }
+
+  getProjectsWithTasks(teamId, start, end) {
+    return http.get(url.stats_projects_with_tasks, {
+      teamId,
+      start,
+      end
+    })
+  }
 }
 
 export default new StatsService()
