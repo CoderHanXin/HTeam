@@ -6,54 +6,13 @@
       </div>
     </div>
     <Content class="content">
-      <Card shadow>
-        <div class="card-header">
-          <div class="card-header-title">
-            <span>任务统计</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="flex-cell border-right">
-            <div class="gauge">
-              <chart :options="doneGauge" ref="done"></chart>
-            </div>
-            <div class="gauge">
-              <div class="gauge">
-                <chart :options="expiredGauge" ref="expired"></chart>
-              </div>
-            </div>
-          </div>
-          <div class="flex-cell">
-            <div class="stats-item">
-              <p class="stats-item-label">进行中</p>
-              <p class="stats-item-number grey">{{processing}}</p>
-            </div>
-            <div class="stats-item">
-              <p class="stats-item-label">延误</p>
-              <p class="stats-item-number red">{{summary.expired}}</p>
-            </div>
-            <div class="stats-item">
-              <p class="stats-item-label">已完成</p>
-              <p class="stats-item-number green">{{summary.done}}</p>
-            </div>
-            <div class="stats-item">
-              <p class="stats-item-label">任务总数</p>
-              <p class="stats-item-number grey">{{summary.all}}</p>
-            </div>
-          </div>
-        </div>
-      </Card>
+      <TaskStats :all="summary.all" :done="summary.done" :expired="summary.expired"></TaskStats>
       <Card class="margin-top-16" shadow>
         <div class="card-header">
           <div class="card-header-title">
             <span>每日新增完成任务趋势</span>
           </div>
           <div class="card-header-meta">
-            <!-- <Icon class="card-header-meta-icon" type="ios-arrow-back"></Icon>
-            <div class="card-header-meta-date">
-              <span>本周</span>
-            </div>
-            <Icon class="card-header-meta-icon" type="ios-arrow-forward"></Icon> -->
             <Dropdown @on-click="handTrendRangeChange">
               <a class="link-text">
                 {{trendRangeLabel}}
@@ -80,18 +39,18 @@
 import statsService from '@/api/services/stats'
 import util from '@/libs/util'
 import { mapGetters } from 'vuex'
+import TaskStats from './components/TaskStats'
 import ECharts from 'vue-echarts/components/ECharts.vue'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/tooltip'
 import 'echarts/lib/component/legend'
 import 'echarts/lib/chart/gauge'
 import 'echarts/lib/chart/line'
-
-import getGauge from './echarts/gauge'
 export default {
   name: 'StatsSummary',
   components: {
-    chart: ECharts
+    chart: ECharts,
+    TaskStats
   },
   data() {
     return {
@@ -106,8 +65,6 @@ export default {
         start: null,
         end: null
       },
-      doneGauge: getGauge(),
-      expiredGauge: getGauge(),
       trendLine: {
         tooltip: {
           trigger: 'axis'
@@ -144,9 +101,6 @@ export default {
     }
   },
   computed: {
-    processing() {
-      return this.summary.all - this.summary.done
-    },
     trendRangeLabel() {
       switch (this.trendRange.value) {
         case 'week':
@@ -173,10 +127,6 @@ export default {
     getSummary() {
       statsService.getSummary(this.currentTeam.id).then(res => {
         this.summary = res.data.data
-        this.doneGauge.series[0].data[0].value = (this.summary.done * 100 / this.summary.all).toFixed()
-        this.doneGauge.series[0].data[0].name = '完成率'
-        this.expiredGauge.series[0].data[0].value = (this.summary.expired * 100 / this.summary.all).toFixed()
-        this.expiredGauge.series[0].data[0].name = '延期率'
       })
     },
     getTrend() {
