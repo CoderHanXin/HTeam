@@ -51,7 +51,6 @@ export default {
   },
   methods: {
     back() {
-      console.log('back')
       this.start = moment(this.start).subtract(7, 'days').toDate()
       this.end = moment(this.end).subtract(7, 'days').toDate()
       this.$emit('on-change', this.start, this.end)

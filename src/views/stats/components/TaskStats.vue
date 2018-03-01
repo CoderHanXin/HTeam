@@ -52,7 +52,7 @@ export default {
     chart: ECharts
   },
   props: {
-    all: {
+    processing: {
       type: Number,
       default: 0,
       required: true
@@ -75,8 +75,8 @@ export default {
     }
   },
   computed: {
-    processing() {
-      return this.all - this.done
+    all() {
+      return this.processing + this.done
     },
     doneRate() {
       return (this.done * 100 / this.all).toFixed()
