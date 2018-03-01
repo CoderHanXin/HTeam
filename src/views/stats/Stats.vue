@@ -4,7 +4,7 @@
       <div class="header">
         <h5 class="title">统计分析</h5>
       </div>
-      <Menu class="menu" theme="light" width="auto" :activeName="activeMenuName" @on-select="handleChangeMenu">
+      <Menu class="menu" theme="light" width="auto" :activeName="$route.name" @on-select="handleChangeMenu">
         <menu-item name="stats-summary">
           <Icon type="stats-bars" size="16"></Icon>
           任务概况
