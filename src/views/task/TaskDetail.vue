@@ -110,16 +110,16 @@
                       <Icon class="level-icon-off" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       有空再看</Option>
-                    <Option :value="1" label="优先处理">
-                      <Icon class="level-icon-on" type="alert"></Icon>
-                      <Icon class="level-icon-off" type="alert"></Icon>
-                      <Icon class="level-icon-off" type="alert"></Icon>
-                      优先处理</Option>
-                    <Option :value="2" label="正常处理">
+                    <Option :value="1" label="正常处理">
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-off" type="alert"></Icon>
                       正常处理</Option>
+                    <Option :value="2" label="优先处理">
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      优先处理</Option>
                     <Option :value="3" label="十万火急">
                       <Icon class="level-icon-on" type="alert"></Icon>
                       <Icon class="level-icon-on" type="alert"></Icon>
