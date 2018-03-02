@@ -65,11 +65,9 @@ util.getThisWeekRange = function() {
   ).toDate()
   const end = moment(
     moment()
-      .weekday(7)
+      .weekday(6)
       .format('YYYY-MM-DD')
-  )
-    .subtract(1, 'seconds')
-    .toDate()
+  ).toDate()
   return { start, end }
 }
 
@@ -77,10 +75,7 @@ util.getLastMonthRange = function() {
   let today = moment(moment().format('YYYY-MM-DD'))
   const start = today.subtract(1, 'months').toDate()
   today = moment(moment().format('YYYY-MM-DD'))
-  const end = today
-    .add(1, 'days')
-    .subtract(1, 'seconds')
-    .toDate()
+  const end = today.toDate()
   return { start, end }
 }
 
