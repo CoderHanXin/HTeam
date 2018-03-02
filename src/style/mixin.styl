@@ -7,7 +7,6 @@ setTopLine($color = #C7C7C7)
   height 1px
   border-top 1px solid $color
   color $color
-
 setBottomLine($color = #C7C7C7)
   content ' '
   position absolute
@@ -17,7 +16,6 @@ setBottomLine($color = #C7C7C7)
   height 1px
   border-bottom 1px solid $color
   color $color
-
 setLeftLine($color = #C7C7C7)
   content ' '
   position absolute
@@ -27,7 +25,6 @@ setLeftLine($color = #C7C7C7)
   bottom 0
   border-left 1px solid $color
   color $color
-  
 setRightLine($color = #C7C7C7)
   content ' '
   position absolute
@@ -37,3 +34,14 @@ setRightLine($color = #C7C7C7)
   bottom 0
   border-right 1px solid $color
   color $color
+placeholder($color = #bbbec4)
+  // Firefox
+  &::-moz-placeholder
+    color $color
+    opacity 1 // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526
+  // Internet Explorer 10+
+  &:-ms-input-placeholder
+    color $color
+  // Safari and Chrome
+  &::-webkit-input-placeholder
+    color $color
