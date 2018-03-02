@@ -5,7 +5,7 @@
     </div>
     <Content class="content">
       <Card>
-        <div style="width: 420px">
+        <div style="width: 460px">
           <div class="avatar-item">
             <div class="avatar-label">
               <Avatar :style="{background: editUser.color || '#2d8cf0'}" size="large">{{editUser.name.substr(-2)}}</Avatar>
@@ -126,6 +126,7 @@ export default {
   display inline-block
   width 24px
   height 24px
+  margin 0 4px 4px 0
   cursor pointer
   &:hover
     outline #fff solid 2px
