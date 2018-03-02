@@ -49,7 +49,7 @@
                   </div>
                   <div class="task-item-meta">
                     <span class="task-item-meta-label">{{item.user ? item.user.name : '未指派'}}</span>
-                    <span v-if="item.deadline" class="task-item-meta-label" :class="{'task-expired':taskExpired(item.deadline)}">
+                    <span v-if="item.deadline" class="task-item-meta-label" :class="{'task-expired':taskExpired(item)}">
                       <Icon type="ios-clock-outline"></Icon>
                       {{item.deadline | deadline}}</span>
                   </div>
@@ -313,8 +313,8 @@ export default {
         this.taskGroup.after.push(task)
       }
     },
-    taskExpired(date) {
-      return util.timeBeforeToday(date)
+    taskExpired(item) {
+      return item.done === 0 && util.timeBeforeToday(item.deadline)
     },
     stop() { },
     ...mapMutations([
