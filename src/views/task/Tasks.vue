@@ -21,10 +21,27 @@
           已完成
         </menu-item>
       </Menu>
+      <div class="sub-header">
+        <h5 class="title">标签</h5>
+        <div v-if="isAdmin" @click="handleTagsShow" class="more">
+          <Icon type="android-add"></Icon>
+        </div>
+      </div>
+      <SiderMenu :size="12">
+        <SiderMenuItem name="1">
+          <Icon color="#990000" type="ios-pricetag"></Icon>
+          标签1
+        </SiderMenuItem>
+        <SiderMenuItem name="2">
+          <Icon color="#009900" type="ios-pricetag"></Icon>
+          标签2
+        </SiderMenuItem>
+      </SiderMenu>
     </Sider>
     <router-view/>
     <ProjectEdit v-model="isProjectEditVisable" @onProjectEditOk="handleProjectEditOk" @onProjectEditCancel="handleProjectEditCancel" :project="project" :projectUsers="projectUsers" :users="allUsers" :groups="allGroups">
     </ProjectEdit>
+    <Tags v-model="isTagsVisable" @onTagsCancel="handleTagsCancel"></Tags>
   </Layout>
 </template>
 
@@ -33,9 +50,15 @@ import teamService from '@/api/services/team'
 import projectService from '@/api/services/project'
 import { mapGetters, mapMutations } from 'vuex'
 import ProjectEdit from '@/views/project/ProjectEdit'
+import Tags from '@/views/components/tags/Tags'
+import SiderMenu from '@/views/components/sider-menu/SiderMenu'
+import SiderMenuItem from '@/views/components/sider-menu/SiderMenuItem'
 export default {
   name: 'Tasks',
   components: {
+    Tags,
+    SiderMenu,
+    SiderMenuItem,
     ProjectEdit
   },
   data() {
@@ -47,7 +70,8 @@ export default {
       },
       projectUsers: [],
       activeMenuName: 'all',
-      isProjectEditVisable: false
+      isProjectEditVisable: false,
+      isTagsVisable: false
     }
   },
   computed: {
@@ -124,6 +148,12 @@ export default {
       }
       this.isProjectEditVisable = true
     },
+    handleTagsShow() {
+      this.isTagsVisable = true
+    },
+    handleTagsCancel() {
+      this.isTagsVisable = false
+    },
     ...mapMutations([
       'setProjectMembers',
       'setAllUsers',
@@ -133,6 +163,6 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="stylus" scoped>
 </style>
+
