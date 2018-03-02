@@ -9,49 +9,24 @@ let deadline = date => {
   if (diff === 0) {
     return '今天'
   }
-
-  if (diff < 0) {
-    if (diff >= -86400000) {
-      return '昨天'
-    } else {
-      const lastSunday = moment(
-        moment()
-          .weekday(-8)
-          .format('YYYY-MM-DD')
-      )
-      diff = d.diff(lastSunday)
-      if (diff > 0) {
-        switch (d.format('d')) {
-          case '0':
-            return '上周日'
-          case '1':
-            return '上周一'
-          case '2':
-            return '上周二'
-          case '3':
-            return '上周三'
-          case '4':
-            return '上周四'
-          case '5':
-            return '上周五'
-          case '6':
-            return '上周六'
-        }
-      }
-      return d.format('YYYY-MM-DD')
-    }
+  if (diff < 0 && diff >= -86400000) {
+    return '昨天'
   }
 
   if (diff > 0 && diff <= 86400000) {
     return '明天'
   }
+  const thisMonday = moment(
+    moment()
+      .weekday(0)
+      .format('YYYY-MM-DD')
+  )
   const thisSunday = moment(
     moment()
       .weekday(6)
       .format('YYYY-MM-DD')
   )
-  diff = d.diff(thisSunday)
-  if (diff <= 0) {
+  if (d.diff(thisMonday) >= 0 && d.diff(thisSunday) <= 0) {
     switch (d.format('d')) {
       case '0':
         return '周日'
@@ -69,13 +44,17 @@ let deadline = date => {
         return '周六'
     }
   }
+  const nextMonday = moment(
+    moment()
+      .weekday(7)
+      .format('YYYY-MM-DD')
+  )
   const nextSunday = moment(
     moment()
       .weekday(13)
       .format('YYYY-MM-DD')
   )
-  diff = d.diff(nextSunday)
-  if (diff <= 0) {
+  if (d.diff(nextMonday) >= 0 && d.diff(nextSunday) <= 0) {
     switch (d.format('d')) {
       case '0':
         return '下周日'
