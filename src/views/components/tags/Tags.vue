@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Modal class="tags" v-model="visable" @on-cancel="handleCancel" :title="modalTitle" :footer-hide="true" width="480">
+    <Modal v-model="visable" @on-cancel="handleCancel" :title="modalTitle" :footer-hide="true" width="480">
       <div class="header" slot="header">
         <div v-show="isAction" @click="back" class="back">
           <Icon size="12" color="#2d8cf0" type="chevron-left"></Icon>
@@ -165,8 +165,6 @@ export default {
 @import '~@/style/variable'
 @import '~@/style/mixin'
 
-.tags .ivu-modal-footer
-  display none !important
 .header
   display flex
   align-items center
