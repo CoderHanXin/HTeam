@@ -288,7 +288,7 @@ export default {
           this.taskGroup.noDeadline.push(task)
           continue
         }
-        if (util.timeBeforeToday(task.deadline)) {
+        if (util.timeBeforeToday(task.deadline) && task.done === 0) {
           this.taskGroup.expired.push(task)
           continue
         }
