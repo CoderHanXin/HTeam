@@ -29,10 +29,10 @@ export default {
   task_comment_create: '/api/task/:id/comment',
   task_inbox: '/api/task/inbox',
 
-  tag: '/api/task',
-  tag_create: '/api/task',
-  tag_update: '/api/task/:id',
-  tag_delete: '/api/task/:id',
+  tag: '/api/tag',
+  tag_create: '/api/tag',
+  tag_update: '/api/tag/:id',
+  tag_delete: '/api/tag/:id',
 
   stats_summary: '/api/stats/summary',
   stats_trend: '/api/stats/trend',
