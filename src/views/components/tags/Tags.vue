@@ -187,7 +187,7 @@ export default {
   align-items center
   padding 8px 16px
   &:after
-    setBottomLine(#eee)
+    setBottomLine()
   &:hover
     background #f3f3f3
   &-cell

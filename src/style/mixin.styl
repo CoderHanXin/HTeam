@@ -1,4 +1,6 @@
-setTopLine($color = #C7C7C7)
+@import './variable'
+
+setTopLine($color = $color-divider-light)
   content ' '
   position absolute
   left 0
@@ -7,7 +9,7 @@ setTopLine($color = #C7C7C7)
   height 1px
   border-top 1px solid $color
   color $color
-setBottomLine($color = #C7C7C7)
+setBottomLine($color = $color-divider-light)
   content ' '
   position absolute
   left 0
@@ -16,7 +18,7 @@ setBottomLine($color = #C7C7C7)
   height 1px
   border-bottom 1px solid $color
   color $color
-setLeftLine($color = #C7C7C7)
+setLeftLine($color = $color-divider-light)
   content ' '
   position absolute
   left 0
@@ -25,7 +27,7 @@ setLeftLine($color = #C7C7C7)
   bottom 0
   border-left 1px solid $color
   color $color
-setRightLine($color = #C7C7C7)
+setRightLine($color = $color-divider-light)
   content ' '
   position absolute
   right 0
@@ -34,7 +36,7 @@ setRightLine($color = #C7C7C7)
   bottom 0
   border-right 1px solid $color
   color $color
-placeholder($color = #bbbec4)
+placeholder($color = $color-divider-light)
   // Firefox
   &::-moz-placeholder
     color $color

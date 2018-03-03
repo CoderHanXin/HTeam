@@ -178,7 +178,7 @@ export default {
   align-items center
   padding 16px 0
   &:after
-    setBottomLine(#eee)
+    setBottomLine()
 .project-item-title
   flex 1
   width 0
