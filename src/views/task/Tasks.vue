@@ -27,14 +27,10 @@
           <Icon type="android-add"></Icon>
         </div>
       </div>
-      <SiderMenu :size="12">
-        <SiderMenuItem name="1">
-          <Icon color="#990000" type="ios-pricetag"></Icon>
-          标签1
-        </SiderMenuItem>
-        <SiderMenuItem name="2">
-          <Icon color="#009900" type="ios-pricetag"></Icon>
-          标签2
+      <SiderMenu :size="14">
+        <SiderMenuItem v-for="item in tags" :key="item.id" :name="item.id">
+          <Icon :color="item.color" type="ios-pricetag"></Icon>
+          {{item.name}}
         </SiderMenuItem>
       </SiderMenu>
     </Sider>
@@ -47,6 +43,7 @@
 
 <script>
 import teamService from '@/api/services/team'
+import tagService from '@/api/services/tag'
 import projectService from '@/api/services/project'
 import { mapGetters, mapMutations } from 'vuex'
 import ProjectEdit from '@/views/project/ProjectEdit'
@@ -80,6 +77,7 @@ export default {
         this.currentTeam.team_user.role_id === 2
     },
     ...mapGetters([
+      'tags',
       'currentUser',
       'currentTeam',
       'allUsers',
@@ -109,6 +107,7 @@ export default {
       if (this.allUsers.length === 0) {
         this.getUserList()
       }
+      this.getTagList()
     },
     getProject() {
       projectService.get(this.project.id).then(res => {
@@ -120,6 +119,11 @@ export default {
       teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
         this.setAllUsers(res.data.data.users)
         this.setAllGroups(res.data.data.groups)
+      })
+    },
+    getTagList() {
+      tagService.getList(this.currentTeam.id).then(res => {
+        this.setTags(res.data.data)
       })
     },
     handleChangeMenu(name) {
@@ -155,6 +159,7 @@ export default {
       this.isTagsVisable = false
     },
     ...mapMutations([
+      'setTags',
       'setProjectMembers',
       'setAllUsers',
       'setAllGroups'

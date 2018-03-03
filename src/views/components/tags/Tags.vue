@@ -1,5 +1,5 @@
 <template>
-  <div v-show="visable">
+  <div>
     <Modal class="tags" v-model="visable" @on-cancel="handleCancel" :title="modalTitle" :footer-hide="true" width="480">
       <div class="header" slot="header">
         <div v-show="isAction" @click="back" class="back">
@@ -7,36 +7,36 @@
         </div>
         <span>{{modalTitle}}</span>
       </div>
-      <div v-if="!isAction" class="list-wrapper">
+      <div v-if="!isAction">
         <ul class="list">
-          <li v-for="item in tagList" :key="item.id" class="item">
+          <li v-for="item in tags" :key="item.id" class="item">
             <div class="item-cell">
-              <span class="tag" :style="{background: item.color}">{{item.name}}</span>
+              <Tag :color="item.color">{{item.name}}</Tag>
             </div>
             <div class="item-more">
-              <span @click.stop="handleEditShow(item)" class="item-more-icon">
+              <span @click.stop="handleEditShow(item)" title="修改" class="item-more-icon action-edit">
                 <Icon size="16" type="ios-gear-outline"></Icon>
               </span>
-              <span @click.stop="handleDelete(item)" class="item-more-icon">
+              <span @click.stop="handleDelete(item)" title="删除" class="item-more-icon action-delete">
                 <Icon size="16" type="ios-trash-outline"></Icon>
               </span>
             </div>
           </li>
         </ul>
         <div class="action">
-          <div @click.stop="handleAddShow" class="icon">
+          <div @click.stop="handleCreateShow" class="icon">
             <Icon size="32" color="#19be6b" type="android-add"></Icon>
           </div>
         </div>
       </div>
       <div v-if="isAction">
-        <p class="info margin-bottom-16">标签对所有项目、团队成员均可见，请谨慎添加、编辑和删除标签。</p>
-        <div class="tag-group margin-bottom-16">
+        <p class="info margin-bottom-16">{{info}}</p>
+        <div class="input-group-wrapper margin-bottom-16">
           <div class="input-group">
             <input v-model="tag.name" class="input-inside" type="text" placeholder="请输入">
             <span class="color-block" :style="{background: tag.color}"></span>
-            <Button v-if="isAdd" class="margin-left-4" type="success">创建</Button>
-            <Button v-else class="margin-left-4" type="primary">修改</Button>
+            <Button v-if="isCreate" @click="handleCreate" class="margin-left-4" type="success">创建</Button>
+            <Button v-else @click="handleEdit" class="margin-left-4" type="primary">修改</Button>
           </div>
         </div>
         <div class="color-box margin-bottom-16">
@@ -48,7 +48,10 @@
 </template>
 
 <script>
+import tagService from '@/api/services/tag'
 import colors from '@/common/constant/color'
+import { mapGetters, mapMutations } from 'vuex'
+
 export default {
   name: 'Tags',
   props: {
@@ -61,28 +64,21 @@ export default {
     return {
       visable: this.value,
       modalTitle: '标签管理',
-      isBackVisable: false,
+      info: '标签的使用范围是团队所有项目，请谨慎添加、修改和删除。',
       colorList: colors,
       isAction: false,
-      isAdd: true,
-      show: 'list',
+      isCreate: true,
       tag: {
         name: '',
-        color: '#990000'
-      },
-      tagList: [
-        {
-          id: 1,
-          name: 'bug',
-          color: '#990000'
-        },
-        {
-          id: 2,
-          name: 'feature',
-          color: '#009900'
-        }
-      ]
+        color: colors[0]
+      }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'tags',
+      'currentTeam'
+    ])
   },
   watch: {
     value(val) {
@@ -90,28 +86,76 @@ export default {
     }
   },
   methods: {
+    getTagList() {
+      tagService.getList(this.currentTeam.id).then(res => {
+        this.setTags(res.data.data)
+      })
+    },
+    handleCreateShow() {
+      this.modalTitle = '创建标签'
+      this.isAction = true
+      this.isCreate = true
+    },
+    handleEditShow(item) {
+      this.modalTitle = '修改标签'
+      this.tag = Object.assign({}, item)
+      this.isAction = true
+      this.isCreate = false
+    },
+    handleCreate() {
+      let tag = {}
+      tag.name = this.tag.name
+      tag.color = this.tag.color
+      tag.team_id = this.currentTeam.id
+      tagService.add(tag).then(res => {
+        console.log(res.data)
+        this.back()
+        this.getTagList()
+      })
+    },
+    handleEdit() {
+      let tag = {}
+      tag.name = this.tag.name
+      tag.color = this.tag.color
+      tagService.update(this.tag.id, tag).then(res => {
+        console.log(res.data)
+        this.back()
+        this.getTagList()
+      })
+    },
+    handleDelete(item) {
+      let info = this.info
+      this.$Modal.confirm({
+        title: `确定删除标签吗`,
+        content: info,
+        loading: true,
+        onOk: () => {
+          tagService.delete(item.id).then(res => {
+            this.getTagList()
+            this.$Modal.remove()
+          })
+        }
+      })
+    },
     handleCancel() {
+      this.back()
       this.$emit('onTagsCancel')
     },
     back() {
       this.modalTitle = '标签管理'
+      this.resetFields()
       this.isAction = false
     },
-    handleAddShow() {
-      this.modalTitle = '创建标签'
-      this.isAction = true
-    },
-    handleEditShow(item) {
-      this.modalTitle = '修改标签'
-      this.tag = item
-      this.isAction = true
-    },
-    handleDelete(item) {
-
+    resetFields() {
+      let tag = { name: '', color: this.colorList[0] }
+      this.tag = tag
     },
     changeColor(color) {
       this.tag.color = color
-    }
+    },
+    ...mapMutations([
+      'setTags'
+    ])
   }
 
 }
@@ -131,15 +175,14 @@ export default {
   .back
     padding 0 4px
     cursor pointer
-.list-wrapper
-  padding 0
-  .action
-    text-align right
-    .icon
-      padding 0 4px
-      cursor pointer
+.action
+  text-align right
+  .icon
+    padding 0 4px
+    cursor pointer
 .list
   height 320px
+  overflow-x hidden
 .item
   position relative
   display flex
@@ -158,13 +201,13 @@ export default {
       padding 4px
       cursor pointer
       color $color-grey
+    .action-edit
       &:hover
         color $color-primary
-.tag
-  color #fff
-  border-radius 3px
-  padding 3px 8px
-.tag-group
+    .action-delete
+      &:hover
+        color $color-error
+.input-group-wrapper
   display flex
   align-items center
 .input-group
