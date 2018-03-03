@@ -44,7 +44,7 @@
               <div class="task-item-wrapper">
                 <div class="task-item-body">
                   <Checkbox @on-change="handleTaskCheck(item)" v-model="item.done" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
-                  <div @click="handleTaskClick(item)" class="task-item-title">
+                  <div @click="handleTaskClick(item.id)" class="task-item-title">
                     <span :class="{'task-done': item.done}">{{item.title}}</span>
                   </div>
                   <div class="task-item-meta">
@@ -61,6 +61,7 @@
         <div v-if="!list || list.length === 0" class="list-empty">{{listEmpty}}</div>
       </div>
     </Content>
+    <Task v-model="isTaskVisable" :taskId="taskId" @onTaskCancel="handleTaskCancel"></Task>
   </Layout>
 </template>
 
@@ -68,11 +69,16 @@
 import taskService from '@/api/services/task'
 import taskEvent from '../../common/constant/task_event'
 import util from '../../libs/util'
+import Task from './Task'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'TaskList',
+  components: {
+    Task
+  },
   data() {
     return {
+      isTaskVisable: false,
       project: {
         id: '',
         name: ''
@@ -88,6 +94,7 @@ export default {
         expired: [],
         noDeadline: []
       },
+      taskId: 0,
       task: {
         title: '',
         deadline: ''
@@ -261,15 +268,20 @@ export default {
         console.log(res.data)
       })
     },
-    handleTaskClick(item) {
-      this.$router.push({
-        name: 'project-task',
-        params: {
-          id: this.project.id,
-          name: this.project.name,
-          taskId: item.id
-        }
-      })
+    handleTaskClick(taskId) {
+      // this.$router.push({
+      //   name: 'project-task',
+      //   params: {
+      //     id: this.project.id,
+      //     name: this.project.name,
+      //     taskId: item.id
+      //   }
+      // })
+      this.taskId = taskId
+      this.isTaskVisable = true
+    },
+    handleTaskCancel() {
+      this.isTaskVisable = false
     },
     handleDateFilter(name) {
       this.dateFilter = name
@@ -316,7 +328,6 @@ export default {
     taskExpired(item) {
       return item.done === 0 && util.timeBeforeToday(item.deadline)
     },
-    stop() { },
     ...mapMutations([
       'setTaskDateFilter'
     ])
