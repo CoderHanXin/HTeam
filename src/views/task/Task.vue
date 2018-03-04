@@ -115,10 +115,20 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer" slot="footer">
+        <div class="modal-footer" :class="{expand: isCommentFocus}" slot="footer">
           <Avatar :style="{background: currentUser.color || '#2d8cf0'}" size="large">{{currentUser.name.substr(-2)}}</Avatar>
           <div class="comment margin-left-8">
-            <Input v-model="comment" size="large" placeholder="评论内容(Enter发送)" />
+            <textarea 
+              v-show="isCommentFocus" 
+              ref="comment" 
+              class="ht-input"
+              v-model="comment" 
+              @keyup.ctrl.enter="submitComment" 
+              v-clickoutside="hideComment" 
+              rows="4" 
+              placeholder="评论内容(Ctrl+Enter发送)" 
+              ></textarea>
+            <Input v-show="!isCommentFocus" @on-focus="handleOnFocus" size="large" placeholder="评论内容(Ctrl+Enter发送)" />
           </div>
         </div>
       </div>
@@ -131,12 +141,16 @@ import moment from 'moment'
 import taskService from '@/api/services/task'
 import taskEvent from '@/common/constant/task_event'
 import util from '@/libs/util'
-import TaskLevel from '@/views/components/task-level/TaskLevel'
+import clickoutside from '@/directives/clickoutside'
 import { mapGetters } from 'vuex'
+import TaskLevel from '@/views/components/task-level/TaskLevel'
 export default {
   name: 'Task',
   components: {
     TaskLevel
+  },
+  directives: {
+    clickoutside
   },
   props: {
     value: {
@@ -159,6 +173,9 @@ export default {
         margin: '60px auto',
         top: 0
       },
+      isCommentFocus: false,
+      showMoreEvents: false,
+      comment: '',
       tabIndex: 0,
       task: {
         title: '',
@@ -166,8 +183,6 @@ export default {
         deadline: '',
         done: 0
       },
-      showMoreEvents: false,
-      comment: '',
       assigneeId: null,
       assignee: '未指派',
       deadline: null,
@@ -221,6 +236,8 @@ export default {
     },
     handleCancel() {
       this.tabIndex = 0
+      this.isCommentFocus = false
+      this.showMoreEvents = false
       this.$emit('onTaskCancel')
     },
     changeAssignee(val) {
@@ -312,6 +329,25 @@ export default {
         }
       })
     },
+    submitComment() {
+      console.log('enter')
+      let comment = {}
+      comment.content = this.comment
+      comment.user_id = this.currentUser.id
+      taskService.addComment(this.taskId, comment).then(res => {
+        this.comment = ''
+        this.getTask()
+      })
+    },
+    handleOnFocus() {
+      this.isCommentFocus = true
+      this.$nextTick(() => {
+        this.$refs.comment.focus()
+      })
+    },
+    hideComment() {
+      this.isCommentFocus = false
+    },
     taskExpired(task) {
       return task.done === 0 && util.timeBeforeToday(task.deadline)
     },
@@ -371,6 +407,7 @@ export default {
 .modal
   display flex
   flex-direction column
+  height calc(100vh - 120px)
 .modal-main
   flex 1
   overflow-y auto
@@ -386,18 +423,19 @@ export default {
     color $color-grey
 .modal-footer
   display flex
-  align-items center
   padding 12px 16px
   border-top 1px solid $color-divider-light
   .comment
+    display flex
+    align-items center
     flex 1
+.modal-footer.expand
+  box-shadow 0 0 5px rgba(0, 0, 0, 0.2)
 .modal-content
-  height calc(100vh - 264px)
-  min-height 400px
+  padding 0 16px
 .task
   position relative
   display flex
-  padding 0 16px
   &-main
     flex 1
     height 100%
