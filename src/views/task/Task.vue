@@ -29,9 +29,14 @@
                       <TaskLevel :value="task.level" />
                     </div>
                   </div>
-                  <div class="task-desc">                    
+                  <div class="task-desc">
                     <p v-if="task.desc" class="text">{{task.desc}}</p>
                     <p v-else class="placeholder">暂无详细描述</p>
+                    <div class="desc-editor">
+
+                      <QuillEditor v-model="task.desc" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)"></QuillEditor>
+
+                    </div>
                   </div>
                 </div>
                 <Tabs v-model="tabIndex" class="task-meta">
@@ -121,16 +126,7 @@
         <div class="modal-footer" :class="{expand: isCommentFocus}" slot="footer">
           <Avatar :style="{background: currentUser.color || '#2d8cf0'}" size="large">{{currentUser.name.substr(-2)}}</Avatar>
           <div class="comment margin-left-8">
-            <textarea 
-              v-show="isCommentFocus" 
-              ref="comment" 
-              class="ht-input"
-              v-model="comment" 
-              @keyup.ctrl.enter="submitComment" 
-              v-clickoutside="hideComment" 
-              rows="4" 
-              placeholder="评论内容(Ctrl+Enter发送)" 
-              ></textarea>
+            <textarea v-show="isCommentFocus" ref="comment" class="ht-input" v-model="comment" @keyup.ctrl.enter="submitComment" v-clickoutside="hideComment" rows="4" placeholder="评论内容(Ctrl+Enter发送)"></textarea>
             <Input v-show="!isCommentFocus" @on-focus="handleOnFocus" size="large" placeholder="评论内容(Ctrl+Enter发送)" />
           </div>
         </div>
@@ -147,10 +143,12 @@ import util from '@/libs/util'
 import clickoutside from '@/directives/clickoutside'
 import { mapGetters } from 'vuex'
 import TaskLevel from '@/views/components/task-level/TaskLevel'
+import QuillEditor from '@/views/components/editor/QuillEditor'
 export default {
   name: 'Task',
   components: {
-    TaskLevel
+    TaskLevel,
+    QuillEditor
   },
   directives: {
     clickoutside
@@ -332,6 +330,15 @@ export default {
         }
       })
     },
+    onEditorBlur(editor) {
+      console.log('editor blur!', editor)
+    },
+    onEditorFocus(editor) {
+      console.log('editor focus!', editor)
+    },
+    onEditorReady(editor) {
+      console.log('editor ready!', editor)
+    },
     submitComment() {
       console.log('enter')
       let comment = {}
@@ -407,6 +414,11 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~@/style/variable'
+// .quill-editor
+// min-height 200px
+// height 20rem
+.desc-editor
+  height 200px
 .modal
   display flex
   flex-direction column
@@ -481,7 +493,7 @@ export default {
     font-size $font-size-medium
     .placeholder
       color grey
-    .text 
+    .text
       color $color-text-light
   &-meta
     padding 16px
