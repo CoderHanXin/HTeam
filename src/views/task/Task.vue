@@ -29,7 +29,10 @@
                       <TaskLevel :value="task.level" />
                     </div>
                   </div>
-                  <div class="task-desc">{{task.desc}}</div>
+                  <div class="task-desc">                    
+                    <p v-if="task.desc" class="text">{{task.desc}}</p>
+                    <p v-else class="placeholder">暂无详细描述</p>
+                  </div>
                 </div>
                 <Tabs v-model="tabIndex" class="task-meta">
                   <TabPane label="评论" icon="chatbox-working">
@@ -474,7 +477,12 @@ export default {
         padding 2px 8px
   &-desc
     padding 16px 0
+    word-break break-all
     font-size $font-size-medium
+    .placeholder
+      color grey
+    .text 
+      color $color-text-light
   &-meta
     padding 16px
   &-events
