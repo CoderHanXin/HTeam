@@ -5,7 +5,7 @@
         <div class="modal-main">
           <div class="modal-header">
             <span class="title">
-              <Icon class="margin-right-4" color="#2d8cf0" type="ios-folder" />项目名称</span>
+              <Icon class="margin-right-4" color="#2d8cf0" type="ios-folder" />{{currentProject.name}}</span>
             <div class="meta"></div>
           </div>
           <div class="modal-content">
@@ -23,7 +23,7 @@
                       <span class="margin-right-8">{{assignee}}</span>
                     </div>
                     <div class="info-item">
-                      <span class="info-item-label" :class="{'task-expired':taskExpired(task.deadline)}">{{task.deadline | deadline}}</span>
+                      <span class="info-item-label" :class="{'task-expired':taskExpired(task)}">{{task.deadline | deadline}}</span>
                     </div>
                     <div class="">
                       <TaskLevel :value="task.level" />
@@ -107,8 +107,8 @@
                     </Select>
                   </li>
                   <li class="task-sider-item with-border-top">
-                    <Button :disabled="disabled" type="primary" shape="circle" size="small" class="margin-right-4">编辑任务</Button>
-                    <Button type="error" shape="circle" size="small">删除任务</Button>
+                    <Button type="primary" shape="circle" size="small" :disabled="disabled" class="margin-right-4">编辑任务</Button>
+                    <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
                   </li>
                 </ul>
               </div>
@@ -185,6 +185,7 @@ export default {
     },
     ...mapGetters([
       'tags',
+      'currentProject',
       'projectMembers',
       'currentUser',
       'currentTeam'
@@ -193,12 +194,10 @@ export default {
   watch: {
     value(val) {
       this.visable = val
-    },
-    taskId(val) {
-      this.init()
+      if (val) {
+        this.init()
+      }
     }
-  },
-  created() {
   },
   methods: {
     init() {
@@ -300,8 +299,21 @@ export default {
       taskService.update(this.taskId, task, event).then(res => {
       })
     },
-    taskExpired(date) {
-      return util.timeBeforeToday(date)
+    handleDelete() {
+      this.$Modal.confirm({
+        title: `删除确认`,
+        content: '确定要删除这条任务吗？',
+        loading: true,
+        onOk: () => {
+          taskService.delete(this.taskId).then(res => {
+            this.$Modal.remove()
+            this.handleCancel()
+          })
+        }
+      })
+    },
+    taskExpired(task) {
+      return task.done === 0 && util.timeBeforeToday(task.deadline)
     },
     showMore() {
       this.showMoreEvents = true
@@ -337,13 +349,13 @@ export default {
         case 'reopen':
           return '#ff9900'
         case 'update':
-          return '#b47fd4'
+          return '#986db2'
         case 'assign':
           return '#2d8cf0'
         case 'unassign':
           return '#ff9900'
         case 'deadline':
-          return '#b47fd4'
+          return '#986db2'
         case 'noDeadline':
           return '#ff9900'
         case 'level':
@@ -356,7 +368,6 @@ export default {
 
 <style lang="stylus" scoped>
 @import '~@/style/variable'
-
 .modal
   display flex
   flex-direction column

@@ -182,15 +182,13 @@ export default {
   watch: {
     $route(to, from) {
       this.project.id = to.params.id
-      this.project.name = to.params.name
-      this.listType = this.$route.params.listType
+      this.listType = to.params.listType
       this.dateFilter = this.taskDateFilter
-      this.getTaskList()
+      this.init()
     }
   },
   created() {
     this.project.id = this.$route.params.id
-    this.project.name = this.$route.params.name
     this.listType = this.$route.params.listType
     this.dateFilter = this.taskDateFilter
     this.init()

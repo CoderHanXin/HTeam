@@ -112,6 +112,9 @@ export default {
     getProject() {
       projectService.get(this.project.id).then(res => {
         this.project = res.data.data
+        this.setCurrentProject({
+          id: this.project.id, name: this.project.name
+        })
         this.setProjectMembers(this.project.users)
       })
     },
@@ -161,6 +164,7 @@ export default {
     ...mapMutations([
       'setTags',
       'setProjectMembers',
+      'setCurrentProject',
       'setAllUsers',
       'setAllGroups'
     ])
