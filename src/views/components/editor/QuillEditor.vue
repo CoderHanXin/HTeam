@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-wrapper">
+  <div>
     <slot name="toolbar"></slot>
     <div ref="editor"></div>
   </div>
@@ -111,7 +111,5 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.editor-wrapper
-  height 100%
 </style>
 

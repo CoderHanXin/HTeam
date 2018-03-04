@@ -14,7 +14,8 @@
                 <div class="task-header">
                   <Checkbox @on-change="handleCheck()" v-model="task.done" :true-value="1" :false-value="0" :size="'large'"></Checkbox>
                   <div class="title">
-                    <span :class="{'task-done': task.done}">{{task.title}}</span>
+                    <Input v-show="isEdit" v-model.trim="editTask.title" type="text" />
+                    <span v-show="!isEdit" :class="{'task-done': task.done}">{{task.title}}</span>
                   </div>
                 </div>
                 <div class="task-content">
@@ -30,13 +31,11 @@
                     </div>
                   </div>
                   <div class="task-desc">
-                    <p v-if="task.desc" class="text">{{task.desc}}</p>
-                    <p v-else class="placeholder">暂无详细描述</p>
-                    <div class="desc-editor">
-
-                      <QuillEditor v-model="task.desc" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)"></QuillEditor>
-
+                    <div v-show="!isEdit">
+                      <div v-if="task.desc" v-html="task.desc" class="text"></div>
+                      <p v-else class="placeholder">暂无详细描述</p>
                     </div>
+                    <QuillEditor v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
                   </div>
                 </div>
                 <Tabs v-model="tabIndex" class="task-meta">
@@ -115,7 +114,7 @@
                     </Select>
                   </li>
                   <li class="task-sider-item with-border-top">
-                    <Button type="primary" shape="circle" size="small" :disabled="disabled" class="margin-right-4">编辑任务</Button>
+                    <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
                     <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
                   </li>
                 </ul>
@@ -174,10 +173,15 @@ export default {
         margin: '60px auto',
         top: 0
       },
+      isEdit: false,
       isCommentFocus: false,
       showMoreEvents: false,
       comment: '',
       tabIndex: 0,
+      editTask: {
+        title: '',
+        desc: ''
+      },
       task: {
         title: '',
         desc: '',
@@ -198,6 +202,9 @@ export default {
   computed: {
     disabled() {
       return this.task.done === 1
+    },
+    editButtonText() {
+      return this.isEdit ? '保存任务' : '编辑任务'
     },
     ...mapGetters([
       'tags',
@@ -236,6 +243,7 @@ export default {
       })
     },
     handleCancel() {
+      this.isEdit = false
       this.tabIndex = 0
       this.isCommentFocus = false
       this.showMoreEvents = false
@@ -330,14 +338,27 @@ export default {
         }
       })
     },
-    onEditorBlur(editor) {
-      console.log('editor blur!', editor)
-    },
-    onEditorFocus(editor) {
-      console.log('editor focus!', editor)
-    },
-    onEditorReady(editor) {
-      console.log('editor ready!', editor)
+    handleEdit() {
+      if (this.isEdit) {
+        if (this.task.title) {
+          let event = {}
+          event.user_id = this.currentUser.id
+          event.task_id = this.taskId
+          event.type = taskEvent.update
+          event.event = taskEvent.updateText
+          taskService
+            .update(this.taskId, this.editTask, event)
+            .then(res => {
+              this.task.title = this.editTask.title
+              this.task.desc = this.editTask.desc
+              this.isEdit = false
+            })
+        }
+      } else {
+        this.editTask.title = this.task.title
+        this.editTask.desc = this.task.desc
+        this.isEdit = true
+      }
     },
     submitComment() {
       console.log('enter')
@@ -412,13 +433,11 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 @import '~@/style/variable'
-// .quill-editor
-// min-height 200px
-// height 20rem
 .desc-editor
-  height 200px
+  min-height 200px
+  height auto
 .modal
   display flex
   flex-direction column
@@ -469,6 +488,7 @@ export default {
   &-header
     position relative
     display flex
+    align-items center
     padding 16px
     .title
       flex 1
