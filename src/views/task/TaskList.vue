@@ -185,7 +185,7 @@ export default {
       this.project.name = to.params.name
       this.listType = this.$route.params.listType
       this.dateFilter = this.taskDateFilter
-      this.getTask()
+      this.getTaskList()
     }
   },
   created() {
@@ -197,9 +197,9 @@ export default {
   },
   methods: {
     init() {
-      this.getTask()
+      this.getTaskList()
     },
-    getTask() {
+    getTaskList() {
       let done
       if (this.listType === 'processing') {
         done = 0
@@ -233,7 +233,7 @@ export default {
 
       taskService.add(task, event).then(res => {
         this.task.title = ''
-        this.getTask()
+        this.getTaskList()
       })
     },
     handleProjectEditOk() {
@@ -281,6 +281,7 @@ export default {
       this.isTaskVisable = true
     },
     handleTaskCancel() {
+      this.getTaskList()
       this.isTaskVisable = false
     },
     handleDateFilter(name) {
