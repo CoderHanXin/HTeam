@@ -9,6 +9,6 @@ export default {
       ['link', 'image']
     ]
   },
-  placeholder: 'Insert text here ...',
+  placeholder: '请输入...',
   readOnly: false
 }
