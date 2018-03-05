@@ -82,20 +82,17 @@
               <div class="task-sider">
                 <ul>
                   <li class="task-sider-item">
-                    <header class="item-header">执行者
-                    </header>
+                    <header class="item-header">执行者</header>
                     <Select :disabled="disabled" v-model="assigneeId" @on-change="changeAssignee" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
                       <Option v-for="item in projectMembers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
                     </Select>
                   </li>
                   <li class="task-sider-item">
-                    <header class="item-header">截止日期
-                    </header>
+                    <header class="item-header">截止日期</header>
                     <DatePicker :disabled="disabled" v-model="deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
                   </li>
                   <li class="task-sider-item">
-                    <header class="item-header">紧急程度
-                    </header>
+                    <header class="item-header">紧急程度</header>
                     <Select :disabled="disabled" v-model="level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
                       <Option :value="0" label="有空再看">
                         <Icon class="level-icon-off" type="alert"></Icon>
@@ -119,9 +116,15 @@
                         十万火急</Option>
                     </Select>
                   </li>
-                  <li class="task-sider-item with-border-top">
+                  <li class="task-sider-item border-top padding-top-12">
                     <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
                     <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
+                  </li>
+                  <li class="task-sider-item border-top padding-top-12">
+                    <header class="item-header">标签</header>
+                    <Select :disabled="disabled" v-model="tagList" :label-in-value="true" multiple size="small" placeholder="请选择">
+                      <Option v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
+                    </Select>
                   </li>
                 </ul>
               </div>
@@ -201,6 +204,7 @@ export default {
       assignee: '未指派',
       deadline: null,
       level: null,
+      tagList: [],
       dateOptions: {
         disabledDate(date) {
           return date && date.valueOf() < Date.now() - 86400000
@@ -471,7 +475,6 @@ export default {
 
 <style lang="stylus">
 @import '~@/style/variable'
-
 .modal
   display flex
   flex-direction column
@@ -571,6 +574,8 @@ export default {
     font-size 14px
     color $color-primary
     cursor pointer
+    &:hover
+      text-decoration underline
   &-meta
     margin 0 16px
     padding 16px 0
