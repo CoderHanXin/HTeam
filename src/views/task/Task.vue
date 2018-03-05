@@ -30,15 +30,21 @@
                       <TaskLevel :value="task.level" />
                     </div>
                   </div>
-                  <div class="task-desc">
+                  <div :class="taskDescCls">
                     <div v-show="!isEdit">
-                      <div v-if="task.desc" v-html="task.desc" class="text"></div>
-                      <p v-else class="placeholder">暂无详细描述</p>
+                      <div v-show="task.desc" v-html="task.desc" class="task-desc-text" ref="descText"></div>
+                      <p v-show="!task.desc" class="task-desc-placeholder">暂无详细描述</p>
                     </div>
                     <QuillEditor v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
                   </div>
+                  <div @click="showMoreDesc" class="task-desc-show-more" v-if="isMoreDesc">
+                    <span>{{showMoreDescText}}
+                      <Icon v-if="isShowMoreDesc" type="arrow-up-c"></Icon>
+                      <Icon v-else type="arrow-down-c"></Icon>
+                    </span>
+                  </div>
                 </div>
-                <Tabs v-model="tabIndex" class="task-meta">
+                <Tabs v-model="tabIndex" class="task-meta border-top">
                   <TabPane label="评论" icon="chatbox-working">
                     <ul class="task-comments">
                       <li v-for="item in task.comments" :key="item.id" class="task-comment-item">
@@ -59,7 +65,7 @@
                   </TabPane>
                   <TabPane label="动态" icon="grid">
                     <ul class="task-events">
-                      <li v-for="(item, index) in task.events" v-if="showMoreEvents || index === 0 || index === task.events.length - 1" :key="item.id" class="task-event-item">
+                      <li v-for="(item, index) in task.events" v-if="isShowMoreEvents || index === 0 || index === task.events.length - 1" :key="item.id" class="task-event-item">
                         <div class="event-icon">
                           <Icon size="32" :type="eventIcon(item.type)" :color="eventIconColor(item.type)"></Icon>
                         </div>
@@ -67,7 +73,7 @@
                         <span class="event-text">{{item.user.name}}</span>
                         <span v-html="item.event" class="event-text"></span>
                         <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
-                        <a @click="showMore" v-if="!showMoreEvents && task.events.length > 2 && index === task.events.length - 1" class="link-text">（查看更多动态）</a>
+                        <a @click="showMoreEvents" v-if="!isShowMoreEvents && task.events.length > 2 && index === task.events.length - 1" class="link-text">（查看更多动态）</a>
                       </li>
                     </ul>
                   </TabPane>
@@ -173,9 +179,12 @@ export default {
         margin: '60px auto',
         top: 0
       },
+      descTextHeight: 0,
+      isMoreDesc: false,
+      isShowMoreDesc: false,
       isEdit: false,
       isCommentFocus: false,
-      showMoreEvents: false,
+      isShowMoreEvents: false,
       comment: '',
       tabIndex: 0,
       editTask: {
@@ -206,6 +215,16 @@ export default {
     editButtonText() {
       return this.isEdit ? '保存任务' : '编辑任务'
     },
+    taskDescCls() {
+      if (this.isMoreDesc) {
+        return this.isShowMoreDesc ? 'task-desc-expand' : 'task-desc'
+      } else {
+        return 'task-desc-expand'
+      }
+    },
+    showMoreDescText() {
+      return this.isShowMoreDesc ? '收起更多' : '展开更多'
+    },
     ...mapGetters([
       'tags',
       'currentProject',
@@ -219,6 +238,12 @@ export default {
       this.visable = val
       if (val) {
         this.init()
+      }
+    },
+    descTextHeight(val) {
+      console.log(val)
+      if (val > 250) {
+        this.isMoreDesc = true
       }
     }
   },
@@ -240,13 +265,19 @@ export default {
         // 将utc时间转换为Date
         this.deadline = this.task.deadline ? moment(this.task.deadline).toDate() : null
         this.level = this.task.level
+        this.$nextTick(() => {
+          this.descTextHeight = this.$refs.descText.offsetHeight
+        })
       })
     },
     handleCancel() {
+      this.descTextHeight = 0
+      this.isMoreDesc = false
+      this.isShowMoreDesc = false
       this.isEdit = false
-      this.tabIndex = 0
       this.isCommentFocus = false
-      this.showMoreEvents = false
+      this.isShowMoreEvents = false
+      this.tabIndex = 0
       this.$emit('onTaskCancel')
     },
     changeAssignee(val) {
@@ -381,8 +412,11 @@ export default {
     taskExpired(task) {
       return task.done === 0 && util.timeBeforeToday(task.deadline)
     },
-    showMore() {
-      this.showMoreEvents = true
+    showMoreDesc() {
+      this.isShowMoreDesc = !this.isShowMoreDesc
+    },
+    showMoreEvents() {
+      this.isShowMoreEvents = true
     },
     eventIcon(type) {
       switch (type) {
@@ -435,9 +469,6 @@ export default {
 <style lang="stylus">
 @import '~@/style/variable'
 
-.desc-editor
-  min-height 200px
-  height auto
 .modal
   display flex
   flex-direction column
@@ -498,7 +529,6 @@ export default {
   &-content
     margin 0 16px
     padding-left 24px
-    border-bottom 1px solid $color-divider-light
   &-info
     display flex
     align-items center
@@ -508,15 +538,39 @@ export default {
       &-label
         padding 2px 8px
   &-desc
-    padding 16px 0
+    position relative
+    margin 16px 0
+    max-height 250px
     word-break break-all
     font-size $font-size-medium
-    .placeholder
-      color grey
-    .text
-      color $color-text-light
+    overflow hidden
+    &:after
+      content ''
+      display block
+      position absolute
+      z-index 3
+      right 0
+      bottom 0
+      left 0
+      height 60px
+      background-image linear-gradient(to bottom, rgba(255, 255, 255, 0) 0, #fff 100%)
+  &-desc-expand
+    position relative
+    margin 16px 0
+    word-break break-all
+    font-size $font-size-medium
+  &-desc-placeholder
+    color grey
+  &-desc-text
+    color $color-text-light
+  &-desc-show-more
+    padding-bottom 16px
+    font-size 14px
+    color $color-primary
+    cursor pointer
   &-meta
-    padding 16px
+    margin 0 16px
+    padding 16px 0
   &-events
     padding 0
   &-event-item
