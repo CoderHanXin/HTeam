@@ -37,7 +37,7 @@
                     </div>
                     <QuillEditor v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
                   </div>
-                  <div @click="showMoreDesc" class="task-desc-show-more" v-if="isMoreDesc">
+                  <div @click="showMoreDesc" class="task-desc-show-more" v-if="isMoreDesc && !isEdit">
                     <span>{{showMoreDescText}}
                       <Icon v-if="isShowMoreDesc" type="arrow-up-c"></Icon>
                       <Icon v-else type="arrow-down-c"></Icon>
@@ -216,6 +216,9 @@ export default {
       return this.isEdit ? '保存任务' : '编辑任务'
     },
     taskDescCls() {
+      if (this.isEdit) {
+        return 'task-desc-expand'
+      }
       if (this.isMoreDesc) {
         return this.isShowMoreDesc ? 'task-desc-expand' : 'task-desc'
       } else {
