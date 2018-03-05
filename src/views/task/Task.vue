@@ -98,12 +98,12 @@
                         有空再看</Option>
                       <Option :value="1" label="正常处理">
                         <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-on" type="alert"></Icon>
+                        <Icon class="level-icon-off" type="alert"></Icon>
                         <Icon class="level-icon-off" type="alert"></Icon>
                         正常处理</Option>
                       <Option :value="2" label="优先处理">
                         <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-off" type="alert"></Icon>
+                        <Icon class="level-icon-on" type="alert"></Icon>
                         <Icon class="level-icon-off" type="alert"></Icon>
                         优先处理</Option>
                       <Option :value="3" label="十万火急">
@@ -361,7 +361,6 @@ export default {
       }
     },
     submitComment() {
-      console.log('enter')
       let comment = {}
       comment.content = this.comment
       comment.user_id = this.currentUser.id
@@ -435,6 +434,7 @@ export default {
 
 <style lang="stylus">
 @import '~@/style/variable'
+
 .desc-editor
   min-height 200px
   height auto
