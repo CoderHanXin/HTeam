@@ -1,0 +1,64 @@
+@import '~@/style/variable'
+
+.ht-select
+  display inline-block
+  width 100%
+  box-sizing border-box
+  vertical-align middle
+  color #495060
+  font-size 14px
+  line-height normal
+.ht-select-rel
+  position relative
+.ht-select-dropdown
+  width inherit
+  max-height 200px
+  overflow auto
+  margin 5px 0
+  padding 5px 0
+  background-color #fff
+  box-sizing border-box
+  border-radius 4px
+  box-shadow 0 1px 6px rgba(0, 0, 0, 0.2)
+  z-index 900
+.ht-select-item
+  margin 0
+  padding 7px 16px
+  line-height normal
+  clear both
+  color #495060
+  font-size 12px !important
+  white-space nowrap
+  list-style none
+  cursor pointer
+  transition background 0.2s ease-in-out
+  &:focus, &:hover
+    background #f3f3f3
+  &-disabled
+    color #bbbec4
+    cursor not-allowed
+    &:hover
+      color #bbbec4
+      background-color #fff
+      cursor not-allowed
+  &-selected, &-selected:hover
+    color #fff
+    background rgba(45, 140, 240, 0.9)
+  &-selected&-focus
+    background rgba(40, 123, 211, 0.91)
+.ht-select-multiple .ht-select-item
+  &-selected
+    color rgba(45, 140, 240, 0.9)
+    background #fff
+  &-focus, &-selected:hover
+    background #f3f3f3
+  &-selected&-focus
+    color rgba(40, 123, 211, 0.91)
+    background #fff
+  &-selected:after
+    display inline-block
+    float right
+    line-height 1
+    font-size 14px
+    content '√'
+    color rgba(45, 140, 240, 0.9)
