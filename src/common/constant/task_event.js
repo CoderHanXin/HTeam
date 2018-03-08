@@ -16,5 +16,9 @@ export default {
   noDeadline: 'noDeadline',
   noDeadlineText: '取消了任务截止日期',
   level: 'level',
-  levelText: '将任务设置为&nbsp;&nbsp;{level}'
+  levelText: '将任务设置为&nbsp;&nbsp;{level}',
+  addTag: 'addTag',
+  addTagText: '添加了标签&nbsp;&nbsp;{tag}',
+  removeTag: 'removeTag',
+  removeTagText: '移除了标签&nbsp;&nbsp;{tag}'
 }
