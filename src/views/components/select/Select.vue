@@ -49,15 +49,19 @@ export default {
       type: [String, Number, Array],
       default: ''
     },
+    labelInValue: {
+      type: Boolean,
+      default: false
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
     placement: {
       validator(value) {
         return oneOf(value, ['bottom', 'bottom-start', 'bottom-end'])
       },
       default: 'bottom'
-    },
-    multiple: {
-      type: Boolean,
-      default: false
     },
     transfer: {
       type: Boolean,
@@ -70,12 +74,8 @@ export default {
       visible: false,
       options: [],
       optionInstances: [],
-      selectedSingle: '',
-      selectedMultiple: [],
-      focusIndex: 0,
       slotChangeDuration: false, // if slot change duration and in multiple, set true and after slot change, set false
-      model: this.value,
-      currentLabel: this.label
+      model: this.value
     }
   },
   computed: {
@@ -89,8 +89,7 @@ export default {
     },
     dropdownCls() {
       return {
-        [prefixCls + '-dropdown-transfer']: this.transfer,
-        [prefixCls + '-multiple']: this.multiple && this.transfer
+        [prefixCls + '-dropdown-transfer']: this.transfer
       }
     }
   },
@@ -111,9 +110,9 @@ export default {
     },
     visible(val) {
       if (val) {
-        this.broadcast('Drop', 'on-update-popper')
+        this.broadcast('HtDropdown', 'on-update-popper')
       } else {
-        this.broadcast('Drop', 'on-destroy-popper')
+        this.broadcast('HtDropdown', 'on-destroy-popper')
       }
     }
   },
@@ -132,7 +131,7 @@ export default {
           } else {
             this.model.push(value)
           }
-          this.broadcast('Drop', 'on-update-popper')
+          this.broadcast('HtDropdown', 'on-update-popper')
         } else {
           this.model = value
         }
@@ -145,7 +144,6 @@ export default {
     },
     hideMenu() {
       this.visible = false
-      this.focusIndex = 0
       this.broadcast('HtOption', 'on-select-close')
     },
     // find option component
@@ -195,10 +193,8 @@ export default {
 
       if (type === 'string' || type === 'number') {
         let findModel = false
-
-        for (let i = 0; i < this.options.length; i++) {
-          if (this.model === this.options[i].value) {
-            this.selectedSingle = this.options[i].label
+        for (const item of this.options) {
+          if (this.model === item.value) {
             findModel = true
             break
           }
@@ -213,14 +209,9 @@ export default {
     },
     updateMultipleSelected(init = false, slot = false) {
       if (this.multiple && Array.isArray(this.model)) {
-        let selected = this.remote ? this.selectedMultiple : []
-
-        for (let i = 0; i < this.model.length; i++) {
-          const model = this.model[i]
-
-          for (let j = 0; j < this.options.length; j++) {
-            const option = this.options[j]
-
+        let selected = []
+        for (const model of this.model) {
+          for (const option of this.options) {
             if (model === option.value) {
               selected.push({
                 value: option.value,
@@ -229,19 +220,6 @@ export default {
             }
           }
         }
-
-        const selectedArray = []
-        const selectedObject = {}
-
-        selected.forEach(item => {
-          if (!selectedObject[item.value]) {
-            selectedArray.push(item)
-            selectedObject[item.value] = 1
-          }
-        })
-
-        // #2066
-        this.selectedMultiple = this.remote ? this.model.length ? selectedArray : [] : selected
 
         if (slot) {
           let selectedModel = []
