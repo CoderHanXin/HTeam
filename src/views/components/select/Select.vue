@@ -98,6 +98,7 @@ export default {
       this.model = val
     },
     model() {
+      this.$emit('input', this.model)
       if (this.multiple) {
         if (this.slotChangeDuration) {
           this.slotChangeDuration = false
@@ -182,11 +183,11 @@ export default {
         child.index = index++
 
         this.optionInstances.push(child)
-        this.updateSingleSelected(true, slot)
-        this.updateMultipleSelected(true, slot)
       })
 
       this.options = options
+      this.updateSingleSelected(true, slot)
+      this.updateMultipleSelected(true, slot)
     },
     updateSingleSelected(init = false, slot = false) {
       const type = typeof this.model
@@ -223,16 +224,14 @@ export default {
 
         if (slot) {
           let selectedModel = []
-
-          for (let i = 0; i < selected.length; i++) {
-            selectedModel.push(selected[i].value)
+          for (const item of selected) {
+            selectedModel.push(item.value)
           }
 
           // if slot change and remove a selected option, emit user
           if (this.model.length === selectedModel.length) {
             this.slotChangeDuration = true
           }
-
           this.model = selectedModel
         }
       }
