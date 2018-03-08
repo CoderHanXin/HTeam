@@ -1,7 +1,7 @@
 import moment from 'moment'
 let deadline = date => {
   if (!date) {
-    return '没有截止时间'
+    return '无截止时间'
   }
   const d = moment(date)
   const today = moment(moment().format('YYYY-MM-DD'))
