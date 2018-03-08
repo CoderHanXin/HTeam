@@ -122,7 +122,12 @@
                         <span class="label">标签</span>
                         <Icon type="android-add-circle"></Icon>
                       </div>
-                      <HtOption v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</HtOption>
+                      <HtOption v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">
+                        <div class="select-item-flex">
+                          <span :style="{background: item.color}" class="select-item-color-cell margin-right-8"></span>
+                          {{item.name}}
+                        </div>
+                      </HtOption>
                     </HtSelect>
                     <ul class="tag-list">
                       <li v-if="selectedTagIdList.length === 0" class="no-data">尚未添加任何标签</li>
