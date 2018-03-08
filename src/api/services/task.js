@@ -54,12 +54,41 @@ class TaskService {
   }
 
   /**
+   * 获取任务事件
+   * @param   {Number}  id  任务id
+   * @return  {Object[]}
+   */
+  getEventList(id) {
+    return http.get(url.task_show_event.replace(':id', id))
+  }
+
+  /**
    * 新增任务评论
    * @param {Number}  id       任务id
    * @param {Object}  comment  评论信息
    */
   addComment(id, comment) {
     return http.post(url.task_comment_create.replace(':id', id), comment)
+  }
+
+  /**
+   * 新增标签
+   * @param {Number}  id     任务id
+   * @param {Number}  tagId  标签id
+   * @param {Object}  event  事件信息
+   */
+  addTag(id, tagId, event) {
+    return http.post(url.task_add_tag.replace(':id', id), { tagId, event })
+  }
+
+  /**
+   * 移除标签
+   * @param {Number}  id     任务id
+   * @param {Number}  tagId  标签id
+   * @param {Object}  event  事件信息
+   */
+  removeTag(id, tagId, event) {
+    return http.post(url.task_remove_tag.replace(':id', id), { tagId, event })
   }
 }
 

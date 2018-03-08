@@ -26,7 +26,10 @@ export default {
   task_create: '/api/task',
   task_update: '/api/task/:id',
   task_delete: '/api/task/:id',
+  task_show_event: '/api/task/:id/event',
   task_comment_create: '/api/task/:id/comment',
+  task_add_tag: '/api/task/:id/addTag',
+  task_remove_tag: '/api/task/:id/removeTag',
   task_inbox: '/api/task/inbox',
 
   tag: '/api/tag',
