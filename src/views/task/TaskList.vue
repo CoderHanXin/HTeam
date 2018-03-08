@@ -48,6 +48,7 @@
                     <span :class="{'task-done': item.done}">{{item.title}}</span>
                   </div>
                   <div class="task-item-meta">
+                    <Tag v-for="tag in item.tags" :key="tag.id" :color="tag.color">{{tag.name}}</Tag>
                     <span class="task-item-meta-label">{{item.user ? item.user.name : '未指派'}}</span>
                     <span v-if="item.deadline" class="task-item-meta-label" :class="{'task-expired':taskExpired(item)}">
                       <Icon type="ios-clock-outline"></Icon>
