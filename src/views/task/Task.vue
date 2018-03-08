@@ -26,7 +26,7 @@
                     <div class="info-item">
                       <span class="info-item-label" :class="{'task-expired':taskExpired(task)}">{{task.deadline | deadline}}</span>
                     </div>
-                    <div class="">
+                    <div>
                       <TaskLevel :value="task.level" />
                     </div>
                   </div>
