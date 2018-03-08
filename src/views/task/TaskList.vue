@@ -4,22 +4,25 @@
       <div class="title">{{mainTitle}}</div>
       <div class="panel">
         <div class="panel-item">
-          <Dropdown @on-click="handleDateFilter">
-            <a class="link-text">
-              {{dateFilterLabel}}
-              <Icon type="arrow-down-b"></Icon>
-            </a>
-            <DropdownMenu slot="list">
-              <DropdownItem name="all" :selected="dateFilter === 'all'">所有时间</DropdownItem>
-              <DropdownItem name="today" :selected="dateFilter === 'today'" divided>今天</DropdownItem>
-              <DropdownItem name="tomorrow" :selected="dateFilter === 'tomorrow'">明天</DropdownItem>
-              <DropdownItem name="thisWeek" :selected="dateFilter === 'thisWeek'">本周</DropdownItem>
-              <DropdownItem name="nextWeek" :selected="dateFilter === 'nextWeek'">下周</DropdownItem>
-              <DropdownItem name="after" :selected="dateFilter === 'after'">以后</DropdownItem>
-              <DropdownItem name="expired" :selected="dateFilter === 'expired'" divided>已延误</DropdownItem>
-              <DropdownItem name="noDeadline" :selected="dateFilter === 'noDeadline'">没有截止时间</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <Select v-model="tagFilter" @on-change="handleTagFilter" clearable size="small" placeholder="标签过滤">
+            <Option v-for="item in tags" :key="item.id" :value="item.id">
+              <div class="select-item-flex">
+                <span :style="{background: item.color}" class="select-item-color-cell margin-right-8"></span>
+                {{item.name}}
+              </div>
+            </Option>
+          </Select>
+        </div>
+        <div class="panel-item">
+          <Select v-model="dateFilter" @on-change="handleDateFilter" clearable size="small" placeholder="时间过滤">
+            <Option value="today">今天</Option>
+            <Option value="tomorrow">明天</Option>
+            <Option value="thisWeek">本周</Option>
+            <Option value="nextWeek">下周</Option>
+            <Option value="after">以后</Option>
+            <Option value="expired">已延误</Option>
+            <Option value="noDeadline">无截止时间</Option>
+          </Select>
         </div>
       </div>
     </div>
@@ -100,7 +103,8 @@ export default {
         title: '',
         deadline: ''
       },
-      dateFilter: this.taskDateFilter || 'all',
+      tagFilter: this.taskTagFilter,
+      dateFilter: this.taskDateFilter,
       assigneeId: null,
       dateOptions: {
         disabledDate(date) {
@@ -130,50 +134,60 @@ export default {
           return '还没有完成任何任务'
       }
     },
-    dateFilterLabel() {
-      switch (this.dateFilter) {
-        case 'all':
-          return '所有时间'
-        case 'today':
-          return '今天'
-        case 'tomorrow':
-          return '明天'
-        case 'thisWeek':
-          return '本周'
-        case 'nextWeek':
-          return '下周'
-        case 'after':
-          return '以后'
-        case 'expired':
-          return '已延误'
-        case 'noDeadline':
-          return '没有截至时间'
-      }
-    },
     list() {
-      if (this.dateFilter === 'all') {
+      if (this.dateFilter === '' && this.tagFilter === '') {
         return this.taskList
       }
-      switch (this.dateFilter) {
-        case 'today':
-          return this.taskGroup.today
-        case 'tomorrow':
-          return this.taskGroup.tomorrow
-        case 'thisWeek':
-          return this.taskGroup.thisWeek
-        case 'nextWeek':
-          return this.taskGroup.nextWeek
-        case 'after':
-          return this.taskGroup.after
-        case 'expired':
-          return this.taskGroup.expired
-        case 'noDeadline':
-          return this.taskGroup.noDeadline
+
+      let tempList = this.taskList
+
+      if (this.dateFilter !== '') {
+        switch (this.dateFilter) {
+          case 'today':
+            tempList = this.taskGroup.today
+            break
+          case 'tomorrow':
+            tempList = this.taskGroup.tomorrow
+            break
+          case 'thisWeek':
+            tempList = this.taskGroup.thisWeek
+            break
+          case 'nextWeek':
+            tempList = this.taskGroup.nextWeek
+            break
+          case 'after':
+            tempList = this.taskGroup.after
+            break
+          case 'expired':
+            tempList = this.taskGroup.expired
+            break
+          case 'noDeadline':
+            tempList = this.taskGroup.noDeadline
+            break
+        }
       }
+
+      let list = []
+      if (this.tagFilter !== '') {
+        for (const task of tempList) {
+          for (const tag of task.tags) {
+            if (tag.id === this.tagFilter) {
+              list.push(task)
+              break
+            }
+          }
+        }
+      } else {
+        list = tempList
+      }
+
+      return list
     },
     ...mapGetters([
-      'projectMembers',
+      'tags',
+      'taskTagFilter',
       'taskDateFilter',
+      'projectMembers',
       'currentUser',
       'currentTeam',
       'allUsers',
@@ -184,6 +198,7 @@ export default {
     $route(to, from) {
       this.project.id = to.params.id
       this.listType = to.params.listType
+      this.tagFilter = this.taskTagFilter
       this.dateFilter = this.taskDateFilter
       this.init()
     }
@@ -191,6 +206,7 @@ export default {
   created() {
     this.project.id = this.$route.params.id
     this.listType = this.$route.params.listType
+    this.tagFilter = this.taskTagFilter
     this.dateFilter = this.taskDateFilter
     this.init()
   },
@@ -268,14 +284,6 @@ export default {
       })
     },
     handleTaskClick(taskId) {
-      // this.$router.push({
-      //   name: 'project-task',
-      //   params: {
-      //     id: this.project.id,
-      //     name: this.project.name,
-      //     taskId: item.id
-      //   }
-      // })
       this.taskId = taskId
       this.isTaskVisable = true
     },
@@ -283,9 +291,13 @@ export default {
       this.getTaskList()
       this.isTaskVisable = false
     },
-    handleDateFilter(name) {
-      this.dateFilter = name
-      this.setTaskDateFilter(name)
+    handleDateFilter(val) {
+      this.dateFilter = val
+      this.setTaskDateFilter(val)
+    },
+    handleTagFilter(val) {
+      this.tagFilter = val
+      this.setTaskTagFilter(val)
     },
     setTaskGroup() {
       this.taskGroup.today = []
@@ -329,6 +341,7 @@ export default {
       return item.done === 0 && util.timeBeforeToday(item.deadline)
     },
     ...mapMutations([
+      'setTaskTagFilter',
       'setTaskDateFilter'
     ])
   }
