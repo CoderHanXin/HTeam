@@ -65,7 +65,7 @@
                   </TabPane>
                   <TabPane label="动态" icon="grid">
                     <ul class="task-events">
-                      <li v-for="(item, index) in task.events" v-if="isShowMoreEvents || index === 0 || index === task.events.length - 1" :key="item.id" class="task-event-item">
+                      <li v-for="(item, index) in eventList" v-if="isShowMoreEvents || index === 0 || index === eventList.length - 1" :key="item.id" class="task-event-item">
                         <div class="event-icon">
                           <Icon size="32" :type="eventIcon(item.type)" :color="eventIconColor(item.type)"></Icon>
                         </div>
@@ -73,7 +73,7 @@
                         <span class="event-text">{{item.user.name}}</span>
                         <span v-html="item.event" class="event-text"></span>
                         <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
-                        <a @click="showMoreEvents" v-if="!isShowMoreEvents && task.events.length > 2 && index === task.events.length - 1" class="link-text">（查看更多动态）</a>
+                        <a @click="showMoreEvents" v-if="!isShowMoreEvents && eventList.length > 2 && index === eventList.length - 1" class="link-text">（查看更多动态）</a>
                       </li>
                     </ul>
                   </TabPane>
@@ -117,14 +117,23 @@
                     </Select>
                   </li>
                   <li class="task-sider-item border-top padding-top-12">
-                    <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
-                    <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
+                    <HtSelect v-model="tagIdList" @on-change="changeTags" multiple>
+                      <div class="tag-select" slot="label">
+                        <span class="label">标签</span>
+                        <Icon type="android-add-circle"></Icon>
+                      </div>
+                      <HtOption v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</HtOption>
+                    </HtSelect>
+                    <ul class="tag-list">
+                      <li v-if="selectedTagIdList.length === 0" class="no-data">尚未添加任何标签</li>
+                      <li v-for="item in selectedTagModelList" :key="item.id" class="tag-item">
+                        <Tag :name="item.id" :color="item.color" @on-close="removeTag" closable>{{item.name}}</Tag>
+                      </li>
+                    </ul>
                   </li>
                   <li class="task-sider-item border-top padding-top-12">
-                    <header class="item-header">标签</header>
-                    <Select :disabled="disabled" v-model="tagList" :label-in-value="true" multiple size="small" placeholder="请选择">
-                      <Option v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
-                    </Select>
+                    <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
+                    <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
                   </li>
                 </ul>
               </div>
@@ -151,11 +160,15 @@ import util from '@/libs/util'
 import clickoutside from '@/directives/clickoutside'
 import { mapGetters } from 'vuex'
 import TaskLevel from '@/views/components/task-level/TaskLevel'
+import HtSelect from '@/views/components/select/Select'
+import HtOption from '@/views/components/select/Option'
 import QuillEditor from '@/views/components/editor/QuillEditor'
 export default {
   name: 'Task',
   components: {
     TaskLevel,
+    HtSelect,
+    HtOption,
     QuillEditor
   },
   directives: {
@@ -200,11 +213,13 @@ export default {
         deadline: '',
         done: 0
       },
+      eventList: [],
       assigneeId: null,
       assignee: '未指派',
       deadline: null,
       level: null,
-      tagList: [],
+      tagIdList: [],
+      selectedTagIdList: [],
       dateOptions: {
         disabledDate(date) {
           return date && date.valueOf() < Date.now() - 86400000
@@ -232,6 +247,18 @@ export default {
     showMoreDescText() {
       return this.isShowMoreDesc ? '收起更多' : '展开更多'
     },
+    selectedTagModelList() {
+      let list = []
+      for (const id of this.selectedTagIdList) {
+        for (const tag of this.tags) {
+          if (id === tag.id) {
+            list.push(tag)
+            break
+          }
+        }
+      }
+      return list
+    },
     ...mapGetters([
       'tags',
       'currentProject',
@@ -248,7 +275,6 @@ export default {
       }
     },
     descTextHeight(val) {
-      console.log(val)
       if (val > 250) {
         this.isMoreDesc = true
       }
@@ -257,11 +283,12 @@ export default {
   methods: {
     init() {
       this.getTask()
+      this.getEventList()
     },
     getTask() {
       taskService.get(this.taskId).then(res => {
         this.task = res.data.data
-        this.task.events.reverse()
+        this.setTagIdList()
         if (this.task.user) {
           this.assigneeId = this.task.user.id
           this.assignee = this.task.user.name
@@ -276,6 +303,20 @@ export default {
           this.descTextHeight = this.$refs.descText.offsetHeight
         })
       })
+    },
+    getEventList() {
+      taskService.getEventList(this.taskId).then(res => {
+        this.eventList = res.data.data
+      })
+    },
+    setTagIdList() {
+      this.tagIdList = []
+      if (this.task.tags) {
+        for (const tag of this.task.tags) {
+          this.tagIdList.push(tag.id)
+        }
+      }
+      this.selectedTagIdList = [...this.tagIdList]
     },
     handleCancel() {
       this.descTextHeight = 0
@@ -346,6 +387,55 @@ export default {
       taskService.update(this.taskId, task, event).then(res => {
         this.task.level = val.value
       })
+    },
+    changeTags(val) {
+      if (this.selectedTagIdList.length === val.length) {
+        return
+      }
+      let tagId
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      if (this.selectedTagIdList.length > val.length) {
+        tagId = this.findChangedTag(this.selectedTagIdList, val)
+        event.type = taskEvent.removeTag
+        event.event = taskEvent.removeTagText.replace('{tag}', this.findTag(tagId).name)
+        taskService.removeTag(this.taskId, tagId, event).then(res => {
+          this.selectedTagIdList = [...val]
+        })
+      } else {
+        tagId = this.findChangedTag(val, this.selectedTagIdList, val)
+        event.type = taskEvent.addTag
+        event.event = taskEvent.addTagText.replace('{tag}', this.findTag(tagId).name)
+        taskService.addTag(this.taskId, tagId, event).then(res => {
+          this.selectedTagIdList = [...val]
+        })
+      }
+    },
+    removeTag(e, tagId) {
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = this.taskId
+      event.type = taskEvent.removeTag
+      event.event = taskEvent.removeTagText.replace('{tag}', this.findTag(tagId).name)
+      taskService.removeTag(this.taskId, tagId, event).then(res => {
+        let index = this.selectedTagIdList.indexOf(tagId)
+        this.selectedTagIdList.splice(index, 1)
+      })
+    },
+    findChangedTag(long, short) {
+      for (const i of long) {
+        if (short.indexOf(i) === -1) {
+          return i
+        }
+      }
+    },
+    findTag(tagId) {
+      for (const tag of this.tags) {
+        if (tag.id === tagId) {
+          return tag
+        }
+      }
     },
     handleCheck() {
       let task = {}
@@ -445,6 +535,10 @@ export default {
           return 'ios-clock'
         case 'level':
           return 'ios-speedometer'
+        case 'addTag':
+          return 'ios-pricetag'
+        case 'removeTag':
+          return 'ios-pricetag'
       }
     },
     eventIconColor(type) {
@@ -467,6 +561,10 @@ export default {
           return '#ff9900'
         case 'level':
           return '#2d8cf0'
+        case 'addTag':
+          return '#19be6b'
+        case 'removeTag':
+          return '#ff9900'
       }
     }
   }
@@ -475,6 +573,22 @@ export default {
 
 <style lang="stylus">
 @import '~@/style/variable'
+
+.tag-select
+  position relative
+  display flex
+  align-items center
+  padding 0 6px 6px 0
+  font-size 12px
+  cursor pointer
+  .label
+    flex 1
+.tag-list
+  padding 0
+  .no-data
+    color $color-grey
+  .tag-item
+    padding 0
 .modal
   display flex
   flex-direction column
