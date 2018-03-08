@@ -21,18 +21,6 @@
           已完成
         </menu-item>
       </Menu>
-      <div class="sub-header">
-        <h5 class="title">标签</h5>
-        <div v-if="isAdmin" @click="handleTagsShow" class="more">
-          <Icon type="android-add"></Icon>
-        </div>
-      </div>
-      <SiderMenu :size="14">
-        <SiderMenuItem v-for="item in tags" :key="item.id" :name="item.id">
-          <Icon :color="item.color" type="ios-pricetag"></Icon>
-          {{item.name}}
-        </SiderMenuItem>
-      </SiderMenu>
     </Sider>
     <router-view/>
     <ProjectEdit v-model="isProjectEditVisable" @onProjectEditOk="handleProjectEditOk" @onProjectEditCancel="handleProjectEditCancel" :project="project" :projectUsers="projectUsers" :users="allUsers" :groups="allGroups">

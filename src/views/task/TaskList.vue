@@ -30,7 +30,7 @@
       <div class="task-quick-add">
         <input class="title" v-model.trim="task.title" @keydown.enter="createTask" :autofocus="true" placeholder="添加新任务，按回车键（Enter）保存" />
         <div class="meta">
-          <div class="meta-item">
+          <div class="meta-item margin-right-8">
             <Select v-model="assigneeId" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
               <Option v-for="item in projectMembers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
             </Select>
