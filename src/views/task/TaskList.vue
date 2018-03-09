@@ -271,7 +271,7 @@ export default {
       task.done = item.done
       let event = {}
       event.user_id = this.currentUser.id
-      event.task_id = this.taskId
+      event.task_id = item.id
       if (task.done) {
         event.type = taskEvent.done
         event.event = taskEvent.doneText
