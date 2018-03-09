@@ -7,17 +7,19 @@ import url from '../url'
 class StatsService {
   /**
    * 获取任务概况
-   * @param   {Number} teamId 团队id
-   * @param   {Number} start  开始时间
-   * @param   {Number} end    截至时间
+   * @param   {Number} teamId  团队id
+   * @param   {Number} start   开始时间
+   * @param   {Number} end     截止时间
+   * @param   {Number} userId  成员id
    * @return  {Object:{processing, done, expired}}
    */
-  getSummary(teamId, start, end) {
+  getSummary(teamId, start, end, userId) {
     if (start) {
       return http.get(url.stats_summary, {
         teamId,
         start,
-        end
+        end,
+        userId
       })
     } else {
       return http.get(url.stats_summary, {
@@ -30,7 +32,7 @@ class StatsService {
    * 获取每日任务趋势
    * @param   {Number} teamId 团队id
    * @param   {Number} start  开始时间
-   * @param   {Number} end    截至时间
+   * @param   {Number} end    截止时间
    * @return  {Object:{create[], done[]}
    */
   getTrend(teamId, start, end) {

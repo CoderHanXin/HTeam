@@ -3,7 +3,7 @@
     <div class="header">
       <div class="title">{{mainTitle}}</div>
       <div class="panel">
-        <Select v-model="userFilter" clearable size="small" placeholder="执行者" style="width:100px" class="margin-right-8">
+        <Select @on-change="handleUserFilter" clearable size="small" placeholder="执行者" style="width:100px" class="margin-right-8">
           <Option v-for="item in allUsers" :key="item.id" :value="item.id">{{item.name}}</Option>
         </Select>
         <DateRange @on-change="handleRangeChange"></DateRange>
@@ -138,7 +138,7 @@ export default {
       this.init()
     },
     getSummary() {
-      statsService.getSummary(this.currentTeam.id, this.start, this.end).then(res => {
+      statsService.getSummary(this.currentTeam.id, this.start, this.end, this.userFilter).then(res => {
         this.summary = res.data.data
       })
     },
@@ -155,6 +155,10 @@ export default {
         this.setAllUsers(res.data.data.users)
         this.setAllGroups(res.data.data.groups)
       })
+    },
+    handleUserFilter(val) {
+      this.userFilter = val
+      this.getSummary()
     },
     handleTaskCheck(item) {
       let task = {}
