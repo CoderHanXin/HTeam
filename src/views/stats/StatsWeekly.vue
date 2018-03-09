@@ -3,6 +3,9 @@
     <div class="header">
       <div class="title">{{mainTitle}}</div>
       <div class="panel">
+        <Select v-model="userFilter" clearable size="small" placeholder="执行者" style="width:100px" class="margin-right-8">
+          <Option v-for="item in allUsers" :key="item.id" :value="item.id">{{item.name}}</Option>
+        </Select>
         <DateRange @on-change="handleRangeChange"></DateRange>
       </div>
     </div>
@@ -43,6 +46,7 @@
 
 <script>
 import moment from 'moment'
+import teamService from '@/api/services/team'
 import statsService from '@/api/services/stats'
 import taskService from '@/api/services/task'
 import taskEvent from '../../common/constant/task_event'
@@ -70,7 +74,7 @@ export default {
       end: null,
       collapseKeys: [],
       porjectList: [],
-      list: [],
+      userFilter: '',
       taskId: 0,
       isTaskVisable: false
     }
@@ -83,9 +87,36 @@ export default {
       }
       return list
     },
+    list() {
+      let list = []
+      if (this.userFilter === '') {
+        list = this.porjectList
+      } else {
+        for (const project of this.porjectList) {
+          let taskList = []
+          for (const task of project.tasks) {
+            if (task.user && task.user.id === this.userFilter) {
+              taskList.push(task)
+            }
+          }
+          if (taskList.length > 0) {
+            list.push({
+              id: project.id,
+              name: project.name,
+              tasks: taskList
+            })
+          }
+        }
+      }
+      this.$nextTick(() => {
+        this.collapseKeys = [...this.projectIndexs]
+      })
+      return list
+    },
     ...mapGetters([
       'currentUser',
-      'currentTeam'
+      'currentTeam',
+      'allUsers'
     ])
   },
   created() {
@@ -97,6 +128,9 @@ export default {
     init() {
       this.getSummary()
       this.getProjectsWithTasks()
+      if (this.allUsers.length === 0) {
+        this.getUserList()
+      }
     },
     handleRangeChange(start, end) {
       this.start = start
@@ -111,10 +145,15 @@ export default {
     getProjectsWithTasks() {
       statsService.getProjectsWithTasks(this.currentTeam.id, this.start, this.end).then(res => {
         this.porjectList = res.data.data
-        this.list = [...this.porjectList]
         this.$nextTick(() => {
           this.collapseKeys = [...this.projectIndexs]
         })
+      })
+    },
+    getUserList() {
+      teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
+        this.setAllUsers(res.data.data.users)
+        this.setAllGroups(res.data.data.groups)
       })
     },
     handleTaskCheck(item) {
@@ -139,6 +178,7 @@ export default {
       this.setCurrentProject({
         id: project.id, name: project.name
       })
+      this.setProjectMembers(project.users)
       this.isTaskVisable = true
     },
     handleTaskCancel() {
@@ -149,7 +189,10 @@ export default {
       return item.done === 0 && util.timeBeforeToday(item.deadline)
     },
     ...mapMutations([
-      'setCurrentProject'
+      'setProjectMembers',
+      'setCurrentProject',
+      'setAllUsers',
+      'setAllGroups'
     ])
   }
 }
