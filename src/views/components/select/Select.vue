@@ -57,6 +57,10 @@ export default {
       type: Boolean,
       default: false
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     placement: {
       validator(value) {
         return oneOf(value, ['bottom', 'bottom-start', 'bottom-end'])
@@ -141,6 +145,9 @@ export default {
   },
   methods: {
     toggleMenu() {
+      if (this.disabled) {
+        return false
+      }
       this.visible = !this.visible
     },
     hideMenu() {

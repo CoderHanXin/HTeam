@@ -117,8 +117,8 @@
                     </Select>
                   </li>
                   <li class="task-sider-item border-top padding-top-12">
-                    <HtSelect v-model="tagIdList" @on-change="changeTags" multiple>
-                      <div class="tag-select" slot="label">
+                    <HtSelect :disabled="disabled" v-model="tagIdList" @on-change="changeTags" multiple>
+                      <div class="tag-select" :style="tagSelectStyles" slot="label">
                         <span class="label">标签</span>
                         <Icon type="android-add-circle"></Icon>
                       </div>
@@ -132,7 +132,7 @@
                     <ul class="tag-list">
                       <li v-if="selectedTagIdList.length === 0" class="no-data">尚未添加任何标签</li>
                       <li v-for="item in selectedTagModelList" :key="item.id" class="tag-item">
-                        <Tag :name="item.id" :color="item.color" @on-close="removeTag" closable>{{item.name}}</Tag>
+                        <Tag :name="item.id" :color="item.color" @on-close="removeTag" :closable="!disabled">{{item.name}}</Tag>
                       </li>
                     </ul>
                   </li>
@@ -251,6 +251,13 @@ export default {
     },
     showMoreDescText() {
       return this.isShowMoreDesc ? '收起更多' : '展开更多'
+    },
+    tagSelectStyles() {
+      if (this.disabled) {
+        return {
+          cursor: 'not-allowed'
+        }
+      }
     },
     selectedTagModelList() {
       let list = []
@@ -418,6 +425,9 @@ export default {
       }
     },
     removeTag(e, tagId) {
+      if (this.disabled) {
+        return false
+      }
       let event = {}
       event.user_id = this.currentUser.id
       event.task_id = this.taskId
