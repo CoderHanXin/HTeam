@@ -85,6 +85,11 @@ export default {
       this.visable = val
     }
   },
+  created() {
+    if (this.tags.length === 0) {
+      this.getTagList()
+    }
+  },
   methods: {
     getTagList() {
       tagService.getList(this.currentTeam.id).then(res => {
