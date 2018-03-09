@@ -18,10 +18,11 @@
                   <div class="task-item-wrapper">
                     <div class="task-item-body">
                       <Checkbox @on-change="handleTaskCheck(item)" v-model="item.done" :true-value="1" :false-value="0" :size="'large'" class="task-check"></Checkbox>
-                      <div @click="handleTaskClick(item)" class="task-item-title">
+                      <div @click="handleTaskClick(item.id, project)" class="task-item-title">
                         <span :class="{'task-done': item.done}">{{item.title}}</span>
                       </div>
                       <div class="task-item-meta">
+                        <Tag v-for="tag in item.tags" :key="tag.id" :color="tag.color">{{tag.name}}</Tag>
                         <span class="task-item-meta-label">{{item.user ? item.user.name : '未指派'}}</span>
                         <span v-if="item.deadline" class="task-item-meta-label" :class="{'task-expired':taskExpired(item)}">
                           <Icon type="ios-clock-outline"></Icon>
@@ -36,21 +37,26 @@
         </Collapse>
       </Card>
     </Content>
+    <Task v-model="isTaskVisable" :taskId="taskId" @onTaskCancel="handleTaskCancel"></Task>
   </Layout>
 </template>
 
 <script>
 import moment from 'moment'
 import statsService from '@/api/services/stats'
+import taskService from '@/api/services/task'
+import taskEvent from '../../common/constant/task_event'
 import DateRange from './components/DateRange'
 import TaskStats from './components/TaskStats'
 import util from '../../libs/util'
-import { mapGetters } from 'vuex'
+import Task from '@/views/task/Task'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'StatsWeekly',
   components: {
     DateRange,
-    TaskStats
+    TaskStats,
+    Task
   },
   data() {
     return {
@@ -64,7 +70,9 @@ export default {
       end: null,
       collapseKeys: [],
       porjectList: [],
-      list: []
+      list: [],
+      taskId: 0,
+      isTaskVisable: false
     }
   },
   computed: {
@@ -110,14 +118,39 @@ export default {
       })
     },
     handleTaskCheck(item) {
-
+      let task = {}
+      task.done = item.done
+      let event = {}
+      event.user_id = this.currentUser.id
+      event.task_id = item.id
+      if (task.done) {
+        event.type = taskEvent.done
+        event.event = taskEvent.doneText
+      } else {
+        event.type = taskEvent.reopen
+        event.event = taskEvent.reopenText
+      }
+      taskService.update(item.id, task, event).then(res => {
+        console.log(res.data)
+      })
     },
-    handleTaskClick(item) {
-
+    handleTaskClick(taskId, project) {
+      this.taskId = taskId
+      this.setCurrentProject({
+        id: project.id, name: project.name
+      })
+      this.isTaskVisable = true
+    },
+    handleTaskCancel() {
+      this.init()
+      this.isTaskVisable = false
     },
     taskExpired(item) {
       return item.done === 0 && util.timeBeforeToday(item.deadline)
-    }
+    },
+    ...mapMutations([
+      'setCurrentProject'
+    ])
   }
 }
 </script>
