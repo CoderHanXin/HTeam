@@ -160,10 +160,11 @@
 <script>
 import moment from 'moment'
 import taskService from '@/api/services/task'
+import tagService from '@/api/services/tag'
 import taskEvent from '@/common/constant/task_event'
 import util from '@/libs/util'
 import clickoutside from '@/directives/clickoutside'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import TaskLevel from '@/views/components/task-level/TaskLevel'
 import HtSelect from '@/views/components/select/Select'
 import HtOption from '@/views/components/select/Option'
@@ -296,6 +297,9 @@ export default {
     init() {
       this.getTask()
       this.getEventList()
+      if (this.tags.length === 0) {
+        this.getTagList()
+      }
     },
     getTask() {
       taskService.get(this.taskId).then(res => {
@@ -319,6 +323,11 @@ export default {
     getEventList() {
       taskService.getEventList(this.taskId).then(res => {
         this.eventList = res.data.data
+      })
+    },
+    getTagList() {
+      tagService.getList(this.currentTeam.id).then(res => {
+        this.setTags(res.data.data)
       })
     },
     setTagIdList() {
@@ -581,7 +590,10 @@ export default {
         case 'removeTag':
           return '#ff9900'
       }
-    }
+    },
+    ...mapMutations([
+      'setTags'
+    ])
   }
 }
 </script>
