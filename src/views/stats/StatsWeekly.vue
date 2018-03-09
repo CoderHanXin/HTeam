@@ -8,8 +8,8 @@
     </div>
     <Content class="content">
       <TaskStats :processing="summary.processing" :done="summary.done" :expired="summary.expired"></TaskStats>
-      <Card class="margin-top-16" shadow>
-        <Collapse v-model="collapseKeys" class="task-groups">
+      <Card class="task-group margin-top-16" shadow>
+        <Collapse v-model="collapseKeys">
           <Panel v-for="(project, index) in list" :key="index" class="task-group-item">
             {{project.name}}
             <ul slot="content">
@@ -123,12 +123,4 @@ export default {
 </script>
 
 <style lang="stylus">
-.task-groups
-  padding 0
-.task-group-item .ivu-collapse-header
-  padding-left 16px !important
-.task-group-item .ivu-collapse-content
-  padding 0
-.task-group-item .ivu-collapse-content-box
-  padding 8px 0
 </style>
