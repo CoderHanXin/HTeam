@@ -21,6 +21,10 @@
           已完成
         </menu-item>
       </Menu>
+      <div v-if="isAdmin" @click="handleTagsShow" class="sub-sider-item">
+        <h5 class="title">标签</h5>
+        <Icon size="20" type="android-add"></Icon>
+      </div>
     </Sider>
     <router-view/>
     <ProjectEdit v-model="isProjectEditVisable" @onProjectEditOk="handleProjectEditOk" @onProjectEditCancel="handleProjectEditCancel" :project="project" :projectUsers="projectUsers" :users="allUsers" :groups="allGroups">

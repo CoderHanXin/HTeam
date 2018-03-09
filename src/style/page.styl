@@ -27,7 +27,6 @@
   .sub-header
     height 40px
     min-height 40px
-    // border-top 1px solid $color-light-grey
     .title
       float left
       line-height 40px
@@ -45,6 +44,19 @@
     background $color-background-light
     &:after
       width 0
+  &-item
+    display flex
+    align-items center
+    height 40px
+    min-height 40px
+    padding 0 24px
+    color $color-grey
+    cursor pointer
+    &:hover
+      background #f3f3f3
+    .title
+      flex 1
+      font-size $font-size-medium
 .main-body
   color $color-text
   border-left 1px solid $color-light-grey
@@ -327,7 +339,7 @@
 /* select item
    ========================================================================== */
 .select-item-flex
-  display flex 
+  display flex
   align-items center
 .select-item-color-cell
   display inline-block
