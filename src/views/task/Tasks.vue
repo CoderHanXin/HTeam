@@ -35,7 +35,6 @@
 
 <script>
 import teamService from '@/api/services/team'
-import tagService from '@/api/services/tag'
 import projectService from '@/api/services/project'
 import { mapGetters, mapMutations } from 'vuex'
 import ProjectEdit from '@/views/project/ProjectEdit'
@@ -69,7 +68,6 @@ export default {
         this.currentTeam.team_user.role_id === 2
     },
     ...mapGetters([
-      'tags',
       'currentUser',
       'currentTeam',
       'allUsers',
@@ -99,7 +97,6 @@ export default {
       if (this.allUsers.length === 0) {
         this.getUserList()
       }
-      this.getTagList()
     },
     getProject() {
       projectService.get(this.project.id).then(res => {
@@ -114,11 +111,6 @@ export default {
       teamService.getAllUsersAndGroups(this.currentTeam.id).then(res => {
         this.setAllUsers(res.data.data.users)
         this.setAllGroups(res.data.data.groups)
-      })
-    },
-    getTagList() {
-      tagService.getList(this.currentTeam.id).then(res => {
-        this.setTags(res.data.data)
       })
     },
     handleChangeMenu(name) {
@@ -154,7 +146,6 @@ export default {
       this.isTagsVisable = false
     },
     ...mapMutations([
-      'setTags',
       'setProjectMembers',
       'setCurrentProject',
       'setAllUsers',
