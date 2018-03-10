@@ -24,6 +24,7 @@
   &-transfer
     z-index 1060
 .ht-select-item
+  position relative
   margin 0
   padding 7px 16px
   line-height normal
@@ -48,6 +49,13 @@
     background rgba(45, 140, 240, 0.9)
   &-selected&-focus
     background rgba(40, 123, 211, 0.91)
+  &-selected-icon
+    position absolute
+    top 50%
+    right 8px
+    line-height 1
+    margin-top -9px
+    color rgba(45, 140, 240, 0.9)
 .ht-select-multiple .ht-select-item
   &-selected
     color rgba(45, 140, 240, 0.9)
@@ -57,10 +65,3 @@
   &-selected&-focus
     color rgba(40, 123, 211, 0.91)
     background #fff
-  &-selected:after
-    display inline-block
-    float right
-    line-height 1
-    font-size 14px
-    content '√'
-    color rgba(45, 140, 240, 0.9)

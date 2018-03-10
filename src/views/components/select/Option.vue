@@ -1,6 +1,7 @@
 <template>
   <li :class="classes" @click.stop="select" @mouseout.stop="blur">
     <slot>{{ showLabel }}</slot>
+    <Icon :class="iconClasses" :style="iconStyles" size="20" type="ios-checkmark-empty"></Icon>
   </li>
 </template>
 
@@ -43,6 +44,14 @@ export default {
           [`${prefixCls}-focus`]: this.isFocus
         }
       ]
+    },
+    iconClasses() {
+      return `${prefixCls}-selected-icon`
+    },
+    iconStyles() {
+      if (!this.selected) {
+        return { display: 'none' }
+      }
     },
     showLabel() {
       return this.label ? this.label : this.value
