@@ -13,7 +13,7 @@
             <span>每日新增完成任务趋势</span>
           </div>
           <div class="card-header-meta">
-            <Dropdown @on-click="handTrendRangeChange">
+            <Dropdown @on-click="handTrendRangeChange" placement="bottom-end">
               <a class="link-text">
                 {{trendRangeLabel}}
                 <Icon type="arrow-down-b"></Icon>
