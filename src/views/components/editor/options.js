@@ -3,10 +3,9 @@ export default {
   boundary: document.body,
   modules: {
     toolbar: [
-      ['bold', 'italic', 'strike'],
-      ['blockquote', 'code-block'],
+      ['bold', 'italic', 'strike', 'blockquote', 'code-block'],
       [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image']
+      ['image']
     ]
   },
   placeholder: '请输入...',
