@@ -35,6 +35,14 @@
   list-style none
   cursor pointer
   transition background 0.2s ease-in-out
+  &-selected-icon
+    position absolute
+    display none
+    top 50%
+    right 8px
+    line-height 1
+    margin-top -9px
+    color rgba(45, 140, 240, 0.9)
   &:focus, &:hover
     background #f3f3f3
   &-disabled
@@ -49,17 +57,12 @@
     background rgba(45, 140, 240, 0.9)
   &-selected&-focus
     background rgba(40, 123, 211, 0.91)
-  &-selected-icon
-    position absolute
-    top 50%
-    right 8px
-    line-height 1
-    margin-top -9px
-    color rgba(45, 140, 240, 0.9)
 .ht-select-multiple .ht-select-item
   &-selected
     color rgba(45, 140, 240, 0.9)
     background #fff
+    .ht-select-item-selected-icon
+      display inline
   &-focus, &-selected:hover
     background #f3f3f3
   &-selected&-focus
