@@ -11,7 +11,7 @@
     </div>
     <Content class="content">
       <TaskStats :processing="summary.processing" :done="summary.done" :expired="summary.expired"></TaskStats>
-      <Card class="task-group margin-top-16" shadow>
+      <Card v-if="list.length !== 0" class="task-group margin-top-16" shadow>
         <Collapse v-model="collapseKeys">
           <Panel v-for="(project, index) in list" :key="index" class="task-group-item">
             {{project.name}}
