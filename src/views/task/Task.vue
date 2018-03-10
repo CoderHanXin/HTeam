@@ -35,7 +35,7 @@
                       <div v-show="task.desc" v-html="task.desc" class="task-desc-text" ref="descText"></div>
                       <p v-show="!task.desc" class="task-desc-placeholder">暂无详细描述</p>
                     </div>
-                    <QuillEditor v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
+                    <QuillEditor ref="editor" v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
                   </div>
                   <div @click="showMoreDesc" class="task-desc-show-more" v-if="isMoreDesc && !isEdit">
                     <span>{{showMoreDescText}}
@@ -153,28 +153,35 @@
           </div>
         </div>
       </div>
+      <Upload ref="upload" :on-success="handleUploadSuccess" v-show="false" :format="['gif','jpg','jpeg','png','bmp','webp']" accept="image/*" multiple>
+        <Button ref="btnUpload">Upload</Button>
+      </Upload>
     </Modal>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
+import util from '@/libs/util'
+import config from '@/config'
 import taskService from '@/api/services/task'
 import tagService from '@/api/services/tag'
 import taskEvent from '@/common/constant/task_event'
-import util from '@/libs/util'
-import clickoutside from '@/directives/clickoutside'
 import { mapGetters, mapMutations } from 'vuex'
+import clickoutside from '@/directives/clickoutside'
 import TaskLevel from '@/views/components/task-level/TaskLevel'
 import HtSelect from '@/views/components/select/Select'
 import HtOption from '@/views/components/select/Option'
+import Upload from '@/views/components/upload/Upload'
 import QuillEditor from '@/views/components/editor/QuillEditor'
+
 export default {
   name: 'Task',
   components: {
     TaskLevel,
     HtSelect,
     HtOption,
+    Upload,
     QuillEditor
   },
   directives: {
@@ -208,6 +215,7 @@ export default {
       isCommentFocus: false,
       isShowMoreEvents: false,
       comment: '',
+      uploadType: '',
       tabIndex: 0,
       editTask: {
         title: '',
@@ -292,6 +300,9 @@ export default {
         this.isMoreDesc = true
       }
     }
+  },
+  mounted() {
+    this.$refs.editor.quill.getModule('toolbar').addHandler('image', this.imageUploadHandler)
   },
   methods: {
     init() {
@@ -510,6 +521,20 @@ export default {
         this.editTask.title = this.task.title
         this.editTask.desc = this.task.desc
         this.isEdit = true
+      }
+    },
+    handleUploadSuccess(res, file, fileList) {
+      let quill = this.$refs.editor.quill
+      let addRange = quill.getSelection()
+      let index = addRange !== null ? addRange.index : 0
+      let image = config.imageDomain + res.key
+      quill.insertEmbed(index, this.uploadType, image)
+      this.$refs.upload.clearFiles()
+    },
+    imageUploadHandler(state) {
+      if (state) {
+        this.uploadType = 'image'
+        this.$refs.btnUpload.$el.click()
       }
     },
     submitComment() {
