@@ -3,8 +3,8 @@
     <div class="header">
       <div class="title">{{mainTitle}}</div>
       <div class="panel">
-        <Select @on-change="handleUserFilter" clearable size="small" placeholder="执行者" style="width:100px" class="margin-right-8">
-          <Option v-for="item in allUsers" :key="item.id" :value="item.id">{{item.name}}</Option>
+        <Select @on-change="handleUserFilter" label-in-value clearable size="small" placeholder="执行者" style="width:100px" class="margin-right-8">
+          <Option v-for="item in allUsers" :key="item.id" :value="item.id" :label="item.name">{{item.name}}</Option>
         </Select>
         <DateRange @on-change="handleRangeChange"></DateRange>
       </div>
@@ -64,7 +64,6 @@ export default {
   },
   data() {
     return {
-      mainTitle: '任务周报',
       summary: {
         processing: 0,
         done: 0,
@@ -74,12 +73,18 @@ export default {
       end: null,
       collapseKeys: [],
       porjectList: [],
-      userFilter: '',
+      userFilter: {
+        value: '',
+        label: ''
+      },
       taskId: 0,
       isTaskVisable: false
     }
   },
   computed: {
+    mainTitle() {
+      return this.userFilter.value ? `任务周报 - ${this.userFilter.label}` : '任务周报'
+    },
     projectIndexs() {
       let list = []
       for (let index = 0; index < this.porjectList.length; index++) {
@@ -89,13 +94,13 @@ export default {
     },
     list() {
       let list = []
-      if (this.userFilter === '') {
+      if (this.userFilter.value === '') {
         list = this.porjectList
       } else {
         for (const project of this.porjectList) {
           let taskList = []
           for (const task of project.tasks) {
-            if (task.user && task.user.id === this.userFilter) {
+            if (task.user && task.user.id === this.userFilter.value) {
               taskList.push(task)
             }
           }
@@ -138,7 +143,7 @@ export default {
       this.init()
     },
     getSummary() {
-      statsService.getSummary(this.currentTeam.id, this.start, this.end, this.userFilter).then(res => {
+      statsService.getSummary(this.currentTeam.id, this.start, this.end, this.userFilter.value).then(res => {
         this.summary = res.data.data
       })
     },
@@ -157,6 +162,7 @@ export default {
       })
     },
     handleUserFilter(val) {
+      console.log(val)
       this.userFilter = val
       this.getSummary()
     },
