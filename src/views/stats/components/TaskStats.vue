@@ -79,10 +79,10 @@ export default {
       return this.processing + this.done
     },
     doneRate() {
-      return (this.done * 100 / this.all).toFixed()
+      return this.all === 0 ? 0 : (this.done * 100 / this.all).toFixed()
     },
     expiredRate() {
-      return (this.expired * 100 / this.all).toFixed()
+      return this.all === 0 ? 0 : (this.expired * 100 / this.all).toFixed()
     }
   },
   watch: {
