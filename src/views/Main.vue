@@ -7,7 +7,7 @@
         </div>
       </div>
       <MainSiderItem name="project">
-        <Icon size="20" type="ios-folder"></Icon>
+        <Icon size="20" type="folder"></Icon>
         <p>项目</p>
       </MainSiderItem>
       <MainSiderItem name="team">

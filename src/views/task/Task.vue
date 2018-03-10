@@ -5,7 +5,7 @@
         <div class="modal-main">
           <div class="modal-header">
             <span class="title">
-              <Icon class="margin-right-4" color="#2d8cf0" type="ios-folder" />{{currentProject.name}}</span>
+              <Icon class="margin-right-4" size="18" color="#2d8cf0" type="folder" />{{currentProject.name}}</span>
             <div class="meta"></div>
           </div>
           <div class="modal-content">
