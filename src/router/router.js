@@ -72,14 +72,6 @@ export const appRouter = [
         ]
       },
       {
-        path: 'project/:id/task/:taskId',
-        name: 'project-task',
-        meta: {
-          title: '任务'
-        },
-        component: () => import('@/views/task/TaskDetail.vue')
-      },
-      {
         path: 'team',
         name: 'team',
         meta: {
