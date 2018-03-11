@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import url from '../../api/url'
+import teamService from '@/api/services/team'
 export default {
   name: 'GroupAdd',
   props: {
@@ -96,13 +96,10 @@ export default {
     handleOk() {
       this.$refs.groupAddForm.validate(valid => {
         if (valid) {
-          let params = {}
           let group = {}
           group.name = this.group.name
           group.teamId = this.teamId
-          params.group = group
-          params.users = this.checkedUsers
-          this.$http.post(url.group_create, params).then(res => {
+          teamService.createGroup(group, this.checkedUsers).then(res => {
             this.visable = false
             this.$refs.groupAddForm.resetFields()
             this.checkedUsers = []
