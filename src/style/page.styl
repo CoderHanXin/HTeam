@@ -8,7 +8,7 @@
   background $color-background-light
   .header
     height 50px
-    border-bottom 1px solid $color-light-grey
+    border-bottom 1px solid $color-divider
     .title
       float left
       line-height 50px
@@ -53,13 +53,13 @@
     color $color-grey
     cursor pointer
     &:hover
-      background #f3f3f3
+      background $color-background-hover
     .title
       flex 1
       font-size $font-size-medium
 .main-body
   color $color-text
-  border-left 1px solid $color-light-grey
+  border-left 1px solid $color-divider
   .header
     position relative
     display flex
@@ -68,7 +68,7 @@
     min-height 50px
     margin 0
     padding 0 15px
-    border-bottom 1px solid $color-light-grey
+    border-bottom 1px solid $color-divider
     background $color-background-light
     .title
       flex 1
@@ -153,116 +153,6 @@
     font-size $font-size-medium
     &-item
       width 108px
-/* task detail
-   ========================================================================== */
-.task-detail
-  position relative
-  display flex
-  flex auto
-  padding 10px 0
-  background $color-background-light
-  &-main
-    flex 1
-    height 100%
-  &-sider
-    width 150px
-    margin 0 32px
-    padding-top 56px
-    &-item
-      margin-bottom 12px
-      .item-dropdown
-        width 150px
-      .item-wrapper
-        cursor pointer
-      .item-header
-        padding-bottom 6px
-  &-header
-    position relative
-    display flex
-    padding 16px
-    .title
-      flex 1
-      width 0
-      font-size $font-size-medium-x
-      color $color-text
-  &-content
-    margin 0 16px
-    padding-left 24px
-    border-bottom 1px solid $color-light-grey
-  &-info
-    align-items center
-    .info-item
-      display inline-block
-      color $color-grey
-      &-label
-        padding 2px 6px
-  &-desc
-    padding 16px 0
-    font-size $font-size-medium
-  &-events
-    padding 16px
-  &-event-item
-    display flex
-    align-items center
-    padding 8px 16px
-    .event-icon
-      width 64px
-      text-align center
-    .event-text
-      padding-right 8px
-      color $color-grey
-  &-comments
-    padding 0 16px 16px
-  &-comment-item
-    display flex
-    padding 16px
-    .comment-icon
-      width 64px
-      text-align center
-      cursor pointer
-    .comment-box
-      flex 1
-      padding 8px
-      border-radius 4px
-      background #eee
-    .comment-meta
-      padding-top 0
-      span
-        padding-right 8px
-    .comment-content
-      padding-top 8px
-      font-size $font-size-medium
-  .editor-wrapper
-    margin 16px 32px 100px
-    border-radius 4px
-    border 1px solid $color-light-grey
-    .editor
-      position relative
-      padding 8px 16px
-      border-radius 4px
-      background #fff
-      overflow auto
-      z-index 1
-      &-textarea
-        display block
-        line-height 1.6
-        width 100%
-        background #fff
-        border-style none
-        resize none
-        outline 0
-        font-size $font-size-medium
-        word-wrap break-word
-        overflow hidden
-    .toolbar
-      height 30px
-      background rgb(246, 246, 246)
-      border-top 1px solid rgb(238, 238, 238)
-      .editor-submit
-        float right
-        height 30px
-        padding 8px
-        cursor pointer
 /* task etc
    ========================================================================== */
 .task-done
@@ -275,7 +165,7 @@
   padding 2px 8px
   color $color-grey
 .level-icon-on
-  color #ed3f14
+  color $color-error
 .level-icon-off
   color #ccc
 /* team

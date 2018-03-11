@@ -33,7 +33,7 @@
       </ul>
     </div>
     <Modal v-model="editPasswordModal" :mask-closable="false" :width="500">
-      <h3 slot="header" style="color:#2D8CF0">修改密码</h3>
+      <h3 slot="header" style="color:#2d8cf0">修改密码</h3>
       <Form ref="changePasswordForm" :model="changePassword" :rules="rules" :label-width="80">
         <FormItem label="原密码" prop="oldPass" :error="oldPassError">
           <Input type="password" v-model="changePassword.oldPass" :maxlength="32" placeholder="请输入现在使用的密码" />
@@ -251,7 +251,7 @@ export default {
   cursor pointer
   transition background 0.2s ease-in-out
   &:hover
-    background #f3f3f3
+    background $color-background-hover
 .pop-menu-item-selected
   color #fff
   background $color-primary

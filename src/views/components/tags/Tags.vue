@@ -194,7 +194,7 @@ export default {
   &:after
     setBottomLine()
   &:hover
-    background #f3f3f3
+    background $color-background-hover
   &-cell
     flex 1
   &-more
