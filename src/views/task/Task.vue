@@ -162,7 +162,7 @@
 
 <script>
 import moment from 'moment'
-import util from '@/libs/util'
+import date from '@/common/utils/date'
 import config from '@/config'
 import taskService from '@/api/services/task'
 import tagService from '@/api/services/tag'
@@ -556,7 +556,7 @@ export default {
       this.isCommentFocus = false
     },
     taskExpired(task) {
-      return task.done === 0 && util.timeBeforeToday(task.deadline)
+      return task.done === 0 && date.timeBeforeToday(task.deadline)
     },
     showMoreDesc() {
       this.isShowMoreDesc = !this.isShowMoreDesc

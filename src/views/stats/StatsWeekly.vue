@@ -52,7 +52,7 @@ import taskService from '@/api/services/task'
 import taskEvent from '../../common/constant/task_event'
 import DateRange from './components/DateRange'
 import TaskStats from './components/TaskStats'
-import util from '../../libs/util'
+import date from '@/common/utils/date'
 import Task from '@/views/task/Task'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
@@ -196,7 +196,7 @@ export default {
       this.isTaskVisable = false
     },
     taskExpired(item) {
-      return item.done === 0 && util.timeBeforeToday(item.deadline)
+      return item.done === 0 && date.timeBeforeToday(item.deadline)
     },
     ...mapMutations([
       'setProjectMembers',

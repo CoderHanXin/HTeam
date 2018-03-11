@@ -37,7 +37,7 @@
 
 <script>
 import statsService from '@/api/services/stats'
-import util from '@/libs/util'
+import date from '@/common/utils/date'
 import { mapGetters } from 'vuex'
 import TaskStats from './components/TaskStats'
 import ECharts from 'vue-echarts/components/ECharts.vue'
@@ -135,9 +135,9 @@ export default {
       }
 
       statsService.getTrend(this.currentTeam.id, this.trendRange.start, this.trendRange.end).then(res => {
-        const dateList = util.getDateRangeArray(this.trendRange.start, this.trendRange.end)
-        const createList = util.groupByDateRange(res.data.data.create, dateList)
-        const doneList = util.groupByDateRange(res.data.data.done, dateList)
+        const dateList = date.getDateRangeArray(this.trendRange.start, this.trendRange.end)
+        const createList = date.groupByDateRange(res.data.data.create, dateList)
+        const doneList = date.groupByDateRange(res.data.data.done, dateList)
         const shortList = dateList.map(val => val.substr(-5))
         this.trendLine.xAxis.data = shortList
         this.trendLine.series[0].data = createList
@@ -153,10 +153,10 @@ export default {
       let range
       switch (name) {
         case 'week':
-          range = util.getThisWeekRange()
+          range = date.getThisWeekRange()
           break
         case 'month':
-          range = util.getLastMonthRange()
+          range = date.getLastMonthRange()
           break
       }
       this.trendRange.start = range.start

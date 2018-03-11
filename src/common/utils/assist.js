@@ -1,3 +1,5 @@
+'use strict'
+
 const SPECIAL_CHARS_REGEXP = /([:\-_]+(.))/g
 const MOZ_HACK_REGEXP = /^moz([A-Z])/
 function camelCase(name) {

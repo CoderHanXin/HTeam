@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import { routers } from './router'
 import store from '../store'
 import iView from 'iview'
-import Util from '../libs/util'
+import { setTitle } from '../common/utils/util'
 
 Vue.use(VueRouter)
 
@@ -18,7 +18,7 @@ export const router = new VueRouter(RouterConfig)
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
-  Util.title(to.meta.title)
+  setTitle(to.meta.title)
   if (!store.state.app.currentUser && to.name !== 'login') {
     next({
       name: 'login'

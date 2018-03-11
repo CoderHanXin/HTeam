@@ -72,7 +72,7 @@
 <script>
 import taskService from '@/api/services/task'
 import taskEvent from '../../common/constant/task_event'
-import util from '../../libs/util'
+import date from '@/common/utils/date'
 import Task from './Task'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
@@ -312,25 +312,25 @@ export default {
           this.taskGroup.noDeadline.push(task)
           continue
         }
-        if (util.timeBeforeToday(task.deadline) && task.done === 0) {
+        if (date.timeBeforeToday(task.deadline) && task.done === 0) {
           this.taskGroup.expired.push(task)
           continue
         }
-        if (util.timeEqualToday(task.deadline)) {
+        if (date.timeEqualToday(task.deadline)) {
           this.taskGroup.today.push(task)
           this.taskGroup.thisWeek.push(task)
           continue
         }
-        if (util.timeEqualTomorrow(task.deadline)) {
+        if (date.timeEqualTomorrow(task.deadline)) {
           this.taskGroup.tomorrow.push(task)
           this.taskGroup.thisWeek.push(task)
           continue
         }
-        if (util.timeInThisWeek(task.deadline)) {
+        if (date.timeInThisWeek(task.deadline)) {
           this.taskGroup.thisWeek.push(task)
           continue
         }
-        if (util.timeInNextWeek(task.deadline)) {
+        if (date.timeInNextWeek(task.deadline)) {
           this.taskGroup.nextWeek.push(task)
           continue
         }
@@ -338,7 +338,7 @@ export default {
       }
     },
     taskExpired(item) {
-      return item.done === 0 && util.timeBeforeToday(item.deadline)
+      return item.done === 0 && date.timeBeforeToday(item.deadline)
     },
     ...mapMutations([
       'setTaskTagFilter',
