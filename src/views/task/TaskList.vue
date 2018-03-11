@@ -71,7 +71,7 @@
 
 <script>
 import taskService from '@/api/services/task'
-import taskEvent from '../../common/constant/task_event'
+import taskEvent from '@/common/constant/task_event'
 import date from '@/common/utils/date'
 import Task from './Task'
 import { mapGetters, mapMutations } from 'vuex'

@@ -46,13 +46,13 @@
 
 <script>
 import moment from 'moment'
+import date from '@/common/utils/date'
 import teamService from '@/api/services/team'
 import statsService from '@/api/services/stats'
 import taskService from '@/api/services/task'
-import taskEvent from '../../common/constant/task_event'
+import taskEvent from '@/common/constant/task_event'
 import DateRange from './components/DateRange'
 import TaskStats from './components/TaskStats'
-import date from '@/common/utils/date'
 import Task from '@/views/task/Task'
 import { mapGetters, mapMutations } from 'vuex'
 export default {

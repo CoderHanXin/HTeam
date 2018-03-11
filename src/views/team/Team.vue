@@ -47,7 +47,7 @@
 
 <script>
 import teamService from '@/api/services/team'
-import role from '../../common/constant/role'
+import role from '@/common/constant/role'
 import { mapGetters, mapMutations } from 'vuex'
 import GroupAdd from '@/views/team/GroupAdd'
 import GroupEdit from '@/views/team/GroupEdit'
