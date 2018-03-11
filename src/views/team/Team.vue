@@ -29,14 +29,14 @@
             <Form inline>
               <!-- <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
               <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button> -->
-              <Button v-if="currentMenuIsTeam" @click="handleTeamUserAdd" type="success" class="margin-right-4">添加成员</Button>
+              <Button v-if="currentMenuIsTeam" @click="handleTeamUserAddShow" type="success" class="margin-right-4">添加成员</Button>
               <Button v-if="currentMenuIsTeam" @click="handleGroupAddShow" type="primary" class="margin-right-4">新建分组</Button>
               <Button v-if="!currentMenuIsTeam" @click="handleGroupEditShow" type="primary" class="margin-right-4">设置分组</Button>
               <Button v-if="!currentMenuIsTeam" @click="handleDeleteGroup" type="error" class="margin-right-4">删除分组</Button>
             </Form>
           </div>
           <Table border :columns="columns" :data="currentUserList" :loading="isLoading" ref="table" class="team-table"></Table>
-          <TeamUser v-model="isTeamUserVisable" @onTeamUserOk="handleTeamUserOk" @onTeamUserCancel="handleTeamUserCancel" :isEdit="isEditTeamUser" :teamId="currentTeam.id" :teamUser="teamUser"></TeamUser>
+          <TeamUser v-model="isTeamUserVisable" @onTeamUserOk="handleTeamUserOk" :isEdit="isEditTeamUser" :teamId="currentTeam.id" :teamUser="teamUser"></TeamUser>
           <GroupAdd v-model="isGroupAddVisable" @onGroupAddOk="handleGroupAddOk" @onGroupAddCancel="handleGroupAddCancel" :teamId="currentTeam.id" :users="userList"></GroupAdd>
           <GroupEdit v-if="groupList" v-model="isGroupEditVisable" @onGroupEditOk="handleGroupEditOk" @onGroupEditCancel="handleGroupEditCancel" :group="currentGroup" :groupUsers="currentGroupUsers" :users="userList"></GroupEdit>
         </div>
@@ -139,7 +139,7 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.handleTeamUserEdit(params.row)
+                    this.handleTeamUserEditShow(params.row)
                   }
                 }
               },
@@ -224,18 +224,14 @@ export default {
       this.getUserList()
     },
     handleTeamUserOk() {
-      this.isTeamUserVisable = false
       this.getUserList()
     },
-    handleTeamUserCancel() {
-      this.isTeamUserVisable = false
-    },
-    handleTeamUserAdd() {
-      this.teamUser = this.user
+    handleTeamUserAddShow() {
+      this.teamUser = Object.assign({}, this.user)
       this.isEditTeamUser = false
       this.isTeamUserVisable = true
     },
-    handleTeamUserEdit(row) {
+    handleTeamUserEditShow(row) {
       this.teamUser.id = row.id
       this.teamUser.name = row.name
       this.teamUser.phone = row.phone

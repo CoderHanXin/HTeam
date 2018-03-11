@@ -1,35 +1,33 @@
 <template>
-  <div v-show="visable">
-    <Modal v-model="visable" @on-visible-change="onVisibleChange" :title="modalTitle" :mask-closable="false" width="480">
-      <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
-        <FormItem label="姓名" prop="name">
-          <Input type="text" v-model.trim="user.name" :maxlength="20" placeholder="请输入对方真实姓名" />
-        </FormItem>
-        <FormItem label="用户名" prop="username" v-if="!isEdit">
-          <Input type="text" v-model.trim="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony" />
-        </FormItem>
-        <FormItem label="默认密码" prop="password" v-if="!isEdit">
-          <Input type="password" v-model.trim="user.password" :maxlength="32" placeholder="请输入默认密码" />
-        </FormItem>
-        <FormItem label="手机号" prop="phone">
-          <Input type="text" v-model.trim="user.phone" :maxlength="11" placeholder="请输入手机号" />
-        </FormItem>
-        <FormItem label="备注" prop="desc">
-          <Input type="textarea" v-model.trim="user.desc" :rows="3" class="textarea-desc" />
-        </FormItem>
-        <!-- <FormItem label="权限">    
+  <Modal v-model="visable" @on-visible-change="onVisibleChange" :title="modalTitle" :mask-closable="false" width="480">
+    <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
+      <FormItem label="姓名" prop="name">
+        <Input type="text" v-model.trim="user.name" :maxlength="20" placeholder="请输入对方真实姓名" />
+      </FormItem>
+      <FormItem label="用户名" prop="username" v-if="!isEdit">
+        <Input type="text" v-model.trim="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony" />
+      </FormItem>
+      <FormItem label="默认密码" prop="password" v-if="!isEdit">
+        <Input type="password" v-model.trim="user.password" :maxlength="32" placeholder="请输入默认密码" />
+      </FormItem>
+      <FormItem label="手机号" prop="phone">
+        <Input type="text" v-model.trim="user.phone" :maxlength="11" placeholder="请输入手机号" />
+      </FormItem>
+      <FormItem label="备注" prop="desc">
+        <Input type="textarea" v-model.trim="user.desc" :rows="3" class="textarea-desc" />
+      </FormItem>
+      <!-- <FormItem label="权限">    
           <RadioGroup v-model="user.roleId">
             <Radio v-for="item in roleList" :key="item.id" :label="item.id">{{item.name}}</Radio>
           </RadioGroup>
         </FormItem> -->
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="handleCancel()">取消</Button>
-        <Button type="primary" size="large" :loading="okLoading" :disabled="okDisabled" @click="handleSubmit()">确定</Button>
-        <Button type="error" size="large" :loading="disableLoading" :disabled="disableDisabled" @click="handleDisable()" v-if="isEdit" class="left">移除</Button>
-      </div>
-    </Modal>
-  </div>
+    </Form>
+    <div slot="footer">
+      <Button type="text" size="large" @click="handleCancel()">取消</Button>
+      <Button type="primary" size="large" :loading="okLoading" :disabled="okDisabled" @click="handleSubmit()">确定</Button>
+      <Button type="error" size="large" :loading="disableLoading" :disabled="disableDisabled" @click="handleDisable()" v-if="isEdit" class="left">移除</Button>
+    </div>
+  </Modal>
 </template>
 
 <script>
@@ -104,12 +102,7 @@ export default {
           if (!this.isEdit) {
             delete this.user.id
             userService.create(this.user, this.teamId).then(res => {
-              this.$refs.userForm.resetFields()
-              this.$Message.success('操作成功')
-              this.visable = false
-              this.okLoading = false
-              this.disableDisabled = false
-              this.$emit('onTeamUserOk')
+              this.ok()
             })
           } else {
             let user = {}
@@ -119,12 +112,7 @@ export default {
             user.desc = this.user.desc
             userService.update(user.id, user)
               .then(res => {
-                this.$refs.userForm.resetFields()
-                this.$Message.success('操作成功')
-                this.visable = false
-                this.okLoading = false
-                this.disableDisabled = false
-                this.$emit('onTeamUserOk')
+                this.ok()
               })
           }
         }
@@ -140,26 +128,28 @@ export default {
           this.okDisabled = true
           teamService.deleteUser(this.teamId, this.user.id)
             .then(res => {
-              this.visable = false
-              this.$refs.userForm.resetFields()
-              this.$Message.success('操作成功')
-              this.disableLoading = false
-              this.okDisabled = false
-              this.$emit('onTeamUserOk')
+              this.ok()
             })
         }
       })
     },
     handleCancel() {
-      this.$refs.userForm.resetFields()
       this.visable = false
-      this.$emit('onTeamUserCancel')
     },
     onVisibleChange(visible) {
       if (!visible) {
-        this.$emit('onTeamUserCancel')
-        this.clearUser()
+        this.close()
       }
+    },
+    ok() {
+      this.$Message.success('操作成功')
+      this.visable = false
+      this.okLoading = false
+      this.disableDisabled = false
+      this.$emit('onTeamUserOk')
+    },
+    close() {
+      this.$emit('input', false)
     },
     clearUser() {
       this.user.id = ''
