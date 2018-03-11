@@ -91,7 +91,7 @@ export default {
     value(val) {
       this.visable = val
       if (val) {
-        this.user = this.teamUser
+        this.user = Object.assign({}, this.teamUser)
       }
     }
   },
