@@ -1,26 +1,21 @@
 <template>
   <div v-show="visable">
-    <Modal 
-      v-model="visable" 
-      @on-visible-change="onVisibleChange" 
-      :title="modalTitle" 
-      :mask-closable="false" 
-      width="480">
+    <Modal v-model="visable" @on-visible-change="onVisibleChange" :title="modalTitle" :mask-closable="false" width="480">
       <Form ref="userForm" :model="user" :rules="rules" :label-width="80">
         <FormItem label="姓名" prop="name">
-          <Input type="text" v-model.trim="user.name" :maxlength="20" placeholder="请输入对方真实姓名"/>
+          <Input type="text" v-model.trim="user.name" :maxlength="20" placeholder="请输入对方真实姓名" />
         </FormItem>
         <FormItem label="用户名" prop="username" v-if="!isEdit">
-          <Input type="text" v-model.trim="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony"/>
+          <Input type="text" v-model.trim="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony" />
         </FormItem>
         <FormItem label="默认密码" prop="password" v-if="!isEdit">
-          <Input type="password" v-model.trim="user.password" :maxlength="32" placeholder="请输入默认密码"/>
+          <Input type="password" v-model.trim="user.password" :maxlength="32" placeholder="请输入默认密码" />
         </FormItem>
         <FormItem label="手机号" prop="phone">
-          <Input type="text" v-model.trim="user.phone" :maxlength="11" placeholder="请输入手机号"/>
+          <Input type="text" v-model.trim="user.phone" :maxlength="11" placeholder="请输入手机号" />
         </FormItem>
         <FormItem label="备注" prop="desc">
-          <Input type="textarea" v-model.trim="user.desc" :rows="3" class="user-desc"/>
+          <Input type="textarea" v-model.trim="user.desc" :rows="3" class="textarea-desc" />
         </FormItem>
         <!-- <FormItem label="权限">    
           <RadioGroup v-model="user.roleId">
@@ -29,16 +24,17 @@
         </FormItem> -->
       </Form>
       <div slot="footer">
-          <Button type="text" size="large" @click="handleCancel()">取消</Button>
-          <Button type="primary" size="large" :loading="okLoading" :disabled="okDisabled" @click="handleSubmit()">确定</Button>
-          <Button type="error" size="large" :loading="disableLoading" :disabled="disableDisabled" @click="handleDisable()" v-if="isEdit" class="left">移除</Button>
+        <Button type="text" size="large" @click="handleCancel()">取消</Button>
+        <Button type="primary" size="large" :loading="okLoading" :disabled="okDisabled" @click="handleSubmit()">确定</Button>
+        <Button type="error" size="large" :loading="disableLoading" :disabled="disableDisabled" @click="handleDisable()" v-if="isEdit" class="left">移除</Button>
       </div>
-    </Modal>  
+    </Modal>
   </div>
 </template>
 
 <script>
-import url from '../../api/url'
+import userService from '@/api/services/user'
+import teamService from '@/api/services/team'
 export default {
   name: 'TeamUser',
   props: {
@@ -94,9 +90,11 @@ export default {
   watch: {
     value(val) {
       this.visable = val
+      if (val) {
+        this.user = this.teamUser
+      }
     }
   },
-  created() {},
   methods: {
     handleSubmit() {
       this.$refs.userForm.validate(valid => {
@@ -104,11 +102,8 @@ export default {
           this.okLoading = true
           this.disableDisabled = true
           if (!this.isEdit) {
-            let params = {}
             delete this.user.id
-            params.user = this.user
-            params.teamId = this.teamId
-            this.$http.post(url.user_create, params).then(res => {
+            userService.create(this.user, this.teamId).then(res => {
               this.$refs.userForm.resetFields()
               this.$Message.success('操作成功')
               this.visable = false
@@ -122,8 +117,7 @@ export default {
             user.name = this.user.name
             user.phone = this.user.phone
             user.desc = this.user.desc
-            this.$http
-              .put(url.user_update.replace(':id', user.id), user)
+            userService.update(user.id, user)
               .then(res => {
                 this.$refs.userForm.resetFields()
                 this.$Message.success('操作成功')
@@ -144,14 +138,7 @@ export default {
         onOk: () => {
           this.disableLoading = true
           this.okDisabled = true
-          let user = {}
-          user.id = this.user.id
-          this.$http
-            .delete(
-              url.team_remove_user
-                .replace(':teamId', this.teamId)
-                .replace(':userId', user.id)
-            )
+          teamService.deleteUser(this.teamId, this.user.id)
             .then(res => {
               this.visable = false
               this.$refs.userForm.resetFields()

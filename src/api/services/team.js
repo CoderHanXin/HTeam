@@ -33,6 +33,16 @@ class TeamService {
   deleteGroup(groupId) {
     return http.delete(url.group_delete.replace(':id', groupId))
   }
+  /**
+   * 从团队中移除用户
+   * @param  {Number}  teamId  团队id
+   * @param  {Number}  userId  用户id
+   */
+  deleteUser(teamId, userId) {
+    return http.delete(
+      url.team_remove_user.replace(':teamId', teamId).replace(':userId', userId)
+    )
+  }
 }
 
 export default new TeamService()

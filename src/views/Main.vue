@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import url from '@/api/url'
+import userService from '@/api/services/user'
 import { mapGetters, mapActions } from 'vuex'
 import clickoutside from '@/directives/clickoutside'
 import MainSider from '@/views/components/sider/MainSider'
@@ -170,13 +170,11 @@ export default {
       this.$refs.changePasswordForm.validate(valid => {
         if (valid) {
           this.saveLoading = true
-          let params = {}
-          params.id = this.currentUser.id
-          params.oldPass = this.changePassword.oldPass
-          params.newPass = this.changePassword.newPass
-          params.rePass = this.changePassword.rePass
-          this.$http
-            .put(url.account_change_password, params)
+          userService.changePassword(
+            this.currentUser.id,
+            this.changePassword.oldPass,
+            this.changePassword.newPass,
+            this.changePassword.rePass)
             .then(res => {
               if (res.data.code === 0) {
                 this.saveLoading = false

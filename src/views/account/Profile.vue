@@ -43,7 +43,7 @@
 
 <script>
 import Cookies from 'js-cookie'
-import url from '../../api/url'
+import userService from '@/api/services/user'
 import colors from '@/common/constant/color'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
@@ -85,8 +85,7 @@ export default {
           user.phone = this.editUser.phone
           user.desc = this.editUser.desc
           user.color = this.editUser.color
-          this.$http
-            .put(url.user_update.replace(':id', user.id), user)
+          userService.update(user.id, user)
             .then(res => {
               Cookies.set('currentUser', this.editUser)
               this.setCurrentUser(Object.assign({}, this.editUser))

@@ -34,7 +34,7 @@
 
 <script>
 import Cookies from 'js-cookie'
-import url from '../api/url'
+import userService from '@/api/services/user'
 import { mapMutations } from 'vuex'
 export default {
   name: 'Login',
@@ -56,7 +56,7 @@ export default {
     handleSubmit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.$http.post(url.account_login, this.user).then(res => {
+          userService.login(this.user.username, this.user.password).then(res => {
             if (res.data.code === 0) {
               Cookies.set('username', this.user.username, { expires: 30 })
               Cookies.set('password', this.user.password, { expires: 30 })
