@@ -118,9 +118,17 @@
                   </li>
                   <li class="task-sider-item border-top padding-top-12">
                     <HtSelect :disabled="disabled" v-model="tagIdList" @on-change="changeTags" multiple>
-                      <div class="tag-select" :style="tagSelectStyles" slot="label">
-                        <span class="label">标签</span>
-                        <Icon type="android-add-circle"></Icon>
+                      <div class="select-selection" :style="tagSelectStyles" slot="selection">
+                        <div class="select-selection-header">
+                          <span>标签</span>
+                          <Icon class="select-selection-icon" size="14" type="arrow-down-b"></Icon>
+                        </div>
+                        <ul>
+                          <li v-if="selectedTagIdList.length === 0" class="grey">尚未添加任何标签</li>
+                          <li v-for="item in selectedTagModelList" :key="item.id">
+                            <Tag :name="item.id" :color="item.color" @on-close="removeTag" :closable="!disabled">{{item.name}}</Tag>
+                          </li>
+                        </ul>
                       </div>
                       <HtOption v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">
                         <div class="select-item-flex">
@@ -129,12 +137,6 @@
                         </div>
                       </HtOption>
                     </HtSelect>
-                    <ul class="tag-list">
-                      <li v-if="selectedTagIdList.length === 0" class="no-data">尚未添加任何标签</li>
-                      <li v-for="item in selectedTagModelList" :key="item.id" class="tag-item">
-                        <Tag :name="item.id" :color="item.color" @on-close="removeTag" :closable="!disabled">{{item.name}}</Tag>
-                      </li>
-                    </ul>
                   </li>
                   <li class="task-sider-item border-top padding-top-12">
                     <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
@@ -456,6 +458,7 @@ export default {
       taskService.removeTag(this.taskId, tagId, event).then(res => {
         let index = this.selectedTagIdList.indexOf(tagId)
         this.selectedTagIdList.splice(index, 1)
+        this.tagIdList = [...this.selectedTagIdList]
       })
     },
     findChangedTag(long, short) {
@@ -626,21 +629,6 @@ export default {
 <style lang="stylus">
 @import '~@/style/variable'
 
-.tag-select
-  position relative
-  display flex
-  align-items center
-  padding 0 6px 6px 0
-  font-size 12px
-  cursor pointer
-  .label
-    flex 1
-.tag-list
-  padding 0
-  .no-data
-    color $color-grey
-  .tag-item
-    padding 0
 .modal
   display flex
   flex-direction column
@@ -732,7 +720,7 @@ export default {
     word-break break-all
     font-size $font-size-medium
   &-desc-placeholder
-    color grey
+    color $color-grey
   &-desc-text
     color $color-text-light
   &-desc-show-more

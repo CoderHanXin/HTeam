@@ -1,7 +1,7 @@
 <template>
   <div :class="classes" v-clickoutside="handleClose">
     <div :class="[prefixCls + '-rel']" ref="reference" @click="toggleMenu">
-      <slot name="label"></slot>
+      <slot name="selection"></slot>
     </div>
     <Dropdown :class="dropdownCls" v-show="visible" :placement="placement" ref="dropdown" :data-transfer="transfer" v-transfer-dom>
       <ul :class="[prefixCls + '-dropdown-list']">
