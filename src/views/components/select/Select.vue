@@ -3,11 +3,13 @@
     <div :class="[prefixCls + '-rel']" ref="reference" @click="toggleMenu">
       <slot name="selection"></slot>
     </div>
-    <Dropdown :class="dropdownCls" v-show="visible" :placement="placement" ref="dropdown" :data-transfer="transfer" v-transfer-dom>
-      <ul :class="[prefixCls + '-dropdown-list']">
-        <slot></slot>
-      </ul>
-    </Dropdown>
+    <transition name="ease">
+      <Dropdown :class="dropdownCls" v-show="visible" :placement="placement" ref="dropdown" :data-transfer="transfer" v-transfer-dom>
+        <ul :class="[prefixCls + '-dropdown-list']">
+          <slot></slot>
+        </ul>
+      </Dropdown>
+    </transition>
   </div>
 </template>
 
@@ -63,7 +65,7 @@ export default {
     },
     placement: {
       validator(value) {
-        return oneOf(value, ['bottom', 'bottom-start', 'bottom-end'])
+        return oneOf(value, ['top', 'bottom'])
       },
       default: 'bottom'
     },
