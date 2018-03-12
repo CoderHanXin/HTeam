@@ -13,10 +13,14 @@
           <Icon type="stats-bars" size="16"></Icon>
           任务周报
         </menu-item>
-        <menu-item name="stats-team">
+        <menu-item name="stats-project">
+          <Icon type="stats-bars" size="16"></Icon>
+          项目统计
+        </menu-item>
+        <!-- <menu-item name="stats-team">
           <Icon type="stats-bars" size="16"></Icon>
           团队统计
-        </menu-item>
+        </menu-item> -->
       </Menu>
     </Sider>
     <router-view/>

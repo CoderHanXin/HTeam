@@ -105,6 +105,14 @@ export const appRouter = [
             component: () => import('@/views/stats/StatsWeekly.vue')
           },
           {
+            path: 'project',
+            name: 'stats-project',
+            meta: {
+              title: '项目统计'
+            },
+            component: () => import('@/views/stats/StatsProject.vue')
+          },
+          {
             path: 'team',
             name: 'stats-team',
             meta: {
