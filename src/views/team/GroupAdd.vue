@@ -1,26 +1,17 @@
-<template>  
-  <div v-show="visable">
-    <Modal 
-      v-model="visable" 
-      :loading="modalLoading"
-      @on-ok="handleOk" 
-      @on-cancel="handleCancel" 
-      :title="modalTitle" 
-      :mask-closable="false" 
-      width="480">
-      <Form ref="groupAddForm" :model="group" :rules="rules" :label-width="80">
-        <FormItem label="分组名称" prop="name">
-          <Input type="text" v-model.trim="group.name" :maxlength="20" placeholder="请输入分组名称"/>
-        </FormItem>
-        <FormItem label="选择成员">
-            <Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">所有人</Checkbox>
-            <CheckboxGroup v-model="checkedUsers" @on-change="handleCheckGroupChange">
-                <Checkbox v-for="item in users" :key="item.id" :label="item.id">{{item.name}}</Checkbox>
-            </CheckboxGroup>
-        </FormItem>
-      </Form>
-    </Modal>
-  </div>
+<template>
+  <Modal v-model="visable" :loading="modalLoading" @on-ok="handleOk" @on-cancel="handleCancel" :title="modalTitle" :mask-closable="false" width="480">
+    <Form ref="groupAddForm" :model="group" :rules="rules" :label-width="80">
+      <FormItem label="分组名称" prop="name">
+        <Input type="text" v-model.trim="group.name" :maxlength="20" placeholder="请输入分组名称" />
+      </FormItem>
+      <FormItem label="选择成员">
+        <Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">所有人</Checkbox>
+        <CheckboxGroup v-model="checkedUsers" @on-change="handleCheckGroupChange">
+          <Checkbox v-for="item in users" :key="item.id" :label="item.id">{{item.name}}</Checkbox>
+        </CheckboxGroup>
+      </FormItem>
+    </Form>
+  </Modal>
 </template>
 
 <script>
@@ -44,8 +35,7 @@ export default {
       checkAll: false,
       checkedUsers: [],
       group: {
-        name: '',
-        users: []
+        name: ''
       },
       rules: {
         name: [{ required: true, message: '分组名称不能为空', trigger: 'blur' }]
@@ -64,9 +54,17 @@ export default {
   watch: {
     value(val) {
       this.visable = val
+      if (val) {
+        this.init()
+      }
     }
   },
   methods: {
+    init() {
+      this.group.name = ''
+      this.checkedUsers = []
+      this.indeterminate = false
+    },
     handleCheckGroupChange(data) {
       if (data.length === this.allUsers.length) {
         this.indeterminate = false
@@ -100,20 +98,15 @@ export default {
           group.name = this.group.name
           group.teamId = this.teamId
           teamService.createGroup(group, this.checkedUsers).then(res => {
-            this.visable = false
-            this.$refs.groupAddForm.resetFields()
-            this.checkedUsers = []
-            this.indeterminate = false
             this.$emit('onGroupAddOk')
+            this.$emit('input', false)
           })
         }
       })
     },
     handleCancel() {
-      this.$refs.groupAddForm.resetFields()
-      this.checkedUsers = []
-      this.indeterminate = false
       this.$emit('onGroupAddCancel')
+      this.$emit('input', false)
     }
   }
 }

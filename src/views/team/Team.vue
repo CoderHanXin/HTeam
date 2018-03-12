@@ -37,8 +37,8 @@
           </div>
           <Table border :columns="columns" :data="currentUserList" :loading="isLoading" ref="table" class="team-table"></Table>
           <TeamUser v-model="isTeamUserVisable" @onTeamUserOk="handleTeamUserOk" :isEdit="isEditTeamUser" :teamId="currentTeam.id" :teamUser="teamUser"></TeamUser>
-          <GroupAdd v-model="isGroupAddVisable" @onGroupAddOk="handleGroupAddOk" @onGroupAddCancel="handleGroupAddCancel" :teamId="currentTeam.id" :users="userList"></GroupAdd>
-          <GroupEdit v-if="groupList" v-model="isGroupEditVisable" @onGroupEditOk="handleGroupEditOk" @onGroupEditCancel="handleGroupEditCancel" :group="currentGroup" :groupUsers="currentGroupUsers" :users="userList"></GroupEdit>
+          <GroupAdd v-model="isGroupAddVisable" @onGroupAddOk="handleGroupAddOk" :teamId="currentTeam.id" :users="userList"></GroupAdd>
+          <GroupEdit v-if="groupList" v-model="isGroupEditVisable" @onGroupEditOk="handleGroupEditOk" :group="currentGroup" :groupUsers="currentGroupUsers" :users="userList"></GroupEdit>
         </div>
       </Content>
     </Layout>
@@ -241,20 +241,12 @@ export default {
     },
     handleGroupAddOk() {
       this.getGroupList()
-      this.isGroupAddVisable = false
-    },
-    handleGroupAddCancel() {
-      this.isGroupAddVisable = false
     },
     handleGroupAddShow() {
       this.isGroupAddVisable = true
     },
     handleGroupEditOk() {
       this.getGroupList()
-      this.isGroupEditVisable = false
-    },
-    handleGroupEditCancel() {
-      this.isGroupEditVisable = false
     },
     handleGroupEditShow() {
       this.currentGroupUsers = []

@@ -42,7 +42,6 @@ class TeamService {
    * @param {Array}   users    用户id
    */
   updateGroup(groupId, group, users) {
-    console.log(group)
     return http.put(url.group_update.replace(':id', groupId), { group, users })
   }
 
