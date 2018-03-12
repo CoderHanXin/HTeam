@@ -38,6 +38,7 @@ export default {
 
   stats_summary: '/api/stats/summary',
   stats_trend: '/api/stats/trend',
+  stats_project: '/api/stats/project',
   stats_projects_with_tasks: '/api/stats/pwt',
 
   upload_token: '/api/upload/token'

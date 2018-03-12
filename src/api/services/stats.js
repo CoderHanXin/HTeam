@@ -43,6 +43,17 @@ class StatsService {
     })
   }
 
+  /**
+   * 获取项目统计
+   * @param   {Number} teamId 团队id
+   * @return  {Array}
+   */
+  getProject(teamId) {
+    return http.get(url.stats_project, {
+      teamId
+    })
+  }
+
   getProjectsWithTasks(teamId, start, end) {
     return http.get(url.stats_projects_with_tasks, {
       teamId,
