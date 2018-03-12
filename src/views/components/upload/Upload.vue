@@ -16,6 +16,9 @@ import * as qiniu from 'qiniu-js'
 import uploadService from '@/api/services/upload'
 
 const prefixCls = 'ivu-upload'
+// 七牛bucket域名
+const imageDomain = process.env.IMAGE_DOMAIN
+// 七牛上传文件配置
 const config = {
   useCdnDomain: true,
   region: qiniu.region.z1
@@ -249,6 +252,7 @@ export default {
       _file.percentage = res.total.percent || 0
     },
     handleSuccess(res, file) {
+      res.url = imageDomain + res.key
       const _file = this.getFile(file)
 
       if (_file) {

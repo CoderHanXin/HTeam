@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Message } from 'iview'
 
-const baseUrl = 'http://127.0.0.1:7001'
+const baseUrl = process.env.BASE_API
 axios.defaults.baseURL = baseUrl
 axios.defaults.timeout = 5000
 axios.defaults.withCredentials = true

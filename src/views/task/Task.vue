@@ -163,7 +163,6 @@
 <script>
 import moment from 'moment'
 import date from '@/common/utils/date'
-import config from '@/config'
 import taskService from '@/api/services/task'
 import tagService from '@/api/services/tag'
 import taskEvent from '@/common/constant/task_event'
@@ -529,7 +528,7 @@ export default {
       let quill = this.$refs.editor.quill
       let addRange = quill.getSelection()
       let index = addRange !== null ? addRange.index : 0
-      let image = config.imageDomain + res.key
+      let image = res.url
       quill.insertEmbed(index, this.uploadType, image)
       this.$refs.upload.clearFiles()
     },
