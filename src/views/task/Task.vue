@@ -1,165 +1,163 @@
 <template>
-  <div>
-    <Modal class="modal-wrapper" v-model="visable" :styles="styles" :footer-hide="true" @on-cancel="handleCancel">
-      <div class="modal">
-        <div class="modal-main">
-          <div class="modal-header">
-            <span class="title">
-              <Icon class="margin-right-4" size="18" color="#2d8cf0" type="folder" />{{currentProject.name}}</span>
-            <div class="meta"></div>
-          </div>
-          <div class="modal-content">
-            <div class="task">
-              <div class="task-main">
-                <div class="task-header">
-                  <Checkbox @on-change="handleCheck()" v-model="task.done" :true-value="1" :false-value="0" :size="'large'"></Checkbox>
-                  <div class="title">
-                    <Input v-show="isEdit" v-model.trim="editTask.title" type="text" />
-                    <span v-show="!isEdit" :class="{'task-done': task.done}">{{task.title}}</span>
-                  </div>
+  <Modal class="modal-wrapper" v-model="visable" :styles="styles" :footer-hide="true" @on-cancel="handleCancel">
+    <div class="modal">
+      <div class="modal-main">
+        <div class="modal-header">
+          <span class="title">
+            <Icon class="margin-right-4" size="18" color="#2d8cf0" type="folder" />{{currentProject.name}}</span>
+          <div class="meta"></div>
+        </div>
+        <div class="modal-content">
+          <div class="task">
+            <div class="task-main">
+              <div class="task-header">
+                <Checkbox @on-change="handleCheck()" v-model="task.done" :true-value="1" :false-value="0" :size="'large'"></Checkbox>
+                <div class="title">
+                  <Input v-show="isEdit" v-model.trim="editTask.title" type="text" />
+                  <span v-show="!isEdit" :class="{'task-done': task.done}">{{task.title}}</span>
                 </div>
-                <div class="task-content">
-                  <div class="task-info">
-                    <div class="info-item">
-                      <span class="margin-right-8">{{assignee}}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="info-item-label" :class="{'task-expired':taskExpired(task)}">{{task.deadline | deadline}}</span>
-                    </div>
-                    <div>
-                      <TaskLevel :value="task.level" />
-                    </div>
-                  </div>
-                  <div :class="taskDescCls">
-                    <div v-show="!isEdit">
-                      <div v-show="task.desc" v-html="task.desc" class="task-desc-text" ref="descText"></div>
-                      <p v-show="!task.desc" class="task-desc-placeholder">暂无详细描述</p>
-                    </div>
-                    <QuillEditor ref="editor" v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
-                  </div>
-                  <div @click="showMoreDesc" class="task-desc-show-more" v-if="isMoreDesc && !isEdit">
-                    <span>{{showMoreDescText}}
-                      <Icon v-if="isShowMoreDesc" type="arrow-up-c"></Icon>
-                      <Icon v-else type="arrow-down-c"></Icon>
-                    </span>
-                  </div>
-                </div>
-                <Tabs v-model="tabIndex" class="task-meta border-top">
-                  <TabPane label="评论" icon="chatbox-working">
-                    <ul class="task-comments">
-                      <li v-for="item in task.comments" :key="item.id" class="task-comment-item">
-                        <div class="comment-icon">
-                          <Avatar :style="{background: item.user.color || '#2d8cf0'}" size="large">{{item.user.name.substr(-2)}}</Avatar>
-                        </div>
-                        <div class="comment-box">
-                          <div class="comment-meta">
-                            <span>{{item.user.name}}</span>
-                            <span>
-                              <Icon type="ios-clock-outline"></Icon>
-                              {{item.created_at | eventTime}}</span>
-                          </div>
-                          <div class="comment-content">{{item.content}}</div>
-                        </div>
-                      </li>
-                    </ul>
-                  </TabPane>
-                  <TabPane label="动态" icon="grid">
-                    <ul class="task-events">
-                      <li v-for="(item, index) in eventList" v-if="isShowMoreEvents || index === 0 || index === eventList.length - 1" :key="item.id" class="task-event-item">
-                        <div class="event-icon">
-                          <Icon size="32" :type="eventIcon(item.type)" :color="eventIconColor(item.type)"></Icon>
-                        </div>
-                        <span class="event-text">{{item.created_at | eventTime}}</span>
-                        <span class="event-text">{{item.user.name}}</span>
-                        <span v-html="item.event" class="event-text"></span>
-                        <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
-                        <a @click="showMoreEvents" v-if="!isShowMoreEvents && eventList.length > 2 && index === eventList.length - 1" class="link-text">（查看更多动态）</a>
-                      </li>
-                    </ul>
-                  </TabPane>
-                </Tabs>
               </div>
-              <div class="task-sider">
-                <ul>
-                  <li class="task-sider-item">
-                    <header class="item-header">执行者</header>
-                    <Select :disabled="disabled" v-model="assigneeId" @on-change="changeAssignee" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
-                      <Option v-for="item in projectMembers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
-                    </Select>
-                  </li>
-                  <li class="task-sider-item">
-                    <header class="item-header">截止日期</header>
-                    <DatePicker :disabled="disabled" v-model="deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
-                  </li>
-                  <li class="task-sider-item">
-                    <header class="item-header">紧急程度</header>
-                    <Select :disabled="disabled" v-model="level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
-                      <Option :value="0" label="有空再看">
-                        <Icon class="level-icon-off" type="alert"></Icon>
-                        <Icon class="level-icon-off" type="alert"></Icon>
-                        <Icon class="level-icon-off" type="alert"></Icon>
-                        有空再看</Option>
-                      <Option :value="1" label="正常处理">
-                        <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-off" type="alert"></Icon>
-                        <Icon class="level-icon-off" type="alert"></Icon>
-                        正常处理</Option>
-                      <Option :value="2" label="优先处理">
-                        <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-off" type="alert"></Icon>
-                        优先处理</Option>
-                      <Option :value="3" label="十万火急">
-                        <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-on" type="alert"></Icon>
-                        <Icon class="level-icon-on" type="alert"></Icon>
-                        十万火急</Option>
-                    </Select>
-                  </li>
-                  <li class="task-sider-item border-top padding-top-12">
-                    <HtSelect :disabled="disabled" v-model="tagIdList" @on-change="changeTags" multiple>
-                      <div class="select-selection" :style="tagSelectStyles" slot="selection">
-                        <div class="select-selection-header">
-                          <span>标签</span>
-                          <Icon class="select-selection-icon" size="14" type="arrow-down-b"></Icon>
-                        </div>
-                        <ul>
-                          <li v-if="selectedTagIdList.length === 0" class="grey">尚未添加任何标签</li>
-                          <li v-for="item in selectedTagModelList" :key="item.id">
-                            <Tag :name="item.id" :color="item.color" @on-close="removeTag" :closable="!disabled">{{item.name}}</Tag>
-                          </li>
-                        </ul>
+              <div class="task-content">
+                <div class="task-info">
+                  <div class="info-item">
+                    <span class="margin-right-8">{{assignee}}</span>
+                  </div>
+                  <div class="info-item">
+                    <span class="info-item-label" :class="{'task-expired':taskExpired(task)}">{{task.deadline | deadline}}</span>
+                  </div>
+                  <div>
+                    <TaskLevel :value="task.level" />
+                  </div>
+                </div>
+                <div :class="taskDescCls">
+                  <div v-show="!isEdit">
+                    <div v-show="task.desc" v-html="task.desc" class="task-desc-text" ref="descText"></div>
+                    <p v-show="!task.desc" class="task-desc-placeholder">暂无详细描述</p>
+                  </div>
+                  <QuillEditor ref="editor" v-show="isEdit" class="editor-desc" v-model="editTask.desc"></QuillEditor>
+                </div>
+                <div @click="showMoreDesc" class="task-desc-show-more" v-if="isMoreDesc && !isEdit">
+                  <span>{{showMoreDescText}}
+                    <Icon v-if="isShowMoreDesc" type="arrow-up-c"></Icon>
+                    <Icon v-else type="arrow-down-c"></Icon>
+                  </span>
+                </div>
+              </div>
+              <Tabs v-model="tabIndex" class="task-meta border-top">
+                <TabPane label="评论" icon="chatbox-working">
+                  <ul class="task-comments">
+                    <li v-for="item in task.comments" :key="item.id" class="task-comment-item">
+                      <div class="comment-icon">
+                        <Avatar :style="{background: item.user.color || '#2d8cf0'}" size="large">{{item.user.name.substr(-2)}}</Avatar>
                       </div>
-                      <HtOption v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">
-                        <div class="select-item-flex">
-                          <span :style="{background: item.color}" class="select-item-color-cell margin-right-8"></span>
-                          {{item.name}}
+                      <div class="comment-box">
+                        <div class="comment-meta">
+                          <span>{{item.user.name}}</span>
+                          <span>
+                            <Icon type="ios-clock-outline"></Icon>
+                            {{item.created_at | eventTime}}</span>
                         </div>
-                      </HtOption>
-                    </HtSelect>
-                  </li>
-                  <li class="task-sider-item border-top padding-top-12">
-                    <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
-                    <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
-                  </li>
-                </ul>
-              </div>
+                        <div class="comment-content">{{item.content}}</div>
+                      </div>
+                    </li>
+                  </ul>
+                </TabPane>
+                <TabPane label="动态" icon="grid">
+                  <ul class="task-events">
+                    <li v-for="(item, index) in eventList" v-if="isShowMoreEvents || index === 0 || index === eventList.length - 1" :key="item.id" class="task-event-item">
+                      <div class="event-icon">
+                        <Icon size="32" :type="eventIcon(item.type)" :color="eventIconColor(item.type)"></Icon>
+                      </div>
+                      <span class="event-text">{{item.created_at | eventTime}}</span>
+                      <span class="event-text">{{item.user.name}}</span>
+                      <span v-html="item.event" class="event-text"></span>
+                      <span v-if="item.deadline" class="event-text">{{item.deadline | deadline}}</span>
+                      <a @click="showMoreEvents" v-if="!isShowMoreEvents && eventList.length > 2 && index === eventList.length - 1" class="link-text">（查看更多动态）</a>
+                    </li>
+                  </ul>
+                </TabPane>
+              </Tabs>
+            </div>
+            <div class="task-sider">
+              <ul>
+                <li class="task-sider-item">
+                  <header class="item-header">执行者</header>
+                  <Select :disabled="disabled" v-model="assigneeId" @on-change="changeAssignee" :label-in-value="true" :clearable="true" size="small" placeholder="未指派">
+                    <Option v-for="item in projectMembers" :value="item.id" :label="item.name" :key="item.id">{{item.name}}</Option>
+                  </Select>
+                </li>
+                <li class="task-sider-item">
+                  <header class="item-header">截止日期</header>
+                  <DatePicker :disabled="disabled" v-model="deadline" @on-change="changeDeadline" :clearable="true" :options="dateOptions" type="date" format="yyyy-MM-dd" placement="bottom" size="small" placeholder="请选择"></DatePicker>
+                </li>
+                <li class="task-sider-item">
+                  <header class="item-header">紧急程度</header>
+                  <Select :disabled="disabled" v-model="level" @on-change="changeLevel" :label-in-value="true" size="small" placeholder="请选择">
+                    <Option :value="0" label="有空再看">
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      有空再看</Option>
+                    <Option :value="1" label="正常处理">
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      正常处理</Option>
+                    <Option :value="2" label="优先处理">
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-off" type="alert"></Icon>
+                      优先处理</Option>
+                    <Option :value="3" label="十万火急">
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      <Icon class="level-icon-on" type="alert"></Icon>
+                      十万火急</Option>
+                  </Select>
+                </li>
+                <li class="task-sider-item border-top padding-top-12">
+                  <HtSelect :disabled="disabled" v-model="tagIdList" @on-change="changeTags" multiple>
+                    <div class="select-selection" :style="tagSelectStyles" slot="selection">
+                      <div class="select-selection-header">
+                        <span>标签</span>
+                        <Icon class="select-selection-icon" size="14" type="arrow-down-b"></Icon>
+                      </div>
+                      <ul>
+                        <li v-if="selectedTagIdList.length === 0" class="grey">尚未添加任何标签</li>
+                        <li v-for="item in selectedTagModelList" :key="item.id">
+                          <Tag :name="item.id" :color="item.color" @on-close="removeTag" :closable="!disabled">{{item.name}}</Tag>
+                        </li>
+                      </ul>
+                    </div>
+                    <HtOption v-for="item in tags" :value="item.id" :label="item.name" :key="item.id">
+                      <div class="select-item-flex">
+                        <span :style="{background: item.color}" class="select-item-color-cell margin-right-8"></span>
+                        {{item.name}}
+                      </div>
+                    </HtOption>
+                  </HtSelect>
+                </li>
+                <li class="task-sider-item border-top padding-top-12">
+                  <Button @click="handleEdit" :type="isEdit ? 'warning' : 'primary'" shape="circle" size="small" :disabled="disabled" class="margin-right-4">{{editButtonText}}</Button>
+                  <Button @click="handleDelete" type="error" shape="circle" size="small">删除任务</Button>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-        <div class="modal-footer" :class="{expand: isCommentFocus}" slot="footer">
-          <Avatar :style="{background: currentUser.color || '#2d8cf0'}" size="large">{{currentUser.name.substr(-2)}}</Avatar>
-          <div class="comment margin-left-8">
-            <textarea v-show="isCommentFocus" ref="comment" class="ht-input" v-model="comment" @keyup.ctrl.enter="submitComment" v-clickoutside="hideComment" rows="4" placeholder="评论内容(Ctrl+Enter发送)"></textarea>
-            <Input v-show="!isCommentFocus" @on-focus="handleOnFocus" size="large" placeholder="评论内容(Ctrl+Enter发送)" />
-          </div>
+      </div>
+      <div class="modal-footer" :class="{expand: isCommentFocus}" slot="footer">
+        <Avatar :style="{background: currentUser.color || '#2d8cf0'}" size="large">{{currentUser.name.substr(-2)}}</Avatar>
+        <div class="comment margin-left-8">
+          <textarea v-show="isCommentFocus" ref="comment" class="ht-input" v-model="comment" @keyup.ctrl.enter="submitComment" v-clickoutside="hideComment" rows="4" placeholder="评论内容(Ctrl+Enter发送)"></textarea>
+          <Input v-show="!isCommentFocus" @on-focus="handleOnFocus" size="large" placeholder="评论内容(Ctrl+Enter发送)" />
         </div>
       </div>
-      <Upload ref="upload" :on-success="handleUploadSuccess" v-show="false" :format="['gif','jpg','jpeg','png','bmp','webp']" accept="image/*" multiple>
-        <Button ref="btnUpload">Upload</Button>
-      </Upload>
-    </Modal>
-  </div>
+    </div>
+    <Upload ref="upload" :on-success="handleUploadSuccess" v-show="false" :format="['gif','jpg','jpeg','png','bmp','webp']" accept="image/*" multiple>
+      <Button ref="btnUpload">Upload</Button>
+    </Upload>
+  </Modal>
 </template>
 
 <script>
@@ -308,6 +306,13 @@ export default {
   },
   methods: {
     init() {
+      this.descTextHeight = 0
+      this.isMoreDesc = false
+      this.isShowMoreDesc = false
+      this.isEdit = false
+      this.isCommentFocus = false
+      this.isShowMoreEvents = false
+      this.tabIndex = 0
       this.getTask()
       this.getEventList()
       if (this.tags.length === 0) {
@@ -353,14 +358,8 @@ export default {
       this.selectedTagIdList = [...this.tagIdList]
     },
     handleCancel() {
-      this.descTextHeight = 0
-      this.isMoreDesc = false
-      this.isShowMoreDesc = false
-      this.isEdit = false
-      this.isCommentFocus = false
-      this.isShowMoreEvents = false
-      this.tabIndex = 0
       this.$emit('onTaskCancel')
+      this.$emit('input', false)
     },
     changeAssignee(val) {
       // 如果是页面初始化，返回

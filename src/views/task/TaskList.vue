@@ -289,7 +289,6 @@ export default {
     },
     handleTaskCancel() {
       this.getTaskList()
-      this.isTaskVisable = false
     },
     handleDateFilter(val) {
       this.dateFilter = val
