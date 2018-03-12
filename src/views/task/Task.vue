@@ -526,10 +526,24 @@ export default {
     },
     handleUploadSuccess(res, file, fileList) {
       let quill = this.$refs.editor.quill
-      let addRange = quill.getSelection()
-      let index = addRange !== null ? addRange.index : 0
-      let image = res.url
-      quill.insertEmbed(index, this.uploadType, image)
+      // 获取用户选择区域，{index:开始位置，length:长度}
+      // 如果没有选择区域，返回{index:光标位置，length:0}
+      let range = quill.getSelection()
+      let index = range !== null ? range.index : 0
+      let delta = {
+        ops: [
+          { retain: index }, // 设置图片插入位置
+          {
+            insert: {
+              image: res.url + '-maxWidth640' // 在七牛配置图片样式，最大宽度640px等比例缩小
+            },
+            attributes: {
+              link: res.url // 原图
+            }
+          }
+        ]
+      }
+      quill.updateContents(delta)
       this.$refs.upload.clearFiles()
     },
     imageUploadHandler(state) {
