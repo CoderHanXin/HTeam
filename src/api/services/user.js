@@ -19,6 +19,14 @@ class UserService {
   }
 
   /**
+   * 根据token获取用户信息
+   * @return  {Object}  用户信息
+   */
+  show() {
+    return http.get(url.account_show)
+  }
+
+  /**
    * 修改密码
    * @param   {Number}  id       用户id
    * @param   {String}  oldPass  旧密码
