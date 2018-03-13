@@ -87,8 +87,9 @@ export default {
           user.color = this.editUser.color
           userService.update(user.id, user)
             .then(res => {
-              Cookies.set('currentUser', this.editUser)
-              this.setCurrentUser(Object.assign({}, this.editUser))
+              let user = Object.assign({}, this.currentUser, this.editUser)
+              Cookies.set('currentUser', user)
+              this.setCurrentUser(user)
               this.$Message.success('操作成功')
             })
         }
