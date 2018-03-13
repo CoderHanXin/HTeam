@@ -23,8 +23,7 @@ const actions = {
   logout({ commit }) {
     commit('setCurrentUser', null)
     commit('setCurrentTeam', null)
-    Cookies.remove('username')
-    Cookies.remove('password')
+    Cookies.remove('token')
     Cookies.remove('currentUser')
     Cookies.remove('currentTeam')
   }
