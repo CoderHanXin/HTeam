@@ -52,38 +52,54 @@ export default {
       }
     }
   },
+  created() {
+    this.checkToken()
+  },
   methods: {
+    checkToken() {
+      let token = Cookies.get('token')
+      if (token) {
+        userService.show().then(res => {
+          this.init(res)
+        })
+      }
+    },
     handleSubmit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           userService.login(this.user.username, this.user.password).then(res => {
-            if (res.data.code === 0) {
-              Cookies.set('username', this.user.username, { expires: 30 })
-              Cookies.set('password', this.user.password, { expires: 30 })
-              Cookies.set('currentUser', res.data.data)
-              this.setCurrentUser(res.data.data)
-              this.$Message.info('登录成功')
-              const teamCount = res.data.data.teams.length
-              if (teamCount === 1) {
-                Cookies.set('currentTeam', res.data.data.teams[0])
-                this.setCurrentTeam(res.data.data.teams[0])
-                this.$router.replace({
-                  name: 'project'
-                })
-              } else if (teamCount > 1) {
-                // 大于一个团队，需要选择团队
-              } else {
-                // 没有团队
-              }
-            } else {
-              this.$Message.error({
-                content: res.data.message,
-                duration: 3
-              })
-            }
+            this.init(res)
           })
         }
       })
+    },
+    init(res) {
+      if (res.data.code === 0) {
+        if (res.data.data.token) {
+          Cookies.set('token', res.data.data.token, { expires: 14 })
+        }
+        const user = res.data.data.user
+        Cookies.set('currentUser', user)
+        this.setCurrentUser(user)
+        this.$Message.info('登录成功')
+        const teamCount = user.teams.length
+        if (teamCount === 1) {
+          Cookies.set('currentTeam', user.teams[0])
+          this.setCurrentTeam(user.teams[0])
+          this.$router.replace({
+            name: 'project'
+          })
+        } else if (teamCount > 1) {
+          // 大于一个团队，需要选择团队
+        } else {
+          // 没有团队
+        }
+      } else {
+        this.$Message.error({
+          content: res.data.message,
+          duration: 3
+        })
+      }
     },
     ...mapMutations([
       'setCurrentUser',
