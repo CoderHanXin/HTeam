@@ -1,7 +1,11 @@
 'use strict'
 
 const moment = require('moment')
-moment.locale('zh-cn')
+moment.locale('zh-cn', {
+  week: {
+    dow: 1 // Monday is the first day of the week.
+  }
+})
 
 let date = {}
 

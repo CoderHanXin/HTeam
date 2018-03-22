@@ -1,4 +1,10 @@
 import moment from 'moment'
+moment.locale('zh-cn', {
+  week: {
+    dow: 1 // Monday is the first day of the week.
+  }
+})
+
 let deadline = date => {
   if (!date) {
     return '无截止时间'
