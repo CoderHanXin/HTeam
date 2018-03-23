@@ -394,7 +394,7 @@ export default {
       if (date) {
         event.type = taskEvent.deadline
         event.event = taskEvent.deadlineText
-        event.deadline = date
+        event.deadline = task.deadline
       } else {
         event.type = taskEvent.noDeadline
         event.event = taskEvent.noDeadlineText
