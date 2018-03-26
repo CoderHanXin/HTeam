@@ -1,9 +1,9 @@
 export default {
   user: '/api/user',
-  account_show: '/api/account/show',
   account_login: '/api/account/login',
-  account_change_password: '/api/account/password',
 
+  user_show: '/api/user/show',
+  user_password: '/api/user/password',
   user_create: '/api/user',
   user_update: '/api/user/:id',
   user_delete: '/api/user/:id',

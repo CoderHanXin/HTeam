@@ -181,6 +181,7 @@ export default {
                 this.editPasswordModal = false
                 this.$Message.success('操作成功')
               } else {
+                this.saveLoading = false
                 this.oldPassError = res.data.message
               }
             })

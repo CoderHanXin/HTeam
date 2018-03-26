@@ -23,7 +23,7 @@ class UserService {
    * @return  {Object}  用户信息
    */
   show() {
-    return http.get(url.account_show)
+    return http.get(url.user_show)
   }
 
   /**
@@ -34,7 +34,7 @@ class UserService {
    * @param   {String}  rePass   重复密码
    */
   changePassword(id, oldPass, newPass, rePass) {
-    return http.put(url.account_change_password, {
+    return http.put(url.user_password, {
       id,
       oldPass,
       newPass,
