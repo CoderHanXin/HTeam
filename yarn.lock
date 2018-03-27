@@ -102,13 +102,17 @@ acorn@^4.0.3:
   version "4.0.13"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.13.tgz#105495ae5361d697bd195c825192e1ad7f253787"
 
-acorn@^5.0.0, acorn@^5.2.1:
+acorn@^5.0.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.3.0.tgz#7446d39459c54fb49a80e6ee6478149b940ec822"
 
 acorn@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.4.1.tgz#fdc58d9d17f4a4e98d102ded826a9b9759125102"
+
+acorn@^5.5.0:
+  version "5.5.3"
+  resolved "http://registry.npm.taobao.org/acorn/download/acorn-5.5.3.tgz#f473dd47e0277a08e28e9bec5aeeb04751f0b8c9"
 
 ajv-keywords@^2.0.0, ajv-keywords@^2.1.0:
   version "2.1.1"
@@ -1728,9 +1732,9 @@ css-color-names@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/css-color-names/-/css-color-names-0.0.4.tgz#808adc2e79cf84738069b646cb20ec27beb629e0"
 
-css-loader@^0.28.10:
-  version "0.28.10"
-  resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-0.28.10.tgz#40282e79230f7bcb4e483efa631d670b735ebf42"
+css-loader@^0.28.11:
+  version "0.28.11"
+  resolved "http://registry.npm.taobao.org/css-loader/download/css-loader-0.28.11.tgz#c3f9864a700be2711bb5a2462b2389b1a392dab7"
   dependencies:
     babel-code-frame "^6.26.0"
     css-selector-tokenizer "^0.7.0"
@@ -2344,12 +2348,6 @@ eslint-plugin-standard@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-standard/-/eslint-plugin-standard-3.0.1.tgz#34d0c915b45edc6f010393c7eef3823b08565cf2"
 
-eslint-plugin-vue@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-4.3.0.tgz#478c6267269dbaa20f6e8b2cfae7a0ccc98c1d72"
-  dependencies:
-    vue-eslint-parser "^2.0.3"
-
 eslint-scope@^3.7.1, eslint-scope@~3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-3.7.1.tgz#3d63c3edfda02e06e01a452ad88caacc7cdcb6e8"
@@ -2361,9 +2359,9 @@ eslint-visitor-keys@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
 
-eslint@^4.18.2:
-  version "4.18.2"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-4.18.2.tgz#0f81267ad1012e7d2051e186a9004cc2267b8d45"
+eslint@^4.19.1:
+  version "4.19.1"
+  resolved "http://registry.npm.taobao.org/eslint/download/eslint-4.19.1.tgz#32d1d653e1d90408854bfb296f076ec7e186a300"
   dependencies:
     ajv "^5.3.0"
     babel-code-frame "^6.22.0"
@@ -2374,7 +2372,7 @@ eslint@^4.18.2:
     doctrine "^2.1.0"
     eslint-scope "^3.7.1"
     eslint-visitor-keys "^1.0.0"
-    espree "^3.5.2"
+    espree "^3.5.4"
     esquery "^1.0.0"
     esutils "^2.0.2"
     file-entry-cache "^2.0.0"
@@ -2396,6 +2394,7 @@ eslint@^4.18.2:
     path-is-inside "^1.0.2"
     pluralize "^7.0.0"
     progress "^2.0.0"
+    regexpp "^1.0.1"
     require-uncached "^1.0.3"
     semver "^5.3.0"
     strip-ansi "^4.0.0"
@@ -2403,11 +2402,11 @@ eslint@^4.18.2:
     table "4.0.2"
     text-table "~0.2.0"
 
-espree@^3.5.2:
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/espree/-/espree-3.5.2.tgz#756ada8b979e9dcfcdb30aad8d1a9304a905e1ca"
+espree@^3.5.4:
+  version "3.5.4"
+  resolved "http://registry.npm.taobao.org/espree/download/espree-3.5.4.tgz#b0f447187c8a8bed944b815a660bddf5deb5d1a7"
   dependencies:
-    acorn "^5.2.1"
+    acorn "^5.5.0"
     acorn-jsx "^3.0.0"
 
 esprima@^2.6.0:
@@ -4711,9 +4710,9 @@ postcss-load-plugins@^2.3.0:
     cosmiconfig "^2.1.1"
     object-assign "^4.1.0"
 
-postcss-loader@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/postcss-loader/-/postcss-loader-2.1.1.tgz#208935af3b1d65e1abb1a870a912dd12e7b36895"
+postcss-loader@^2.1.3:
+  version "2.1.3"
+  resolved "http://registry.npm.taobao.org/postcss-loader/download/postcss-loader-2.1.3.tgz#eb210da734e475a244f76ccd61f9860f5bb3ee09"
   dependencies:
     loader-utils "^1.1.0"
     postcss "^6.0.0"
@@ -5232,6 +5231,10 @@ regex-not@^1.0.0:
   dependencies:
     extend-shallow "^2.0.1"
 
+regexpp@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/regexpp/download/regexpp-1.0.1.tgz#d857c3a741dce075c2848dcb019a0a975b190d43"
+
 regexpu-core@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/regexpu-core/-/regexpu-core-1.0.0.tgz#86a763f58ee4d7c2f6b102e4764050de7ed90c6b"
@@ -5340,9 +5343,9 @@ requires-port@1.0.x, requires-port@1.x.x, requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
-resize-detector@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/resize-detector/-/resize-detector-0.1.2.tgz#7aed9163def753fb0015245e29f5b93c67d060d2"
+resize-detector@^0.1.5:
+  version "0.1.5"
+  resolved "http://registry.npm.taobao.org/resize-detector/download/resize-detector-0.1.5.tgz#7b7458ec7427d9373d2e6f6f6e661465c0481aef"
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
@@ -6135,9 +6138,9 @@ uglifyjs-webpack-plugin@^0.4.6:
     uglify-js "^2.8.29"
     webpack-sources "^1.0.1"
 
-uglifyjs-webpack-plugin@^1.2.3:
-  version "1.2.3"
-  resolved "http://registry.npm.taobao.org/uglifyjs-webpack-plugin/download/uglifyjs-webpack-plugin-1.2.3.tgz#bf23197b37a8fc953fecfbcbab66e506f9a0ae72"
+uglifyjs-webpack-plugin@^1.2.4:
+  version "1.2.4"
+  resolved "http://registry.npm.taobao.org/uglifyjs-webpack-plugin/download/uglifyjs-webpack-plugin-1.2.4.tgz#5eec941b2e9b8538be0a20fc6eda25b14c7c1043"
   dependencies:
     cacache "^10.0.4"
     find-cache-dir "^1.0.0"
@@ -6306,24 +6309,13 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vue-echarts@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/vue-echarts/-/vue-echarts-3.0.4.tgz#63b3ef5fc19cdf5e45e251d3f442069d0836013e"
+vue-echarts@^3.0.5:
+  version "3.0.5"
+  resolved "http://registry.npm.taobao.org/vue-echarts/download/vue-echarts-3.0.5.tgz#40dfa70e26e5aae30a59c3546760cdc48676a774"
   dependencies:
     echarts "^4.0.4"
     lodash "^4.17.4"
-    resize-detector "^0.1.2"
-
-vue-eslint-parser@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"
-  dependencies:
-    debug "^3.1.0"
-    eslint-scope "^3.7.1"
-    eslint-visitor-keys "^1.0.0"
-    espree "^3.5.2"
-    esquery "^1.0.0"
-    lodash "^4.17.4"
+    resize-detector "^0.1.5"
 
 vue-hot-reload-api@^2.2.0:
   version "2.2.4"
@@ -6358,16 +6350,16 @@ vue-style-loader@^3.0.0:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-vue-style-loader@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.0.2.tgz#e89aa4702a0c6b9630d8de70b1cbddb06b9ad254"
+vue-style-loader@^4.1.0:
+  version "4.1.0"
+  resolved "http://registry.npm.taobao.org/vue-style-loader/download/vue-style-loader-4.1.0.tgz#7588bd778e2c9f8d87bfc3c5a4a039638da7a863"
   dependencies:
     hash-sum "^1.0.2"
     loader-utils "^1.0.2"
 
-vue-template-compiler@^2.5.15:
-  version "2.5.15"
-  resolved "http://registry.npm.taobao.org/vue-template-compiler/download/vue-template-compiler-2.5.15.tgz#cc004097e37167be8b85ea22ab2840d8e8cca1c0"
+vue-template-compiler@^2.5.16:
+  version "2.5.16"
+  resolved "http://registry.npm.taobao.org/vue-template-compiler/download/vue-template-compiler-2.5.16.tgz#93b48570e56c720cdf3f051cc15287c26fbd04cb"
   dependencies:
     de-indent "^1.0.2"
     he "^1.1.0"
@@ -6376,9 +6368,9 @@ vue-template-es2015-compiler@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.6.0.tgz#dc42697133302ce3017524356a6c61b7b69b4a18"
 
-vue@^2.5.15:
-  version "2.5.15"
-  resolved "http://registry.npm.taobao.org/vue/download/vue-2.5.15.tgz#fdb67861dde967cd8d1b53116380f2f269b45202"
+vue@^2.5.16:
+  version "2.5.16"
+  resolved "http://registry.npm.taobao.org/vue/download/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
 
 vuex@^3.0.1:
   version "3.0.1"
