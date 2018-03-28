@@ -7,17 +7,20 @@
 .sub-sider
   background $color-background-light
   .header
+    display flex
+    align-items center
     height 50px
     border-bottom 1px solid $color-divider
     .title
-      float left
-      line-height 50px
-      margin 0 20px
+      flex 1
+      margin-left 16px
       font-size $font-size-medium-x
       font-weight 600
+      white-space nowrap
+      text-overflow ellipsis
+      overflow hidden
     .more
-      float right
-      line-height 50px
+      flex-shrink 0
       padding 0 16px
       color $color-text-light
       font-size 22px
@@ -109,7 +112,6 @@
   position relative
   display flex
   align-items center
-  // padding 16px 0
   &:after
     setBottomLine()
 .task-item-title
