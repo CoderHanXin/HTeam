@@ -8,8 +8,8 @@
         </p>
         <div class="form-con">
           <Form :model="user" :rules="rules" ref="loginForm">
-            <FormItem prop="username">
-              <Input v-model="user.username" :autofocus="true" placeholder="请输入用户名">
+            <FormItem prop="email">
+              <Input v-model="user.email" :autofocus="true" placeholder="请输入邮箱">
               <span slot="prepend">
                 <Icon :size="16" type="person"></Icon>
               </span>
@@ -41,12 +41,18 @@ export default {
   data() {
     return {
       user: {
-        username: '',
+        email: '',
         password: ''
       },
       rules: {
-        username: [
-          { required: true, message: '账号不能为空', trigger: 'blur' }
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          {
+            type: 'string',
+            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9_]+\.)+[a-zA-Z]{2,}))$/gi,
+            message: '邮箱格式不正确',
+            trigger: 'blur'
+          }
         ],
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       }
@@ -67,7 +73,7 @@ export default {
     handleSubmit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          userService.login(this.user.username, this.user.password).then(res => {
+          userService.login(this.user.email, this.user.password).then(res => {
             this.init(res)
           })
         }
@@ -91,8 +97,14 @@ export default {
           })
         } else if (teamCount > 1) {
           // 大于一个团队，需要选择团队
+          // todo 暂时直接选择第一个团队进入
+          Cookies.set('currentTeam', user.teams[0])
+          this.setCurrentTeam(user.teams[0])
+          this.$router.replace({
+            name: 'project'
+          })
         } else {
-          // 没有团队
+          // 没有团队 todo
         }
       } else {
         this.$Message.error({
