@@ -4,8 +4,8 @@
       <FormItem label="姓名" prop="name">
         <Input type="text" v-model.trim="user.name" :maxlength="20" placeholder="请输入对方真实姓名" />
       </FormItem>
-      <FormItem label="用户名" prop="username" v-if="!isEdit">
-        <Input type="text" v-model.trim="user.username" :maxlength="20" placeholder="请输入对方用户名，如tony" />
+      <FormItem label="邮箱" prop="email" v-if="!isEdit">
+        <Input type="text" v-model.trim="user.email" :maxlength="50" placeholder="请输入对方邮箱" />
       </FormItem>
       <FormItem label="默认密码" prop="password" v-if="!isEdit">
         <Input type="password" v-model.trim="user.password" :maxlength="32" placeholder="请输入默认密码" />
@@ -63,8 +63,14 @@ export default {
       user: this.teamUser,
       rules: {
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
-        username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' }
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          {
+            type: 'string',
+            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9_]+\.)+[a-zA-Z]{2,}))$/gi,
+            message: '邮箱格式不正确',
+            trigger: 'blur'
+          }
         ],
         password: [
           { required: true, message: '密码不能为空', trigger: 'blur' }
@@ -154,7 +160,7 @@ export default {
     clearUser() {
       this.user.id = ''
       this.user.name = ''
-      this.user.username = ''
+      this.user.email = ''
       this.user.password = ''
       this.user.phone = ''
       this.user.desc = ''

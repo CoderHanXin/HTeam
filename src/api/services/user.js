@@ -7,13 +7,13 @@ import url from '../url'
 class UserService {
   /**
    * 登录
-   * @param   {String}  username  用户id
-   * @param   {String}  password  用户id
+   * @param   {String}  email     用户邮箱
+   * @param   {String}  password  用户密码
    * @return  {Object}  用户信息
    */
-  login(username, password) {
+  login(email, password) {
     return http.post(url.account_login, {
-      username,
+      email,
       password
     })
   }

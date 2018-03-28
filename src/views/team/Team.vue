@@ -80,7 +80,7 @@ export default {
       user: {
         id: 0,
         name: '',
-        username: '',
+        email: '',
         password: '',
         phone: '',
         desc: ''
@@ -113,12 +113,12 @@ export default {
           }
         },
         {
-          title: '手机号',
-          key: 'phone'
-        },
-        {
           title: '邮箱',
           key: 'email'
+        },
+        {
+          title: '手机号',
+          key: 'phone'
         },
         {
           title: '备注',
