@@ -19,8 +19,8 @@
             </div>
           </div>
           <Form ref="userForm" :model="editUser" :rules="rules" :label-width="80">
-            <FormItem label="用户名" prop="username">
-              <Input type="text" v-model="editUser.username" :maxlength="20" disabled/>
+            <FormItem label="邮箱" prop="email">
+              <Input type="text" v-model="editUser.email" disabled/>
             </FormItem>
             <FormItem label="姓名" prop="name">
               <Input type="text" v-model.trim="editUser.name" :maxlength="20" />
