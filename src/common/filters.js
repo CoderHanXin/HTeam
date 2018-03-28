@@ -1,5 +1,5 @@
 import moment from 'moment'
-moment.locale('zh-cn', {
+moment.updateLocale('zh-cn', {
   week: {
     dow: 1 // Monday is the first day of the week.
   }

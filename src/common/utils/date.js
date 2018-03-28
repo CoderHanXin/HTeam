@@ -1,7 +1,8 @@
 'use strict'
 
-const moment = require('moment')
-moment.locale('zh-cn', {
+// const moment = require('moment')
+import moment from 'moment'
+moment.updateLocale('zh-cn', {
   week: {
     dow: 1 // Monday is the first day of the week.
   }
