@@ -14,7 +14,7 @@ const RouterConfig = {
   routes: routers
 }
 
-const freeAccess = ['login', 'register', 'join']
+const freeAccess = ['login', 'register', 'join', 'error-403', 'error-404', 'error-500']
 
 export const router = new VueRouter(RouterConfig)
 
