@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import { routers } from './router'
 import Cookies from 'js-cookie'
 import iView from 'iview'
-import { setTitle } from '../common/utils/util'
+import { oneOf, setTitle } from '../common/utils/util'
 
 Vue.use(VueRouter)
 
@@ -14,12 +14,14 @@ const RouterConfig = {
   routes: routers
 }
 
+const freeAccess = ['login', 'register', 'join']
+
 export const router = new VueRouter(RouterConfig)
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   setTitle(to.meta.title)
-  if (to.name === 'login') {
+  if (oneOf(to.name, freeAccess)) {
     next()
   } else {
     if (!Cookies.get('token')) {

@@ -40,6 +40,22 @@ export const page500 = {
 
 export const appRouter = [
   {
+    path: '/register',
+    name: 'register',
+    meta: {
+      title: 'Sign up - 注册'
+    },
+    component: () => import('@/views/account/Register.vue')
+  },
+  {
+    path: '/switch',
+    name: 'switch',
+    meta: {
+      title: '选择团队'
+    },
+    component: () => import('@/views/account/SwitchTeam.vue')
+  },
+  {
     path: '/',
     name: 'main',
     component: Main,
