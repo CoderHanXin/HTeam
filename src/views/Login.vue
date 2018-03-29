@@ -9,7 +9,7 @@
         <div class="form-con">
           <Form :model="user" :rules="rules" ref="loginForm">
             <FormItem prop="email">
-              <Input v-model="user.email" :autofocus="true" placeholder="请输入邮箱">
+              <Input type="email" v-model="user.email" :autofocus="true" placeholder="请输入邮箱">
               <span slot="prepend">
                 <Icon :size="16" type="person"></Icon>
               </span>
@@ -26,6 +26,10 @@
               <Button @click="handleSubmit" type="primary" long>登录</Button>
             </FormItem>
           </Form>
+          <div>
+            <span class="grey">没有账号？</span>
+            <a @click="gotoRegister" class="link-text">立即注册 →</a>
+          </div>
         </div>
       </Card>
     </div>
@@ -47,12 +51,7 @@ export default {
       rules: {
         email: [
           { required: true, message: '邮箱不能为空', trigger: 'blur' },
-          {
-            type: 'string',
-            pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9_]+\.)+[a-zA-Z]{2,}))$/gi,
-            message: '邮箱格式不正确',
-            trigger: 'blur'
-          }
+          { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
         ],
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       }
@@ -86,7 +85,9 @@ export default {
         }
         const user = res.data.data.user
         Cookies.set('currentUser', user)
+        Cookies.set('teams', user.teams)
         this.setCurrentUser(user)
+        this.setTeams(user.teams)
         this.$Message.info('登录成功')
         const teamCount = user.teams.length
         if (teamCount === 1) {
@@ -95,16 +96,11 @@ export default {
           this.$router.replace({
             name: 'project'
           })
-        } else if (teamCount > 1) {
-          // 大于一个团队，需要选择团队
-          // todo 暂时直接选择第一个团队进入
-          Cookies.set('currentTeam', user.teams[0])
-          this.setCurrentTeam(user.teams[0])
-          this.$router.replace({
-            name: 'project'
-          })
         } else {
-          // 没有团队 todo
+          // 选择团队或者创建新团队
+          this.$router.replace({
+            name: 'switch'
+          })
         }
       } else {
         this.$Message.error({
@@ -113,9 +109,15 @@ export default {
         })
       }
     },
+    gotoRegister() {
+      this.$router.push({
+        name: 'register'
+      })
+    },
     ...mapMutations([
       'setCurrentUser',
-      'setCurrentTeam'
+      'setCurrentTeam',
+      'setTeams'
     ])
   }
 }
@@ -139,6 +141,8 @@ export default {
     width 300px
     .form-con
       padding 8px 0 0
+      font-size 12px
+      text-align center
     .login-tip
       font-size $font-size-small-s
       text-align center
