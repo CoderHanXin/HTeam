@@ -2,15 +2,6 @@ import Main from '@/views/Main.vue'
 
 export const defaultRouter = { path: '/', name: 'default', redirect: '/login' }
 
-export const loginRouter = {
-  path: '/login',
-  name: 'login',
-  meta: {
-    title: 'Login - 登录'
-  },
-  component: () => import('@/views/Login.vue')
-}
-
 export const page404 = {
   path: '/*',
   name: 'error-404',
@@ -40,12 +31,28 @@ export const page500 = {
 
 export const appRouter = [
   {
+    path: '/login',
+    name: 'login',
+    meta: {
+      title: 'Login - 登录'
+    },
+    component: () => import('@/views/Login.vue')
+  },
+  {
     path: '/register',
     name: 'register',
     meta: {
       title: 'Sign up - 注册'
     },
     component: () => import('@/views/account/Register.vue')
+  },
+  {
+    path: '/join/:ticket',
+    name: 'join',
+    meta: {
+      title: '加入团队'
+    },
+    component: () => import('@/views/account/Join.vue')
   },
   {
     path: '/switch',
@@ -163,7 +170,6 @@ export const appRouter = [
 // 所有上面定义的路由都要写在下面的routers里
 export const routers = [
   defaultRouter,
-  loginRouter,
   ...appRouter,
   page500,
   page403,
