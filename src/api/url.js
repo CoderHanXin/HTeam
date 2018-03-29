@@ -2,6 +2,8 @@ export default {
   user: '/api/user',
   account_register: '/api/account/register',
   account_login: '/api/account/login',
+  account_join: '/api/account/join',
+  account_join_check: '/api/account/join/check/:ticket',
 
   user_show: '/api/user/show',
   user_password: '/api/user/password',

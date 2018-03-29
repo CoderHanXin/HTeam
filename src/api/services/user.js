@@ -34,6 +34,31 @@ class UserService {
   }
 
   /**
+   * 验证加入团队邀请ticket
+   * @param   {String}  ticket  凭据
+   * @return  {Object}  {user, team}
+   */
+  joinCheck(ticket) {
+    return http.get(url.account_join_check.replace(':ticket', ticket))
+  }
+
+  /**
+   * 加入团队
+   * @param   {String}  email     用户邮箱
+   * @param   {String}  password  用户密码
+   * @param   {Number}  teamId    团队id
+   * @param   {String}  name      用户名字
+   */
+  join(email, password, teamId, name) {
+    return http.post(url.account_join, {
+      email,
+      password,
+      teamId,
+      name
+    })
+  }
+
+  /**
    * 根据token获取用户信息
    * @return  {Object}  用户信息
    */
