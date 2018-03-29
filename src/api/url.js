@@ -1,5 +1,6 @@
 export default {
   user: '/api/user',
+  account_register: '/api/account/register',
   account_login: '/api/account/login',
 
   user_show: '/api/user/show',

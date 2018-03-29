@@ -6,6 +6,18 @@ import url from '../url'
  */
 class TeamService {
   /**
+   * 创建团队
+   * @param {String}  name    团队名称
+   * @param {Number}  userId  用户id
+   */
+  add(name, userId) {
+    return http.post(url.team_create, {
+      name,
+      userId
+    })
+  }
+
+  /**
    * 获取所有用户和组
    * @param   {Number}   teamId 团队id
    * @return  {users, groups} 用户,组

@@ -9,6 +9,21 @@ class UserService {
    * 登录
    * @param   {String}  email     用户邮箱
    * @param   {String}  password  用户密码
+   * @param   {String}  name      用户名字
+   * @return  {Object}  用户信息
+   */
+  register(email, password, name) {
+    return http.post(url.account_register, {
+      email,
+      password,
+      name
+    })
+  }
+
+  /**
+   * 登录
+   * @param   {String}  email     用户邮箱
+   * @param   {String}  password  用户密码
    * @return  {Object}  用户信息
    */
   login(email, password) {
