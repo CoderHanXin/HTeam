@@ -5,6 +5,7 @@ export default {
   account_join: '/api/account/join',
   account_join_check: '/api/account/join/check/:ticket',
 
+  user_invite: '/api/user/invite',
   user_show: '/api/user/show',
   user_password: '/api/user/password',
   user_create: '/api/user',

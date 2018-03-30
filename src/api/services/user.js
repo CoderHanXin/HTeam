@@ -34,6 +34,20 @@ class UserService {
   }
 
   /**
+   * 邀请成员
+   * @param   {Number}  userId    邀请人id（当前登录用户）
+   * @param   {Number}  teamId    团队id
+   * @param   {String}  email     用户邮箱
+   */
+  invite(userId, teamId, email) {
+    return http.post(url.user_invite, {
+      userId,
+      teamId,
+      email
+    })
+  }
+
+  /**
    * 验证加入团队邀请ticket
    * @param   {String}  ticket  凭据
    * @return  {Object}  {user, team}

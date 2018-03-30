@@ -30,6 +30,7 @@
               <!-- <Input v-model="search.name" placeholder="姓名" style="width:100px" class="margin-right-4"/>
               <Button @click="handleSearch" type="primary" icon="ios-search" class="margin-right-4">搜索</Button> -->
               <Button v-if="currentMenuIsTeam" @click="handleTeamUserAddShow" type="success" class="margin-right-4">添加成员</Button>
+              <Button v-if="currentMenuIsTeam" @click="handleInviteShow" type="success" class="margin-right-4">邀请成员</Button>
               <Button v-if="currentMenuIsTeam" @click="handleGroupAddShow" type="primary" class="margin-right-4">新建分组</Button>
               <Button v-if="!currentMenuIsTeam" @click="handleGroupEditShow" type="primary" class="margin-right-4">设置分组</Button>
               <Button v-if="!currentMenuIsTeam" @click="handleDeleteGroup" type="error" class="margin-right-4">删除分组</Button>
@@ -42,11 +43,19 @@
         </div>
       </Content>
     </Layout>
+    <Modal v-model="isInviteVisable" :loading="modalLoading" @on-ok="handleInviteOk" @on-cancel="handleInviteCancel" title="通过邮件邀请成员" width="360">
+      <Form ref="inviteForm" :model="inviteUser" :rules="rules">
+        <FormItem prop="email">
+          <Input type="email" v-model.trim="inviteUser.email" :maxlength="50" size="large" placeholder="请输入新成员的邮箱" />
+        </FormItem>
+      </Form>
+    </Modal>
   </Layout>
 </template>
 
 <script>
 import teamService from '@/api/services/team'
+import userService from '@/api/services/user'
 import role from '@/common/constant/role'
 import { mapGetters, mapMutations } from 'vuex'
 import GroupAdd from '@/views/team/GroupAdd'
@@ -70,6 +79,7 @@ export default {
       currentMenuIsTeam: true,
       isTeamUserVisable: false,
       isEditTeamUser: false,
+      isInviteVisable: false,
       teamUser: {},
       userList: [],
       groupList: [],
@@ -85,6 +95,16 @@ export default {
         phone: '',
         desc: '',
         roleId: 3
+      },
+      modalLoading: true,
+      inviteUser: {
+        email: ''
+      },
+      rules: {
+        email: [
+          { required: true, message: '邮箱不能为空', trigger: 'blur' },
+          { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+        ]
       },
       tabelColumns: [
         {
@@ -212,6 +232,7 @@ export default {
       }
     },
     ...mapGetters([
+      'currentUser',
       'currentTeam',
       'allUsers',
       'allGroups'
@@ -223,6 +244,29 @@ export default {
   methods: {
     handleSearch() {
       this.getUserList()
+    },
+    handleInviteShow() {
+      this.isInviteVisable = true
+    },
+    handleInviteOk() {
+      this.$refs.inviteForm.validate(valid => {
+        if (valid) {
+          userService.invite(this.currentUser.id, this.currentTeam.id, this.inviteUser.email).then(res => {
+            if (res.data.code === 0) {
+              this.$Message.info('邀请邮件已发送')
+            } else {
+              this.$Message.error({
+                content: res.data.message,
+                duration: 3
+              })
+            }
+            this.isInviteVisable = false
+          })
+        }
+      })
+    },
+    handleInviteCancel() {
+      this.$refs.inviteForm.resetFields()
     },
     handleTeamUserOk() {
       this.getUserList()
