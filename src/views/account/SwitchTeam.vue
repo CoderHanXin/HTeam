@@ -104,6 +104,8 @@ export default {
 
 .teams
   position relative
+  width 360px
+  margin 0 auto
   text-align center
   overflow hidden
   border 1px solid #ccc
