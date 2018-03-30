@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     switchTeam(item) {
+      Cookies.set('currentTeam', item)
       this.setCurrentTeam(item)
       this.$router.replace({
         name: 'project'

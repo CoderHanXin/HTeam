@@ -86,18 +86,21 @@ class UserService {
    * 创建用户
    * @param   {Object}  user    用户信息
    * @param   {String}  teamId  团队id
+   * @param   {Object}  role    用户角色
    */
-  create(user, teamId) {
-    return http.post(url.user_create, { user, teamId })
+  create(user, teamId, role) {
+    return http.post(url.user_create, { user, teamId, role })
   }
 
   /**
    * 修改用户信息
    * @param   {Number}  id    用户id
    * @param   {Object}  user  用户信息
+   * @param   {String}  teamId  团队id
+   * @param   {Object}  role  用户角色
    */
-  update(id, user) {
-    return http.put(url.user_update.replace(':id', id), user)
+  update(id, user, teamId, role) {
+    return http.put(url.user_update.replace(':id', id), { user, teamId, role })
   }
 }
 

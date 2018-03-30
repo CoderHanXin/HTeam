@@ -16,11 +16,11 @@
       <FormItem label="备注" prop="desc">
         <Input type="textarea" v-model.trim="user.desc" :rows="3" class="textarea-desc" />
       </FormItem>
-      <!-- <FormItem label="权限">    
-          <RadioGroup v-model="user.roleId">
-            <Radio v-for="item in roleList" :key="item.id" :label="item.id">{{item.name}}</Radio>
-          </RadioGroup>
-        </FormItem> -->
+      <FormItem v-if="isSuperAdmin && currentUser.id !== user.id" label="权限">
+        <RadioGroup v-model="user.roleId">
+          <Radio v-for="item in roleList" :key="item.id" :label="item.id">{{item.name}}</Radio>
+        </RadioGroup>
+      </FormItem>
     </Form>
     <div slot="footer">
       <Button type="text" size="large" @click="handleCancel()">取消</Button>
@@ -31,8 +31,10 @@
 </template>
 
 <script>
+import role from '@/common/constant/role'
 import userService from '@/api/services/user'
 import teamService from '@/api/services/team'
+import { mapGetters } from 'vuex'
 export default {
   name: 'TeamUser',
   props: {
@@ -60,6 +62,8 @@ export default {
       okDisabled: false,
       disableLoading: false,
       disableDisabled: false,
+      roleList: role,
+      originalRoleId: 0,
       user: this.teamUser,
       rules: {
         name: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
@@ -72,6 +76,7 @@ export default {
         ],
         phone: [
           {
+            required: false,
             type: 'string',
             pattern: /^\d+$/gi,
             message: '手机号只能是数字',
@@ -84,13 +89,21 @@ export default {
   computed: {
     modalTitle() {
       return this.isEdit ? '修改成员' : '添加成员'
-    }
+    },
+    isSuperAdmin() {
+      return this.currentTeam.team_user.role_id === 1
+    },
+    ...mapGetters([
+      'currentUser',
+      'currentTeam'
+    ])
   },
   watch: {
     value(val) {
       this.visable = val
       if (val) {
         this.user = Object.assign({}, this.teamUser)
+        this.originalRoleId = this.user.roleId
       }
     }
   },
@@ -100,9 +113,13 @@ export default {
         if (valid) {
           this.okLoading = true
           this.disableDisabled = true
+          let role = this.roleList.find(val => {
+            return val.id === this.user.roleId
+          })
           if (!this.isEdit) {
             delete this.user.id
-            userService.create(this.user, this.teamId).then(res => {
+            delete this.user.roleId
+            userService.create(this.user, this.teamId, role).then(res => {
               this.ok()
             })
           } else {
@@ -111,10 +128,12 @@ export default {
             user.name = this.user.name
             user.phone = this.user.phone
             user.desc = this.user.desc
-            userService.update(user.id, user)
-              .then(res => {
-                this.ok()
-              })
+            if (this.originalRoleId === this.user.roleId) {
+              role = null
+            }
+            userService.update(user.id, user, this.teamId, role).then(res => {
+              this.ok()
+            })
           }
         }
       })

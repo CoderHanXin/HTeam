@@ -83,7 +83,8 @@ export default {
         email: '',
         password: '',
         phone: '',
-        desc: ''
+        desc: '',
+        roleId: 3
       },
       tabelColumns: [
         {
@@ -236,6 +237,7 @@ export default {
       this.teamUser.name = row.name
       this.teamUser.phone = row.phone
       this.teamUser.desc = row.desc
+      this.teamUser.roleId = row.team_user.role_id
       this.isEditTeamUser = true
       this.isTeamUserVisable = true
     },
